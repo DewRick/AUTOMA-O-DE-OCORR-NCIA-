@@ -270,7 +270,7 @@
             if (selectedOcorrencias.includes('Ruptura')) addProductsToText('Ruptura', rupturaProducts);
             if (selectedOcorrencias.length === 0) text += "• Nenhuma ocorrência selecionada\n\n";
 
-            textarea.value = text + "Data:";
+             textarea.value = text + "\nData:";
         }
 
         checkboxes.forEach(checkbox => checkbox.addEventListener('change', () => { toggleProductSections(); updateTextArea(); }));
