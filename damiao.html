@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automação de Ocorrência</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #e0f7fa; }
+        .container { width: 300px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { width: 50px; }
+        .selection { background-color: #4682b4; color: white; padding: 10px; border-radius: 50%; text-align: center; margin: 10px auto; width: 120px; }
+        .arrow { text-align: center; margin: 10px 0; }
+        .arrow::after { content: '↓'; font-size: 24px; }
+        .checkbox-list { margin: 10px 0; }
+        .checkbox-list label { display: block; margin: 5px 0; }
+        .text-box { border: 2px solid yellow; padding: 10px; margin-top: 20px; }
+        .note { font-size: 12px; color: #666; text-align: right; }
+        .star { color: yellow; font-size: 24px; text-align: center; margin: 10px 0; }
+        textarea { width: 100%; height: 200px; margin-top: 10px; resize: none; }
+        .small-text { font-size: small; }
+        .product-section { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="Fini Logo">
+            <h2>AUTOMAÇÃO DE OCORRÊNCIA</h2>
+        </div>
+
+       
+        <div>   
+            <a href="index.html">
+                <button>Voltar Tela Inicial</button>
+            </a>
+        </div>
+         <div class="selection">Lojas</div>
+        <div class="checkbox-list" id="lojas"></div>
+
+        <div class="arrow"></div>
+
+        <div class="selection">SELECIONE OCORRÊNCIA</div>
+        <div class="checkbox-list">
+            <label><input type="checkbox" name="ocorrencia" value="Baixo Volume"> Baixo Volume</label>
+            <label><input type="checkbox" name="ocorrencia" value="Ruptura"> Ruptura</label>
+        </div>
+
+        <div class="arrow"></div>
+
+        <div class="product-section" id="baixoVolumeSection" style="display: none;">
+            <div class="selection">PRODUTOS - BAIXO VOLUME</div>
+            <div class="checkbox-list" id="baixoVolumeProducts"></div>
+        </div>
+
+        <div class="product-section" id="rupturaSection" style="display: none;">
+            <div class="selection">PRODUTOS - RUPTURA</div>
+            <div class="checkbox-list" id="rupturaProducts"></div>
+        </div>
+
+        <div class="text-box">
+            <h3>COPIE, DATE E COLE NOS NOSSOS GRUPOS DE OCORRÊNCIA</h3>
+            <div class="star">★</div>
+            <p class="note">NOTA: Essa aplicação foi criada facilitando a comunicação com nosso time e otimizando nosso tempo nas lojas. -Rickson C.</p>
+            <textarea id="communicationText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const lojas = [
+  "Venancio - Recreio Dos Bandeirantes",
+  "Drogasmil Barra Tijuca Cod. 45",
+  "1033 - Lasa - Shc Américas",
+  "5296 - Americanas Express - Avn Das Américas",
+  "534 - Lasa - Shc Rio Design Barra Express",
+  "Prezunic Barra",
+  "Prezunic Recreio",
+  "Pão De Açúcar Recreio Shopping",
+  "Raia Recreio Dos Bandeirantes - A"
+];
+
+        const categorias = {
+            sm: {
+                "80g": ["Dentadura 80g", "Beijos Morango 80g", "Banana 80g", "Minhoca Brilho 80g", "Minhoca Cítrica 80g", "Amora 80g", "Ursinho 80g", "Polvo 80g", "Sapo 80g", "Finiburguer 80g", "Aros 80g", "Ovo Frito 80g", "HP Coruja 80g", "HP Óculos 80g", "HP Chapeu 80g", "HP Raio 80g", "Rato 80g", "Escovinha 80g", "Oceanitos 80g", "Sorvetinho 80g", "Caveira Recheada 80g", "Fazendo Arte 80g", "Mix Surpresa 80g"],
+                "15g": ["Dentadura 15g", "Beijos Morango 15g", "Banana 15g", "Minhoca Brilho 15g", "Minhoca Cítrica 15g", "Amora 15g", "Ursinho 15g", "Dentadura da Bruxa 15g"],
+                "35g": ["Dentadura 35g", "Beijos Morango 35g", "Banana 35g", "Minhoca Brilho 35g", "Minhoca Cítrica 35g", "Amora 35g", "Ursinho 35g"],
+                "250g": ["Dentadura 250g", "Beijos 250g", "Banana 250g", "Minhoca Brilho 250g", "Minhoca Cítrica 250g", "Amora 250g", "Ursinho 250g", "Aros de Morango 250g", "Polvo 250g", "Sapo 250g", "Sorvetinho 250g", "Oceanitos 250g", "Mix Surpresa 250g", "Rato 250g", "Fazendo Arte 250g", "Caveira Recheada 250g", "Aranha 250g"],
+                "500g": ["Banana 500g", "Dentadura 500g", "Beijos Morango 500g", "Minhoca Brilho 500g", "Minhoca Cítrica 500g", "Amora 500g", "Ursinho 500g", "Aros de Morango 500g", "Polvo 500g", "Sapo 500g", "Sorvetinho 500g", "Oceanitos 500g", "Mix Surpresa 500g", "Rato 500g", "Fazendo Arte 500g", "Caveira Recheada 500g", "Aranha 500g"]
+            },
+            tubes: {
+                "80g": ["Morango Cítrico 80g", "Morango Nata 80g", "Tutti Fruti 80g", "Arco Íris 80g", "Twister Cítrico 80g", "Twister 80g", "Uva Cítrico 80g", "Uva 80g", "Tropical 80g", "Azedinho 80g", "Terror 80g"],
+                "35g": ["Morango 35g", "Morango Cítrico 35g", "Tutti Fruti 35g", "Twister 35g", "Azedíssimo 35g"],
+                "40g": ["Morango Cítrico 40g", "Morango Nata 40g", "Twister Cítrico 40g", "Twister 40g"],
+                "15g": ["Tubes Morango Cítrico 15g", "Tubes Morango Nata 15g", "Tubes Pinta Língua 15g", "Tubes Halloween 15g", "Três Cores Azedinho 15g", "Tutti Fruti 15g", "Twister 15g", "Morango com Laranja 15g", "Boo Uva 15g"],
+                "27g": ["Tubes Gigante 27g", "Tubes Iorgute 27g", "Tubes Morango 27g", "Tubes Morango Cítrico 27g", "Tubes Twister 27g", "Tubes Framboesa 27g", "Tubes Boo 27g"],
+                "240g": ["Morango 240g", "Morango Cítrico 240g"]
+            },
+            chicle: {
+                "80g": ["Chicle Salada de Fruta 80g", "Melancia 80g", "Ovo Dinossauro 80g"],
+                "140g": ["Fúria Ácida 140g"],
+                "230g": ["Melancia 230g", "Salada de Fruta 230g", "Ovo de Dino 230g"],
+                "250g": ["Chicle Melancia 250g", "Ovo Dinossauro 250g"],
+                "450g": ["Ovo de Dino 450g", "Melancia 450g", "Salada de Fruta 450g"]
+            },
+            mash: {
+                "80g": ["Torção Recheado 80g", "Torção Azul Rech 80g", "Torção Rosa Rech 80g", "Torção Tricolor 80g", "Torção Azul 80g", "Torção Rosa 80g", "Torção Branco 80g", "Alvorada 80g", "Flor 80g", "Coração 80g", "Borboleta 80g", "Morango 80g", "Vulcão Azul 80g", "Vulcão Rosa 80g", "Fondue 80g", "Maria Mole 80g", "Milho 80g", "Camping 80g", "Pipoca 80g", "Pistache 80g"],
+                "250g": ["Torção Recheado 250g", "Torção Azul Rech 250g", "Torção Rosa Rech 250g", "Torção Tricolor 250g", "Torção Azul 250g", "Torção Rosa 250g", "Torção Branco 250g", "Alvorada 250g", "Flor 250g", "Coração 250g", "Borboleta 250g", "Morango 250g", "Vulcão Azul 250g", "Vulcão Rosa 250g", "Fondue 250g", "Maria Mole 250g", "Milho 250g", "Camping 250g", "Pipoca 250g", "Mashboo 250g", "Mashboo RIP 250g", "Pistache 250g"],
+                "500g": ["Torção Recheado 500g", "Torção Azul Rech 500g", "Torção Rosa Rech 500g", "Torção Tricolor 500g", "Torção Azul 500g", "Torção Rosa 500g", "Torção Branco 500g", "Alvorada 500g", "Flor 500g", "Coração 500g", "Borboleta 500g", "Morango 500g", "Vulcão Azul 500g", "Vulcão Rosa 500g", "Fondue 500g", "Maria Mole 500g", "Milho 500g", "Camping 500g", "Pipoca 500g", "Pistache 500g"]
+            },
+            bemEstar: {
+                "18g": ["Vitamina C Banana Kids 18g", "Vitamina C Morango Kids 18g", "Vitamina C 18g", "Colágeno 18g", "Ursinho Diet 18g"]
+            },
+            zeroAcucares: {
+                "35g": ["Natureza Zero 35g", "Coração Zero 35g", "Fruts Zero 35g", "Tropical Zero 35g"]
+            },
+            algodaoPipo: {
+                "80g": ["Pipoca Banana 80g Pipo-Fini", "Pipoca Dentadura 80g Pipo-Fini", "Pipoca Beijos 80g Pipo-Fini"]
+            },
+            caldas: {
+                "1kg": ["Calda para Sorvete Dentadura 1kg", "Calda para Sorvete Beijos 1kg", "Calda para Sorvete Banana 1kg"]
+            },
+            caldaRecheio: {
+                "1.01kg": ["Recheio Banana 1.01kg", "Recheio Dentadura 1.01kg", "Recheio Beijos 1.01kg"]
+            },
+            drGood: {
+                "unidades": ["Dr. Good Vitaminas C 30 unidades", "Dr. Good Vitaminas C Kids 60 unidades", "Dr. Good Multigood Kids 30 unidades", "Dr. Good Multigood 30 unidades", "Dr. Good 5+Imune 30 unidades", "Dr. Good 5+Imune Diet 30 unidades", "Dr. Good Hair 60 unidades", "Dr. Good Melatonina 60 unidades"]
+            },
+            roller: {
+                "20g": ["Tiras Roller Frutas Azedinho 20g", "Tiras Roller Morango Azedinho 20g"]
+            }
+        };
+
+        function generateCheckboxes(containerId, name, values, isLoja = false) {
+            const container = document.getElementById(containerId);
+            let html = '';
+            if (isLoja) {
+                values.forEach(value => {
+                    html += `<label><input type="checkbox" name="${name}" value="${value}"> ${value}</label>`;
+                });
+            } else {
+                Object.keys(categorias).forEach(cat => {
+                    Object.keys(categorias[cat]).forEach(size => {
+                        html += `<h3 class="small-text">${cat.toUpperCase()} ${size}</h3>`;
+                        categorias[cat][size].forEach(value => {
+                            html += `<label><input type="checkbox" name="${name}" value="${value}"> ${value}</label>`;
+                        });
+                    });
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        generateCheckboxes('lojas', 'loja', lojas, true);
+        generateCheckboxes('baixoVolumeProducts', 'produto_baixoVolume', []);
+        generateCheckboxes('rupturaProducts', 'produto_ruptura', []);
+
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const textarea = document.getElementById('communicationText');
+        const baixoVolumeSection = document.getElementById('baixoVolumeSection');
+        const rupturaSection = document.getElementById('rupturaSection');
+
+        function toggleProductSections() {
+            const baixoVolumeChecked = document.querySelector('input[name="ocorrencia"][value="Baixo Volume"]').checked;
+            const rupturaChecked = document.querySelector('input[name="ocorrencia"][value="Ruptura"]').checked;
+            baixoVolumeSection.style.display = baixoVolumeChecked ? 'block' : 'none';
+            rupturaSection.style.display = rupturaChecked ? 'block' : 'none';
+        }
+
+        function categorizeProduct(product) {
+            const productsMap = {
+                sm80g: ['Dentadura', 'Beijos Morango', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Polvo', 'Sapo', 'Finiburguer', 'Aros', 'Ovo Frito', 'HP Coruja', 'HP Óculos', 'HP Chapeu', 'HP Raio', 'Rato', 'Escovinha', 'Oceanitos', 'Sorvetinho', 'Caveira Recheada', 'Fazendo Arte', 'Mix Surpresa'],
+                sm15g: ['Dentadura', 'Beijos Morango', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Dentadura da Bruxa'],
+                sm35g: ['Dentadura', 'Beijos Morango', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho'],
+                sm250g: ['Dentadura', 'Beijos', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Aros de Morango', 'Polvo', 'Sapo', 'Sorvetinho', 'Oceanitos', 'Mix Surpresa', 'Rato', 'Fazendo Arte', 'Caveira Recheada', 'Aranha'],
+                sm500g: ['Banana', 'Dentadura', 'Beijos Morango', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Aros de Morango', 'Polvo', 'Sapo', 'Sorvetinho', 'Oceanitos', 'Mix Surpresa', 'Rato', 'Fazendo Arte', 'Caveira Recheada', 'Aranha'],
+                tubes80g: ['Morango Cítrico', 'Morango Nata', 'Tutti Fruti', 'Arco Íris', 'Twister Cítrico', 'Twister', 'Uva Cítrico', 'Uva', 'Tropical', 'Azedinho', 'Terror'],
+                tubes35g: ['Morango', 'Morango Cítrico', 'Tutti Fruti', 'Twister', 'Azedíssimo'],
+                tubes40g: ['Morango Cítrico', 'Morango Nata', 'Twister Cítrico', 'Twister'],
+                tubes15g: ['Tubes Morango Cítrico', 'Tubes Morango Nata', 'Tubes Pinta Língua', 'Tubes Halloween', 'Três Cores Azedinho', 'Tutti Fruti', 'Twister', 'Morango com Laranja', 'Boo Uva'],
+                tubes27g: ['Tubes Gigante', 'Tubes Iorgute', 'Tubes Morango', 'Tubes Morango Cítrico', 'Tubes Twister', 'Tubes Framboesa', 'Tubes Boo'],
+                tubes240g: ['Morango', 'Morango Cítrico'],
+                chicle80g: ['Chicle Salada de Fruta', 'Melancia', 'Ovo Dinossauro'],
+                chicle140g: ['Fúria Ácida'],
+                chicle230g: ['Melancia', 'Salada de Fruta', 'Ovo de Dino'],
+                chicle250g: ['Chicle Melancia', 'Ovo Dinossauro'],
+                chicle450g: ['Ovo de Dino', 'Melancia', 'Salada de Fruta'],
+                bemEstar18g: ['Vitamina C Banana Kids', 'Vitamina C Morango Kids', 'Vitamina C', 'Colágeno', 'Ursinho Diet'],
+                zeroAcucares35g: ['Natureza Zero', 'Coração Zero', 'Fruts Zero', 'Tropical Zero'],
+                algodaoPipo80g: ['Pipoca Banana', 'Pipoca Dentadura', 'Pipoca Beijos'],
+                caldas1kg: ['Calda para Sorvete Dentadura', 'Calda para Sorvete Beijos', 'Calda para Sorvete Banana'],
+                caldaRecheio1_01kg: ['Recheio Banana', 'Recheio Dentadura', 'Recheio Beijos'],
+                drGoodUnidades: ['Dr. Good Vitaminas C 30 unidades', 'Dr. Good Vitaminas C Kids 60 unidades', 'Dr. Good Multigood Kids 30 unidades', 'Dr. Good Multigood 30 unidades', 'Dr. Good 5+Imune 30 unidades', 'Dr. Good 5+Imune Diet 30 unidades', 'Dr. Good Hair 60 unidades', 'Dr. Good Melatonina 60 unidades'],
+                roller20g: ['Tiras Roller Frutas Azedinho', 'Tiras Roller Morango Azedinho']
+            };
+
+            if (product.includes('80g')) {
+                for (let [key, prods] of Object.entries({sm80g: productsMap.sm80g, tubes80g: productsMap.tubes80g, chicle80g: productsMap.chicle80g, algodaoPipo80g: productsMap.algodaoPipo80g, mash80g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Pistache']})) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
+            } else if (product.includes('15g')) {
+                for (let [key, prods] of Object.entries({sm15g: productsMap.sm15g, tubes15g: productsMap.tubes15g})) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
+            } else if (product.includes('35g')) {
+                for (let [key, prods] of Object.entries({sm35g: productsMap.sm35g, tubes35g: productsMap.tubes35g, zeroAcucares35g: productsMap.zeroAcucares35g})) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
+            } else if (product.includes('250g')) {
+                for (let [key, prods] of Object.entries({sm250g: productsMap.sm250g, chicle250g: productsMap.chicle250g, mash250g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Mashboo', 'Pistache']})) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
+            } else if (product.includes('500g')) {
+                for (let [key, prods] of Object.entries({sm500g: productsMap.sm500g, mash500g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Pistache']})) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
+            } else if (product.includes('140g')) {
+                if (productsMap.chicle140g.some(p => product.includes(p))) return 'chicle140g';
+            } else if (product.includes('230g')) {
+                if (productsMap.chicle230g.some(p => product.includes(p))) return 'chicle230g';
+            } else if (product.includes('450g')) {
+                if (productsMap.chicle450g.some(p => product.includes(p))) return 'chicle450g';
+            } else if (product.includes('240g')) {
+                if (productsMap.tubes240g.some(p => product.includes(p))) return 'tubes240g';
+            } else if (product.includes('27g')) {
+                if (productsMap.tubes27g.some(p => product.includes(p))) return 'tubes27g';
+            } else if (product.includes('20g')) {
+                if (productsMap.roller20g.some(p => product.includes(p))) return 'roller20g';
+            } else if (product.includes('18g')) {
+                if (productsMap.bemEstar18g.some(p => product.includes(p))) return 'bemEstar18g';
+            } else if (product.includes('1kg')) {
+                if (productsMap.caldas1kg.some(p => product.includes(p))) return 'caldas1kg';
+            } else if (product.includes('1.01kg')) {
+                if (productsMap.caldaRecheio1_01kg.some(p => product.includes(p))) return 'caldaRecheio1_01kg';
+            } else if (product.includes('unidades')) {
+                if (productsMap.drGoodUnidades.some(p => product.includes(p))) return 'drGoodUnidades';
+            }
+            return null;
+        }
+
+        function updateTextArea() {
+            let text = "COMUNICAÇÃO DE OCORRÊNCIA\n\n";
+            let selectedLoja = Array.from(checkboxes).filter(cb => cb.checked && cb.name === 'loja').map(cb => cb.value);
+            text += selectedLoja.length > 0 ? "LOJA: " + selectedLoja.join(', ') + "\n\n" : "LOJA: Nenhuma loja selecionada\n\n";
+
+            let selectedOcorrencias = Array.from(checkboxes).filter(cb => cb.checked && cb.name === 'ocorrencia').map(cb => cb.value);
+
+            const processProducts = (name) => {
+                let products = {
+                    sm80g: [], sm15g: [], sm35g: [], sm250g: [], sm500g: [],
+                    tubes80g: [], tubes35g: [], tubes40g: [], tubes15g: [], tubes27g: [], tubes240g: [],
+                    chicle80g: [], chicle140g: [], chicle230g: [], chicle250g: [], chicle450g: [],
+                    mash80g: [], mash250g: [], mash500g: [],
+                    bemEstar18g: [], zeroAcucares35g: [], algodaoPipo80g: [],
+                    caldas1kg: [], caldaRecheio1_01kg: [], drGoodUnidades: [], roller20g: []
+                };
+                Array.from(checkboxes).filter(cb => cb.checked && cb.name === name).forEach(cb => {
+                    const cat = categorizeProduct(cb.value);
+                    if (cat) products[cat].push(cb.value);
+                });
+                return products;
+            };
+
+            let baixoVolumeProducts = processProducts('produto_baixoVolume');
+            let rupturaProducts = processProducts('produto_ruptura');
+
+            const addProductsToText = (ocorrencia, products) => {
+                text += `• OCORRÊNCIA DE ${ocorrencia}\n\n`;
+                text += `• Produtos em ${ocorrencia}\n\n`;
+                const catMap = {
+                    sm80g: "CATEGORIA SM+ 80g", sm15g: "CATEGORIA SM+ 15g", sm35g: "CATEGORIA SM+ 35g", sm250g: "CATEGORIA SM+ 250g", sm500g: "CATEGORIA SM+ 500g",
+                    tubes80g: "CATEGORIA TUBES+ 80g", tubes35g: "CATEGORIA TUBES+ 35g", tubes40g: "CATEGORIA TUBES+ 40g", tubes15g: "CATEGORIA TUBES+ 15g", tubes27g: "CATEGORIA TUBES+ 27g", tubes240g: "CATEGORIA TUBES+ 240g",
+                    chicle80g: "CATEGORIA CHICLE+ 80g", chicle140g: "CATEGORIA CHICLE+ 140g", chicle230g: "CATEGORIA CHICLE+ 230g", chicle250g: "CATEGORIA CHICLE+ 250g", chicle450g: "CATEGORIA CHICLE+ 450g",
+                    mash80g: "CATEGORIA MASH+ 80g", mash250g: "CATEGORIA MASH+ 250g", mash500g: "CATEGORIA MASH+ 500g",
+                    bemEstar18g: "CATEGORIA BEMESTAR 18g", zeroAcucares35g: "CATEGORIA ZERO AÇÚCARES 35g", algodaoPipo80g: "CATEGORIA ALGODÃO E PIPÓ 80g",
+                    caldas1kg: "CATEGORIA CALDAS 1kg", caldaRecheio1_01kg: "CATEGORIA CALDA RECHEIO 1.01kg", drGoodUnidades: "CATEGORIA DRGOOD", roller20g: "CATEGORIA ROLLER 20g"
+                };
+                Object.keys(products).forEach(key => {
+                    if (products[key].length > 0) {
+                        text += catMap[key] + "\n";
+                        text += products[key].map(prod => `- ${prod}`).join('\n');
+                        text += '\n\n';
+                    }
+                });
+            };
+
+            if (selectedOcorrencias.includes('Baixo Volume')) addProductsToText('Baixo Volume', baixoVolumeProducts);
+            if (selectedOcorrencias.includes('Ruptura')) addProductsToText('Ruptura', rupturaProducts);
+            if (selectedOcorrencias.length === 0) text += "• Nenhuma ocorrência selecionada\n\n";
+
+             textarea.value = text + "\nData:";
+        }
+
+        checkboxes.forEach(checkbox => checkbox.addEventListener('change', () => { toggleProductSections(); updateTextArea(); }));
+        toggleProductSections();
+        updateTextArea();
+    </script>
+</body>
+</html>
