@@ -3,55 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fini - Ocorrência Taquara/Jacarepaguá</title>
+    <title>Fini - Ocorrência Barra da Tijuca</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #e0f7fa; margin: 0; padding: 15px; }
-        .container { max-width: 420px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.15); }
-        h1 { text-align: center; font-size: 1.4em; margin-bottom: 10px; color: #333; }
-        .lojas-title { background: #4682b4; color: white; padding: 12px; border-radius: 50%; margin: 30px auto 20px; width: 150px; font-weight: bold; text-align: center; font-size: 1.1em; }
-        .checkbox-list label { display: block; margin: 10px 0; font-size: 0.95em; }
-
-        .cat-header { background: #c0c0c0; color: #000; text-align: center; font-weight: bold; padding: 14px; margin: 25px 0 10px; border-radius: 8px; cursor: pointer; position: relative; user-select: none; }
-        .cat-header::after { content: "▶"; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; transition: 0.3s; }
-        .cat-header.open::after { content: "▼"; }
-
-        .cat-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-        .cat-content.open { max-height: 5000px; }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.82em; margin-bottom: 20px; }
-        th { background: #d9d9d9; padding: 8px 4px; font-size: 0.9em; }
-        td { padding: 10px 4px; border-bottom: 1px solid #eee; }
-        tr:nth-child(even) { background: #f8f8f8; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            margin: 0;
+            padding: 15px;
+        }
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .lojas-title {
+            background-color: #4682b4;
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            text-align: center;
+            margin: 30px auto 20px;
+            width: 150px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .checkbox-list {
+            margin-bottom: 30px;
+        }
+        .checkbox-list label {
+            display: block;
+            margin: 10px 0;
+            font-size: 0.95em;
+        }
+        /* Categoria expansível */
+        .categoria-header {
+            background-color: #c0c0c0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 14px;
+            margin: 25px 0 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        .categoria-header::after {
+            content: "▶";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            transition: transform 0.3s;
+        }
+        .categoria-header.open::after {
+            content: "▼";
+        }
+        .categoria-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .categoria-content.open {
+            max-height: 3000px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82em;
+            margin-bottom: 20px;
+        }
+        th {
+            background-color: #d9d9d9;
+            padding: 8px 4px;
+            font-size: 0.9em;
+        }
+        th.status {
+            text-align: center;
+        }
+        td {
+            padding: 10px 4px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:nth-child(even) { background-color: #f8f8f8; }
         .produto { width: 62%; }
         .status { text-align: center; width: 19%; }
-        input[type="radio"] { transform: scale(1.6); cursor: pointer; }
-
-        .text-box { border: 3px solid #ffd700; background: #ffffe0; padding: 20px; margin: 40px 0 20px; border-radius: 12px; }
-        .text-box h3 { text-align: center; margin: 0 0 15px; font-size: 1.1em; }
-        .star { font-size: 32px; text-align: center; color: #ffd700; margin: 10px 0; }
-        .note { font-size: 0.8em; color: #666; text-align: right; margin-top: 15px; }
-        textarea { width: 100%; min-height: 320px; resize: vertical; padding: 12px; font-family: monospace; font-size: 0.9em; border: 1px solid #ccc; border-radius: 8px; margin-top: 10px; }
-        .copy-btn { width: 100%; padding: 14px; background: #4682b4; color: white; border: none; border-radius: 10px; font-size: 1.1em; margin-top: 15px; cursor: pointer; }
+        input[type="radio"] {
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+        .text-box {
+            border: 3px solid #ffd700;
+            background-color: #ffffe0;
+            padding: 20px;
+            margin: 40px 0 20px 0;
+            border-radius: 12px;
+        }
+        .text-box h3 {
+            text-align: center;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .star {
+            color: #ffd700;
+            font-size: 32px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .note {
+            font-size: 0.8em;
+            color: #666;
+            text-align: right;
+            margin-top: 15px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 320px;
+            resize: vertical;
+            padding: 12px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 0.9em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .copy-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #4682b4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            margin-top: 15px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>AUTOMAÇÃO DE OCORRÊNCIA - FINI</h1>
-
         <div class="lojas-title">Lojas</div>
         <div class="checkbox-list" id="lojas"></div>
-
         <div id="categorias"></div>
-
         <div class="text-box">
             <h3>COPIE E COLE NOS GRUPOS</h3>
             <div class="star">★</div>
             <p class="note">Criado para agilizar o dia a dia nas lojas - Rickson C.</p>
-            <textarea id="output" readonly></textarea>
+            <textarea id="communicationText" readonly></textarea>
             <button class="copy-btn" onclick="copyText()">COPIAR TEXTO</button>
         </div>
     </div>
-
     <script>
         const lojas = [
             "Atacadão Jacarepagua",
@@ -64,7 +177,7 @@
             "Ufa Taquara"
         ];
 
-        const categorias = {
+        const produtos = {
             sm: {
                 "80g": ["Dentadura 80g", "Beijos Morango 80g", "Banana 80g", "Minhoca Brilho 80g", "Minhoca Cítrica 80g", "Amora 80g", "Ursinho 80g", "Polvo 80g", "Sapo 80g", "Finiburguer 80g", "Aros 80g", "Ovo Frito 80g", "HP Coruja 80g", "HP Óculos 80g", "HP Chapeu 80g", "HP Raio 80g", "Rato 80g", "Escovinha 80g", "Oceanitos 80g", "Sorvetinho 80g", "Caveira Recheada 80g", "Fazendo Arte 80g", "Mix Surpresa 80g"],
                 "15g": ["Dentadura 15g", "Beijos Morango 15g", "Banana 15g", "Minhoca Brilho 15g", "Minhoca Cítrica 15g", "Amora 15g", "Ursinho 15g", "Dentadura da Bruxa 15g"],
@@ -101,153 +214,101 @@
             roller: { "20g": ["Tiras Roller Frutas Azedinho 20g", "Tiras Roller Morango Azedinho 20g"] }
         };
 
-        const nomesCat = {
+        const categoriaNomes = {
             sm: "SM+", tubes: "TUBES+", chicle: "CHICLE+", mash: "MASH+",
             bemEstar: "BEM ESTAR", zeroAcucares: "ZERO AÇÚCARES",
-            algodaoPipo: "ALGODÃO/PIPÓ", caldas: "CALDAS",
+            algodaoPipo: "ALGODÃO / PIPÓ", caldas: "CALDAS",
             caldaRecheio: "CALDA RECHEIO", drGood: "DR. GOOD", roller: "ROLLER"
         };
 
         // Gerar lojas
         const lojasDiv = document.getElementById('lojas');
-        lojas.forEach(l => lojasDiv.innerHTML += `<label><input type="checkbox" name="loja" value="${l}"> ${l}</label>`);
+        lojas.forEach(loja => {
+            lojasDiv.innerHTML += `<label><input type="checkbox" name="loja" value="${loja}"> ${loja}</label>`;
+        });
 
-        // Gerar categorias expansíveis (fechadas)
-        const catsDiv = document.getElementById('categorias');
-        Object.keys(categorias).forEach(catKey => {
-            Object.keys(categorias[catKey]).forEach(size => {
-                const lista = categorias[catKey][size];
+        // Gerar categorias (todas fechadas)
+        const categoriasDiv = document.getElementById('categorias');
+        Object.keys(produtos).forEach(catKey => {
+            const catNome = categoriaNomes[catKey];
+            Object.keys(produtos[catKey]).forEach(gramatura => {
+                const lista = produtos[catKey][gramatura];
                 if (lista.length === 0) return;
-                const titulo = `${nomesCat[catKey]} ${size.toUpperCase()}`;
-                const id = `sec-${catKey}-${size.replace('.', '')}`;
-
-                catsDiv.innerHTML += `
-                    <div class="cat-header" onclick="toggleSec('${id}', this)">${titulo}</div>
-                    <div id="${id}" class="cat-content">
+                const titulo = `${catNome} ${gramatura.toUpperCase()}`;
+                const sectionId = `section-${catKey}-${gramatura.replace('.', '')}`;
+                categoriasDiv.innerHTML += `
+                    <div class="categoria-header" onclick="toggleSection('${sectionId}', this)">${titulo}</div>
+                    <div id="${sectionId}" class="categoria-content">
                         <table>
-                            <tr><th class="produto">Produto</th><th class="status">Baixo Volume</th><th class="status">Ruptura</th></tr>
-                            ${lista.map(p => {
-                                const nid = p.replace(/[^a-zA-Z0-9]/g, '_');
-                                return `<tr><td>${p}</td><td class="status"><input type="radio" name="${nid}" value="baixo"></td><td class="status"><input type="radio" name="${nid}" value="ruptura"></td></tr>`;
+                            <tr>
+                                <th class="produto">Produto</th>
+                                <th class="status">Baixo Volume</th>
+                                <th class="status">Ruptura</th>
+                            </tr>
+                            ${lista.map(prod => {
+                                const id = prod.replace(/[^a-zA-Z0-9]/g, '_');
+                                return `
+                                    <tr>
+                                        <td>${prod}</td>
+                                        <td class="status"><input type="radio" name="${id}" value="baixo"></td>
+                                        <td class="status"><input type="radio" name="${id}" value="ruptura"></td>
+                                    </tr>`;
                             }).join('')}
                         </table>
                     </div>`;
             });
         });
 
-        function toggleSec(id, header) {
+        function toggleSection(id, header) {
+            const content = document.getElementById(id);
             header.classList.toggle('open');
-            document.getElementById(id).classList.toggle('open');
-        }
-
-        // categorizeProduct – exatamente como no seu código
-        function categorizeProduct(product) {
-            const productsMap = {
-                sm80g: ['Dentadura', 'Beijos Morango', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Polvo', 'Sapo', 'Finiburguer', 'Aros', 'Ovo Frito', 'HP Coruja', 'HP Óculos', 'HP Chapeu', 'HP Raio', 'Rato', 'Escovinha', 'Oceanitos', 'Sorvetinho', 'Caveira Recheada', 'Fazendo Arte', 'Mix Surpresa'],
-                sm15g: ['Dentadura', 'Beijos Morango', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Dentadura da Bruxa'],
-                sm35g: ['Dentadura', 'Beijos Morango', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho'],
-                sm250g: ['Dentadura', 'Beijos', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Aros de Morango', 'Polvo', 'Sapo', 'Sorvetinho', 'Oceanitos', 'Mix Surpresa', 'Rato', 'Fazendo Arte', 'Caveira Recheada', 'Aranha'],
-                sm500g: ['Banana', 'Dentadura', 'Beijos Morango', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Aros de Morango', 'Polvo', 'Sapo', 'Sorvetinho', 'Oceanitos', 'Mix Surpresa', 'Rato', 'Fazendo Arte', 'Caveira Recheada', 'Aranha'],
-                tubes80g: ['Morango Cítrico', 'Morango Nata', 'Tutti Fruti', 'Arco Íris', 'Twister Cítrico', 'Twister', 'Uva Cítrico', 'Uva', 'Tropical', 'Azedinho', 'Terror'],
-                tubes35g: ['Morango', 'Morango Cítrico', 'Tutti Fruti', 'Twister', 'Azedíssimo'],
-                tubes40g: ['Morango Cítrico', 'Morango Nata', 'Twister Cítrico', 'Twister'],
-                tubes15g: ['Tubes Morango Cítrico', 'Tubes Morango Nata', 'Tubes Pinta Língua', 'Tubes Halloween', 'Três Cores Azedinho', 'Tutti Fruti', 'Twister', 'Morango com Laranja', 'Boo Uva'],
-                tubes27g: ['Tubes Gigante', 'Tubes Iorgute', 'Tubes Morango', 'Tubes Morango Cítrico', 'Tubes Twister', 'Tubes Framboesa', 'Tubes Boo'],
-                tubes240g: ['Morango', 'Morango Cítrico'],
-                chicle80g: ['Chicle Salada de Fruta', 'Melancia', 'Ovo Dinossauro'],
-                chicle140g: ['Fúria Ácida'],
-                chicle230g: ['Melancia', 'Salada de Fruta', 'Ovo de Dino'],
-                chicle250g: ['Chicle Melancia', 'Ovo Dinossauro'],
-                chicle450g: ['Ovo de Dino', 'Melancia', 'Salada de Fruta'],
-                bemEstar18g: ['Vitamina C Banana Kids', 'Vitamina C Morango Kids', 'Vitamina C', 'Colágeno', 'Ursinho Diet'],
-                zeroAcucares35g: ['Natureza Zero', 'Coração Zero', 'Fruts Zero', 'Tropical Zero'],
-                algodaoPipo80g: ['Pipoca Banana', 'Pipoca Dentadura', 'Pipoca Beijos'],
-                caldas1kg: ['Calda para Sorvete Dentadura', 'Calda para Sorvete Beijos', 'Calda para Sorvete Banana'],
-                caldaRecheio1_01kg: ['Recheio Banana', 'Recheio Dentadura', 'Recheio Beijos'],
-                drGoodUnidades: ['Dr. Good Vitaminas C 30 unidades', 'Dr. Good Vitaminas C Kids 60 unidades', 'Dr. Good Multigood Kids 30 unidades', 'Dr. Good Multigood 30 unidades', 'Dr. Good 5+Imune 30 unidades', 'Dr. Good 5+Imune Diet 30 unidades', 'Dr. Good Hair 60 unidades', 'Dr. Good Melatonina 60 unidades'],
-                roller20g: ['Tiras Roller Frutas Azedinho', 'Tiras Roller Morango Azedinho'],
-                mash80g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Pistache'],
-                mash250g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Mashboo', 'Pistache'],
-                mash500g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Pistache']
-            };
-            if (product.includes('80g')) {
-                const checks = {sm80g: productsMap.sm80g, tubes80g: productsMap.tubes80g, chicle80g: productsMap.chicle80g, algodaoPipo80g: productsMap.algodaoPipo80g, mash80g: productsMap.mash80g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
-            } else if (product.includes('15g')) {
-                const checks = {sm15g: productsMap.sm15g, tubes15g: productsMap.tubes15g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
-            } else if (product.includes('35g')) {
-                const checks = {sm35g: productsMap.sm35g, tubes35g: productsMap.tubes35g, zeroAcucares35g: productsMap.zeroAcucares35g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
-            } else if (product.includes('250g')) {
-                const checks = {sm250g: productsMap.sm250g, chicle250g: productsMap.chicle250g, mash250g: productsMap.mash250g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
-            } else if (product.includes('500g')) {
-                const checks = {sm500g: productsMap.sm500g, mash500g: productsMap.mash500g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
-            }
-            // resto igual ao seu código
-            if (product.includes('140g')) return 'chicle140g';
-            if (product.includes('230g')) return 'chicle230g';
-            if (product.includes('450g')) return 'chicle450g';
-            if (product.includes('240g')) return 'tubes240g';
-            if (product.includes('27g')) return 'tubes27g';
-            if (product.includes('20g')) return 'roller20g';
-            if (product.includes('18g')) return 'bemEstar18g';
-            if (product.includes('1kg')) return 'caldas1kg';
-            if (product.includes('1.01kg')) return 'caldaRecheio1_01kg';
-            if (product.includes('unidades')) return 'drGoodUnidades';
-            return null;
+            content.classList.toggle('open');
         }
 
         function updateText() {
             let text = "COMUNICAÇÃO DE OCORRÊNCIA\n\n";
-            const selLojas = Array.from(document.querySelectorAll('input[name="loja"]:checked')).map(c => c.value);
-            text += selLojas.length ? "LOJA: " + selLojas.join(', ') + "\n\n" : "LOJA: Nenhuma selecionada\n\n";
+            const selectedLojas = Array.from(document.querySelectorAll('input[name="loja"]:checked')).map(cb => cb.value);
+            text += selectedLojas.length > 0 ? "LOJA: " + selectedLojas.join(', ') + "\n\n" : "LOJA: Nenhuma selecionada\n\n";
 
-            const baixo = [], ruptura = [];
-            document.querySelectorAll('input[type="radio"]:checked').forEach(r => {
-                const prod = r.closest('tr').firstElementChild.textContent.trim();
-                r.value === "baixo" ? baixo.push(prod) : ruptura.push(prod);
+            let baixo = [];
+            let ruptura = [];
+            document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                const row = radio.closest('tr');
+                const produto = row.querySelector('td:first-child').textContent.trim();
+                if (radio.value === "baixo") baixo.push(produto);
+                else if (radio.value === "ruptura") ruptura.push(produto);
             });
 
-            const process = arr => {
-                const res = {sm80g:[],sm15g:[],sm35g:[],sm250g:[],sm500g:[],tubes80g:[],tubes35g:[],tubes40g:[],tubes15g:[],tubes27g:[],tubes240g:[],chicle80g:[],chicle140g:[],chicle230g:[],chicle250g:[],chicle450g:[],mash80g:[],mash250g:[],mash500g:[],bemEstar18g:[],zeroAcucares35g:[],algodaoPipo80g:[],caldas1kg:[],caldaRecheio1_01kg:[],drGoodUnidades:[],roller20g:[]};
-                arr.forEach(p => { const c = categorizeProduct(p); if (c && res[c]) res[c].push(p); });
-                return res;
-            };
+            if (baixo.length > 0) {
+                text += "• OCORRÊNCIA DE Baixo Volume\n\n• Produtos em Baixo Volume\n\n";
+                baixo.forEach(p => text += `- ${p}\n`);
+                text += "\n";
+            }
+            if (ruptura.length > 0) {
+                text += "• OCORRÊNCIA DE Ruptura\n\n• Produtos em Ruptura\n\n";
+                ruptura.forEach(p => text += `- ${p}\n`);
+                text += "\n";
+            }
+            if (baixo.length === 0 && ruptura.length === 0) {
+                text += "• Nenhuma ocorrência marcada\n\n";
+            }
 
-            const add = (tipo, arr) => {
-                const p = process(arr);
-                text += `• OCORRÊNCIA DE ${tipo}\n\n• Produtos em ${tipo}\n\n`;
-                const map = {
-                    sm80g:"CATEGORIA SM+ 80g",sm15g:"CATEGORIA SM+ 15g",sm35g:"CATEGORIA SM+ 35g",sm250g:"CATEGORIA SM+ 250g",sm500g:"CATEGORIA SM+ 500g",
-                    tubes80g:"CATEGORIA TUBES+ 80g",tubes35g:"CATEGORIA TUBES+ 35g",tubes40g:"CATEGORIA TUBES+ 40g",tubes15g:"CATEGORIA TUBES+ 15g",tubes27g:"CATEGORIA TUBES+ 27g",tubes240g:"CATEGORIA TUBES+ 240g",
-                    chicle80g:"CATEGORIA CHICLE+ 80g",chicle140g:"CATEGORIA CHICLE+ 140g",chicle230g:"CATEGORIA CHICLE+ 230g",chicle250g:"CATEGORIA CHICLE+ 250g",chicle450g:"CATEGORIA CHICLE+ 450g",
-                    mash80g:"CATEGORIA MASH+ 80g",mash250g:"CATEGORIA MASH+ 250g",mash500g:"CATEGORIA MASH+ 500g",
-                    bemEstar18g:"CATEGORIA BEMESTAR 18g",zeroAcucares35g:"CATEGORIA ZERO AÇÚCARES 35g",algodaoPipo80g:"CATEGORIA ALGODÃO E PIPÓ 80g",
-                    caldas1kg:"CATEGORIA CALDAS 1kg",caldaRecheio1_01kg:"CATEGORIA CALDA RECHEIO 1.01kg",drGoodUnidades:"CATEGORIA DRGOOD",roller20g:"CATEGORIA ROLLER 20g"
-                };
-                Object.keys(p).forEach(k => { if(p[k].length) { text += map[k] + "\n" + p[k].map(x => `- ${x}`).join('\n') + "\n\n"; } });
-            };
-
-            if (baixo.length) add("Baixo Volume", baixo);
-            if (ruptura.length) add("Ruptura", ruptura);
-            if (!baixo.length && !ruptura.length) text += "• Nenhuma ocorrência selecionada\n\n";
-
-            text += "Data: " + new Date().toLocaleDateString('pt-BR');
-            document.getElementById('output').value = text;
+            const hoje = new Date().toLocaleDateString('pt-BR');
+            text += `Data: ${hoje}`;
+            document.getElementById('communicationText').value = text;
         }
 
         function copyText() {
-            const ta = document.getElementById('output');
-            ta.select();
+            const textarea = document.getElementById('communicationText');
+            textarea.select();
             document.execCommand('copy');
-            alert('Texto copiado!');
+            alert('Texto copiado para a área de transferência!');
         }
 
-        document.addEventListener('change', update);
-        update();
+        document.addEventListener('change', updateText);
+
+        // Inicializa com texto vazio correto
+        updateText();
     </script>
 </body>
 </html>
