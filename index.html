@@ -1,70 +1,35 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Seleção de Promotor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .promotores {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 15px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Promotores</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#f4f4f4;padding:20px}
+h1{text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:15px;max-width:900px;margin:auto}
+.card{background:#fff;padding:20px;border-radius:10px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.card:hover{transform:translateY(-3px)}
+</style>
 </head>
-
 <body>
-  <h1>Selecione o Promotor</h1>
 
-  <div class="promotores" id="listaPromotores"></div>
+<h1>Selecione o Promotor</h1>
+<div class="grid" id="lista"></div>
 
-  <script src="dados.js"></script>
-  <script>
-    const container = document.getElementById("listaPromotores");
-
-    Object.keys(promotores).forEach(nome => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.textContent = nome;
-
-      div.onclick = () => {
-        localStorage.setItem("promotorSelecionado", nome);
-        window.location.href = "promotor.html";
-      };
-
-      container.appendChild(div);
-    });
-  </script>
+<script src="promotores.js"></script>
+<script>
+const lista=document.getElementById("lista");
+Object.keys(promotores).forEach(nome=>{
+  const d=document.createElement("div");
+  d.className="card";
+  d.textContent=nome;
+  d.onclick=()=>{
+    localStorage.setItem("promotor",nome);
+    location.href="promotor.html";
+  };
+  lista.appendChild(d);
+});
+</script>
 </body>
 </html>
