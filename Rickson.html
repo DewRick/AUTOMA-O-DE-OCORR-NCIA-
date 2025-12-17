@@ -225,7 +225,15 @@
         }
 
         document.addEventListener('change', update);
+        // Abre automaticamente as categorias mais usadas
+document.querySelectorAll('.cat-header').forEach(header => {
+    const titulo = header.textContent;
+    if (titulo.includes('SM+ 80G') || titulo.includes('TUBES+ 80G') || titulo.includes('SM+ 35G') || titulo.includes('TUBES+ 35G')) {
+        toggleSec(header.nextElementSibling.id, header);
+    }
+});
         update();
     </script>
 </body>
 </html>
+
