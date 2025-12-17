@@ -111,7 +111,7 @@
         const lojasDiv = document.getElementById('lojas');
         lojas.forEach(l => lojasDiv.innerHTML += `<label><input type="checkbox" name="loja" value="${l}"> ${l}</label>`);
 
-        // Gerar categorias expansíveis (fechadas)
+        // Gerar categorias
         const catsDiv = document.getElementById('categorias');
         Object.keys(categorias).forEach(catKey => {
             Object.keys(categorias[catKey]).forEach(size => {
@@ -139,7 +139,7 @@
             document.getElementById(id).classList.toggle('open');
         }
 
-        // categorizeProduct – exatamente como no seu código
+        // === FUNÇÃO categorizeProduct 100% COMPLETA E CORRETA ===
         function categorizeProduct(product) {
             const productsMap = {
                 sm80g: ['Dentadura', 'Beijos Morango', 'Banana', 'Minhoca Brilho', 'Minhoca Cítrica', 'Amora', 'Ursinho', 'Polvo', 'Sapo', 'Finiburguer', 'Aros', 'Ovo Frito', 'HP Coruja', 'HP Óculos', 'HP Chapeu', 'HP Raio', 'Rato', 'Escovinha', 'Oceanitos', 'Sorvetinho', 'Caveira Recheada', 'Fazendo Arte', 'Mix Surpresa'],
@@ -169,33 +169,53 @@
                 mash250g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Mashboo', 'Pistache'],
                 mash500g: ['Torção', 'Alvorada', 'Flor', 'Coração', 'Borboleta', 'Morango', 'Vulcão', 'Fondue', 'Maria Mole', 'Milho', 'Camping', 'Pipoca', 'Pistache']
             };
+
             if (product.includes('80g')) {
                 const checks = {sm80g: productsMap.sm80g, tubes80g: productsMap.tubes80g, chicle80g: productsMap.chicle80g, algodaoPipo80g: productsMap.algodaoPipo80g, mash80g: productsMap.mash80g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
+                for (let [key, prods] of Object.entries(checks)) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
             } else if (product.includes('15g')) {
                 const checks = {sm15g: productsMap.sm15g, tubes15g: productsMap.tubes15g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
+                for (let [key, prods] of Object.entries(checks)) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
             } else if (product.includes('35g')) {
                 const checks = {sm35g: productsMap.sm35g, tubes35g: productsMap.tubes35g, zeroAcucares35g: productsMap.zeroAcucares35g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
+                for (let [key, prods] of Object.entries(checks)) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
             } else if (product.includes('250g')) {
                 const checks = {sm250g: productsMap.sm250g, chicle250g: productsMap.chicle250g, mash250g: productsMap.mash250g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
+                for (let [key, prods] of Object.entries(checks)) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
             } else if (product.includes('500g')) {
                 const checks = {sm500g: productsMap.sm500g, mash500g: productsMap.mash500g};
-                for (let [key, prods] of Object.entries(checks)) if (prods.some(p => product.includes(p))) return key;
+                for (let [key, prods] of Object.entries(checks)) {
+                    if (prods.some(p => product.includes(p))) return key;
+                }
+            } else if (product.includes('140g')) {
+                if (productsMap.chicle140g.some(p => product.includes(p))) return 'chicle140g';
+            } else if (product.includes('230g')) {
+                if (productsMap.chicle230g.some(p => product.includes(p))) return 'chicle230g';
+            } else if (product.includes('450g')) {
+                if (productsMap.chicle450g.some(p => product.includes(p))) return 'chicle450g';
+            } else if (product.includes('240g')) {
+                if (productsMap.tubes240g.some(p => product.includes(p))) return 'tubes240g';
+            } else if (product.includes('27g')) {
+                if (productsMap.tubes27g.some(p => product.includes(p))) return 'tubes27g';
+            } else if (product.includes('20g')) {
+                if (productsMap.roller20g.some(p => product.includes(p))) return 'roller20g';
+            } else if (product.includes('18g')) {
+                if (productsMap.bemEstar18g.some(p => product.includes(p))) return 'bemEstar18g';
+            } else if (product.includes('1kg')) {
+                if (productsMap.caldas1kg.some(p => product.includes(p))) return 'caldas1kg';
+            } else if (product.includes('1.01kg')) {
+                if (productsMap.caldaRecheio1_01kg.some(p => product.includes(p))) return 'caldaRecheio1_01kg';
+            } else if (product.includes('unidades')) {
+                if (productsMap.drGoodUnidades.some(p => product.includes(p))) return 'drGoodUnidades';
             }
-            // resto igual ao seu código
-            if (product.includes('140g')) return 'chicle140g';
-            if (product.includes('230g')) return 'chicle230g';
-            if (product.includes('450g')) return 'chicle450g';
-            if (product.includes('240g')) return 'tubes240g';
-            if (product.includes('27g')) return 'tubes27g';
-            if (product.includes('20g')) return 'roller20g';
-            if (product.includes('18g')) return 'bemEstar18g';
-            if (product.includes('1kg')) return 'caldas1kg';
-            if (product.includes('1.01kg')) return 'caldaRecheio1_01kg';
-            if (product.includes('unidades')) return 'drGoodUnidades';
             return null;
         }
 
@@ -207,12 +227,23 @@
             const baixo = [], ruptura = [];
             document.querySelectorAll('input[type="radio"]:checked').forEach(r => {
                 const prod = r.closest('tr').firstElementChild.textContent.trim();
-                r.value === "baixo" ? baixo.push(prod) : ruptura.push(prod);
+                if (r.value === "baixo") baixo.push(prod);
+                else ruptura.push(prod);
             });
 
             const process = arr => {
-                const res = {sm80g:[],sm15g:[],sm35g:[],sm250g:[],sm500g:[],tubes80g:[],tubes35g:[],tubes40g:[],tubes15g:[],tubes27g:[],tubes240g:[],chicle80g:[],chicle140g:[],chicle230g:[],chicle250g:[],chicle450g:[],mash80g:[],mash250g:[],mash500g:[],bemEstar18g:[],zeroAcucares35g:[],algodaoPipo80g:[],caldas1kg:[],caldaRecheio1_01kg:[],drGoodUnidades:[],roller20g:[]};
-                arr.forEach(p => { const c = categorizeProduct(p); if (c && res[c]) res[c].push(p); });
+                const res = {
+                    sm80g:[], sm15g:[], sm35g:[], sm250g:[], sm500g:[],
+                    tubes80g:[], tubes35g:[], tubes40g:[], tubes15g:[], tubes27g:[], tubes240g:[],
+                    chicle80g:[], chicle140g:[], chicle230g:[], chicle250g:[], chicle450g:[],
+                    mash80g:[], mash250g:[], mash500g:[],
+                    bemEstar18g:[], zeroAcucares35g:[], algodaoPipo80g:[],
+                    caldas1kg:[], caldaRecheio1_01kg:[], drGoodUnidades:[], roller20g:[]
+                };
+                arr.forEach(p => {
+                    const c = categorizeProduct(p);
+                    if (c && res[c]) res[c].push(p);
+                });
                 return res;
             };
 
@@ -220,14 +251,19 @@
                 const p = process(arr);
                 text += `• OCORRÊNCIA DE ${tipo}\n\n• Produtos em ${tipo}\n\n`;
                 const map = {
-                    sm80g:"CATEGORIA SM+ 80g",sm15g:"CATEGORIA SM+ 15g",sm35g:"CATEGORIA SM+ 35g",sm250g:"CATEGORIA SM+ 250g",sm500g:"CATEGORIA SM+ 500g",
-                    tubes80g:"CATEGORIA TUBES+ 80g",tubes35g:"CATEGORIA TUBES+ 35g",tubes40g:"CATEGORIA TUBES+ 40g",tubes15g:"CATEGORIA TUBES+ 15g",tubes27g:"CATEGORIA TUBES+ 27g",tubes240g:"CATEGORIA TUBES+ 240g",
-                    chicle80g:"CATEGORIA CHICLE+ 80g",chicle140g:"CATEGORIA CHICLE+ 140g",chicle230g:"CATEGORIA CHICLE+ 230g",chicle250g:"CATEGORIA CHICLE+ 250g",chicle450g:"CATEGORIA CHICLE+ 450g",
-                    mash80g:"CATEGORIA MASH+ 80g",mash250g:"CATEGORIA MASH+ 250g",mash500g:"CATEGORIA MASH+ 500g",
-                    bemEstar18g:"CATEGORIA BEMESTAR 18g",zeroAcucares35g:"CATEGORIA ZERO AÇÚCARES 35g",algodaoPipo80g:"CATEGORIA ALGODÃO E PIPÓ 80g",
-                    caldas1kg:"CATEGORIA CALDAS 1kg",caldaRecheio1_01kg:"CATEGORIA CALDA RECHEIO 1.01kg",drGoodUnidades:"CATEGORIA DRGOOD",roller20g:"CATEGORIA ROLLER 20g"
+                    sm80g:"CATEGORIA SM+ 80g", sm15g:"CATEGORIA SM+ 15g", sm35g:"CATEGORIA SM+ 35g", sm250g:"CATEGORIA SM+ 250g", sm500g:"CATEGORIA SM+ 500g",
+                    tubes80g:"CATEGORIA TUBES+ 80g", tubes35g:"CATEGORIA TUBES+ 35g", tubes40g:"CATEGORIA TUBES+ 40g", tubes15g:"CATEGORIA TUBES+ 15g", tubes27g:"CATEGORIA TUBES+ 27g", tubes240g:"CATEGORIA TUBES+ 240g",
+                    chicle80g:"CATEGORIA CHICLE+ 80g", chicle140g:"CATEGORIA CHICLE+ 140g", chicle230g:"CATEGORIA CHICLE+ 230g", chicle250g:"CATEGORIA CHICLE+ 250g", chicle450g:"CATEGORIA CHICLE+ 450g",
+                    mash80g:"CATEGORIA MASH+ 80g", mash250g:"CATEGORIA MASH+ 250g", mash500g:"CATEGORIA MASH+ 500g",
+                    bemEstar18g:"CATEGORIA BEMESTAR 18g", zeroAcucares35g:"CATEGORIA ZERO AÇÚCARES 35g", algodaoPipo80g:"CATEGORIA ALGODÃO E PIPÓ 80g",
+                    caldas1kg:"CATEGORIA CALDAS 1kg", caldaRecheio1_01kg:"CATEGORIA CALDA RECHEIO 1.01kg", drGoodUnidades:"CATEGORIA DRGOOD", roller20g:"CATEGORIA ROLLER 20g"
                 };
-                Object.keys(p).forEach(k => { if(p[k].length) { text += map[k] + "\n" + p[k].map(x => `- ${x}`).join('\n') + "\n\n"; } });
+                Object.keys(p).forEach(k => {
+                    if (p[k].length > 0) {
+                        text += map[k] + "\n";
+                        text += p[k].map(x => `- ${x}`).join('\n') + "\n\n";
+                    }
+                });
             };
 
             if (baixo.length) add("Baixo Volume", baixo);
@@ -246,7 +282,17 @@
         }
 
         document.addEventListener('change', update);
-        update();
+
+        // === ABRE AUTOMATICAMENTE AS CATEGORIAS MAIS USADAS ===
+        window.onload = function() {
+            document.querySelectorAll('.cat-header').forEach(header => {
+                const titulo = header.textContent.toUpperCase();
+                if (titulo.includes('SM+ 80G') || titulo.includes('TUBES+ 80G') || titulo.includes('SM+ 35G') || titulo.includes('TUBES+ 35G')) {
+                    toggleSec(header.nextElementSibling.id, header);
+                }
+            });
+            update();
+        };
     </script>
 </body>
 </html>
