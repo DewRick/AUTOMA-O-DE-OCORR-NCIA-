@@ -4,152 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fini - Ocorrência Barra da Tijuca</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e0f7fa;
-            margin: 0;
-            padding: 15px;
-        }
-        .container {
-            max-width: 420px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.15);
-        }
-        h1 {
-            text-align: center;
-            font-size: 1.4em;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .lojas-title {
-            background-color: #4682b4;
-            color: white;
-            padding: 12px;
-            border-radius: 50%;
-            text-align: center;
-            margin: 30px auto 20px;
-            width: 150px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-        .checkbox-list {
-            margin-bottom: 30px;
-        }
-        .checkbox-list label {
-            display: block;
-            margin: 10px 0;
-            font-size: 0.95em;
-        }
-        /* Categoria expansível */
-        .categoria-header {
-            background-color: #c0c0c0;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1em;
-            padding: 14px;
-            margin: 25px 0 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            user-select: none;
-            position: relative;
-        }
-        .categoria-header::after {
-            content: "▶";
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2em;
-            transition: transform 0.3s;
-        }
-        .categoria-header.open::after {
-            content: "▼";
-        }
-        .categoria-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease;
-        }
-        .categoria-content.open {
-            max-height: 3000px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82em;
-            margin-bottom: 20px;
-        }
-        th {
-            background-color: #d9d9d9;
-            padding: 8px 4px;
-            font-size: 0.9em;
-        }
-        th.status {
-            text-align: center;
-        }
-        td {
-            padding: 10px 4px;
-            border-bottom: 1px solid #eee;
-        }
-        tr:nth-child(even) { background-color: #f8f8f8; }
-        .produto { width: 62%; }
-        .status { text-align: center; width: 19%; }
-        input[type="radio"] {
-            transform: scale(1.5);
-            cursor: pointer;
-        }
-        .text-box {
-            border: 3px solid #ffd700;
-            background-color: #ffffe0;
-            padding: 20px;
-            margin: 40px 0 20px 0;
-            border-radius: 12px;
-        }
-        .text-box h3 {
-            text-align: center;
-            margin: 0 0 15px 0;
-            font-size: 1.1em;
-        }
-        .star {
-            color: #ffd700;
-            font-size: 32px;
-            text-align: center;
-            margin: 15px 0;
-        }
-        .note {
-            font-size: 0.8em;
-            color: #666;
-            text-align: right;
-            margin-top: 15px;
-        }
-        textarea {
-            width: 100%;
-            min-height: 320px;
-            resize: vertical;
-            padding: 12px;
-            box-sizing: border-box;
-            font-family: monospace;
-            font-size: 0.9em;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        .copy-btn {
-            width: 100%;
-            padding: 14px;
-            background-color: #4682b4;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-    </style>
+        <style>
+body{
+font-family:'Segoe UI',sans-serif;
+background:#050505;
+background-image:
+radial-gradient(circle at top,#0000FF 0%,transparent 35%),
+radial-gradient(circle at bottom,#0000FF 0%,transparent 40%);
+margin:0;
+padding:12px;
+color:#fff;
+}
+.container{
+max-width:430px;
+margin:auto;
+background:#111;
+border:1px solid #0000FF;
+border-radius:24px;
+padding:18px;
+box-shadow:0 0 25px #0000FF,0 0 60px #0000FF;
+}
+h1{
+text-align:center;
+font-size:1.6rem;
+color:#fff;
+text-shadow:0 0 10px #0000FF,0 0 20px #0000FF;
+margin-bottom:15px;
+}
+.lojas-title{
+background:linear-gradient(90deg,#0000FF,#0000FF);
+color:#fff;
+padding:14px;
+border-radius:16px;
+text-align:center;
+margin:20px 0;
+width:auto;
+font-weight:700;
+letter-spacing:1px;
+box-shadow:0 0 15px #0000FF;
+}
+.checkbox-list{
+background:#181818;
+padding:15px;
+border-radius:16px;
+margin-bottom:20px;
+border:1px solid #0000FF;
+}
+.checkbox-list label{
+display:block;
+padding:8px;
+border-radius:10px;
+}
+.checkbox-list label:hover{
+background:#0000FF;
+}
+.categoria-header{
+background:#1b1b1b;
+border:1px solid #0000FF;
+color:#fff;
+text-align:center;
+font-weight:bold;
+padding:16px;
+margin:12px 0;
+border-radius:16px;
+cursor:pointer;
+position:relative;
+box-shadow:0 0 10px #0000FF;
+}
+.categoria-header.open{
+background:linear-gradient(90deg,#0000FF,#0000FF);
+box-shadow:0 0 20px #0000FF;
+}
+.categoria-header::after{
+content:"▶";
+position:absolute;
+right:15px;
+top:50%;
+transform:translateY(-50%);
+}
+.categoria-header.open::after{
+content:"▼";
+}
+.categoria-content{
+max-height:0;
+overflow:hidden;
+transition:max-height .4s ease;
+}
+.categoria-content.open{
+max-height:4000px;
+}
+table{
+width:100%;
+border-collapse:separate;
+border-spacing:0 6px;
+font-size:.82em;
+}
+th{
+background:#0000FF;
+color:#fff;
+padding:10px 5px;
+}
+td{
+background:#1a1a1a;
+padding:12px 6px;
+}
+.produto{width:62%;}
+.status{text-align:center;width:19%;}
+input[type=radio],input[type=checkbox]{
+transform:scale(1.5);
+accent-color:#0000FF;
+}
+.text-box{
+background:#141414;
+border:2px solid #0000FF;
+border-radius:20px;
+padding:20px;
+margin-top:30px;
+box-shadow:0 0 25px #0000FF;
+}
+.text-box h3{
+text-align:center;
+color:#0000FF;
+text-shadow:0 0 10px #0000FF;
+}
+.star{
+color:#0000FF;
+font-size:40px;
+text-align:center;
+text-shadow:0 0 15px #0000FF;
+}
+.note{
+color:#bbb;
+text-align:center;
+}
+textarea{
+width:100%;
+min-height:320px;
+background:#0d0d0d;
+color:#fff;
+border:1px solid #0000FF;
+border-radius:14px;
+padding:12px;
+box-sizing:border-box;
+}
+.copy-btn{
+width:100%;
+padding:16px;
+margin-top:15px;
+background:linear-gradient(90deg,#0000FF,#0000FF);
+color:#fff;
+border:none;
+border-radius:14px;
+font-size:1rem;
+font-weight:700;
+box-shadow:0 0 15px #0000FF;
+}
+.copy-btn:active{
+transform:scale(.98);
+}
+</style>
 </head>
 <body>
     <div class="container">
