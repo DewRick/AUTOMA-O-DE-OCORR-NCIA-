@@ -5,66 +5,193 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automação de Ocorrência</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #e0f7fa; }
-        .container { width: 300px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { width: 50px; }
-        .selection { background-color: #4682b4; color: white; padding: 10px; border-radius: 50%; text-align: center; margin: 10px auto; width: 120px; }
-        .arrow { text-align: center; margin: 10px 0; }
-        .arrow::after { content: '↓'; font-size: 24px; }
-        .checkbox-list { margin: 10px 0; }
-        .checkbox-list label { display: block; margin: 5px 0; }
-        .text-box { border: 2px solid rgb(20, 231, 192); padding: 10px; margin-top: 20px; }
-        .note { font-size: 12px; color: #666; text-align: right; }
-        .star { color: rgb(239, 132, 39); font-size: 24px; text-align: center; margin: 10px 0; }
-        textarea { width: 100%; height: 200px; margin-top: 10px; resize: none; }
-        .small-text { font-size: small; }
-        .product-section { margin-top: 20px; }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-        .btn-fundo {
-    background-image: url("image/Logo-Fii.png"); /* caminho da imagem */
-    background-color: cornflowerblue;
-    background-position: center;
-    border: none;
-    padding: 12px 5px;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 20px;
-    width: 135px;
-    height: 90px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  }
-  .btn-group {
-  display: flex;
-  gap: 15px; /* espaço entre os botões */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
 }
 
-    .men{
-        background-color: cyan;
+body{
+    background:#080808;
+    min-height:100vh;
+    color:white;
+    padding:20px;
+    background-image:
+    radial-gradient(circle at top left, rgba(0,255,128,.15), transparent 30%),
+    radial-gradient(circle at top right, rgba(0,153,255,.12), transparent 35%);
+}
+
+.container{
+    width:100%;
+    max-width:480px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    padding:30px 20px;
+    border-radius:28px;
+    background:rgba(15,15,15,.95);
+    border:1px solid rgba(0,255,128,.25);
+    box-shadow:
+    0 0 30px rgba(0,255,128,.08),
+    inset 0 0 30px rgba(0,255,128,.05);
+}
+
+.header img{
+    width:95px;
+    margin-bottom:15px;
+    filter:drop-shadow(0 0 15px #00ff88);
+}
+
+.header h1{
+    font-size:30px;
+    color:#00ff88;
+    text-shadow:0 0 15px #00ff88;
+}
+
+.header p{
+    color:#9b9b9b;
+    margin-top:6px;
+}
+
+.selection-card{
+    margin-top:25px;
+    padding:20px;
+    border-radius:22px;
+    background:#101010;
+    border:1px solid rgba(0,255,128,.18);
+    box-shadow:0 0 20px rgba(0,255,128,.06);
+    text-align:center;
+}
+
+.selection-card h3{
+    color:#00ff88;
+    margin-bottom:8px;
+}
+
+.selection-card span{
+    color:#aaa;
+    font-size:14px;
+}
+
+.text-box{
+    margin-top:20px;
+    padding:20px;
+    border-radius:24px;
+    background:#101010;
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.star{
+    text-align:center;
+    font-size:35px;
+    color:#00ff88;
+    text-shadow:0 0 15px #00ff88;
+    margin-bottom:20px;
+}
+
+.btn-group{
+    display:flex;
+    gap:12px;
+    margin-bottom:12px;
+}
+
+.btn-group a{
+    flex:1;
+    text-decoration:none;
+}
+
+.btn-fundo{
+    width:100%;
+    min-height:95px;
+    border:none;
+    border-radius:22px;
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+    background-size:cover;
+    background-position:center;
+    backdrop-filter:blur(10px);
+}
+
+.btn-fundo:hover{
+    transform:translateY(-3px) scale(1.02);
+}
+
+.btn-fundo:active{
+    transform:scale(.97);
+}
+
+.men{
+    background:
+    linear-gradient(135deg,#009dff,#003cff);
+    box-shadow:
+    0 0 15px rgba(0,153,255,.5),
+    inset 0 0 20px rgba(255,255,255,.08);
+}
+
+.woman{
+    background:
+    linear-gradient(135deg,#ff00d4,#ff4fa7);
+    box-shadow:
+    0 0 15px rgba(255,0,212,.45),
+    inset 0 0 20px rgba(255,255,255,.08);
+}
+
+.admin{
+    width:100%;
+    min-height:110px;
+    margin-top:20px;
+    background:
+    linear-gradient(135deg,#00ff88,#009dff);
+    color:#000;
+    font-size:17px;
+    font-weight:700;
+    box-shadow:
+    0 0 25px rgba(0,255,128,.4),
+    0 0 35px rgba(0,153,255,.3);
+}
+
+.note{
+    margin-top:25px;
+    text-align:center;
+    font-size:12px;
+    color:#8f8f8f;
+    line-height:1.5;
+    border-top:1px solid rgba(255,255,255,.08);
+    padding-top:15px;
+}
+
+@media(max-width:450px){
+
+    .btn-group{
+        flex-direction:column;
     }
-    .woman{
-        background-color: magenta;
-    }
-  .btn-fundo:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-  }
-    </style>
+
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="image/Logo-Fini.png" alt="Fini Logo">
-            <h2>LOGIN PROMOTOR</h2>
-        </div>
+    <div class="header">
+    <img src="image/Logo-Fini.png" alt="Fini Logo">
 
-        <div class="selection">SELECIONE PROMOTOR</div>
-        
-     
+    <h1>FINI RJ</h1>
+
+    <p>Painel de Promotores</p>
+</div>
+
+       <div class="selection-card">
+    <h3>👥 EQUIPE DE CAMPO</h3>
+    <span>Escolha o promotor para acessar o sistema</span>
+</div>
+
+
         <div class="text-box">
             <div class="star">★</div>
             <BR>
@@ -131,20 +258,23 @@
                 </a>
             </div>
              <br>
-             <a  href="Rickson.html">
-                    <button class="btn-fundo , men">Rickson Cilio</button>
-                </a>
+<a href="Rickson.html">
+    <button class="btn-fundo admin">
+        👑 Rickson Cilio<br>
+        Administrador
+    </button>
+</a>
             </div>
              <br>
-           
-            
+
+
             <p class="note">NOTA: Essa aplicação foi criada facilitando a comunicação com nosso time e otimizando nosso tempo nas lojas. -Rickson C.</p>
-           
+
         </div>
-        
+
     </div>
 
-   
+
 </body>
 
 </html>
