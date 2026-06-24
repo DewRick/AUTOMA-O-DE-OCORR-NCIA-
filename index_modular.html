@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fini - Ocorrência Barra da Tijuca</title>
+    
+<style>
+body{
+font-family:'Segoe UI',sans-serif;
+background:#050505;
+background-image:
+radial-gradient(circle at top,#ff00ff33 0%,transparent 35%),
+radial-gradient(circle at bottom,#ff00ff33 0%,transparent 40%);
+margin:0;
+padding:12px;
+color:#fff;
+}
+.container{
+max-width:430px;
+margin:auto;
+background:#111;
+border:1px solid #ff1493;
+border-radius:24px;
+padding:18px;
+box-shadow:0 0 25px #ff149355,0 0 60px #ff149322;
+}
+h1{
+text-align:center;
+font-size:1.6rem;
+color:#fff;
+text-shadow:0 0 10px #ff1493,0 0 20px #ff1493;
+margin-bottom:15px;
+}
+.lojas-title{
+background:linear-gradient(90deg,#ff1493,#ff4fd8);
+color:#fff;
+padding:14px;
+border-radius:16px;
+text-align:center;
+margin:20px 0;
+width:auto;
+font-weight:700;
+letter-spacing:1px;
+box-shadow:0 0 15px #ff1493;
+}
+.checkbox-list{
+background:#181818;
+padding:15px;
+border-radius:16px;
+margin-bottom:20px;
+border:1px solid #ff149344;
+}
+.checkbox-list label{
+display:block;
+padding:8px;
+border-radius:10px;
+}
+.checkbox-list label:hover{
+background:#ff14931a;
+}
+.categoria-header{
+background:#1b1b1b;
+border:1px solid #ff149355;
+color:#fff;
+text-align:center;
+font-weight:bold;
+padding:16px;
+margin:12px 0;
+border-radius:16px;
+cursor:pointer;
+position:relative;
+box-shadow:0 0 10px #ff149322;
+}
+.categoria-header.open{
+background:linear-gradient(90deg,#ff1493,#ff4fd8);
+box-shadow:0 0 20px #ff1493;
+}
+.categoria-header::after{
+content:"▶";
+position:absolute;
+right:15px;
+top:50%;
+transform:translateY(-50%);
+}
+.categoria-header.open::after{
+content:"▼";
+}
+.categoria-content{
+max-height:0;
+overflow:hidden;
+transition:max-height .4s ease;
+}
+.categoria-content.open{
+max-height:4000px;
+}
+table{
+width:100%;
+border-collapse:separate;
+border-spacing:0 6px;
+font-size:.82em;
+}
+th{
+background:#ff1493;
+color:#fff;
+padding:10px 5px;
+}
+td{
+background:#1a1a1a;
+padding:12px 6px;
+}
+.produto{width:62%;}
+.status{text-align:center;width:19%;}
+input[type=radio],input[type=checkbox]{
+transform:scale(1.5);
+accent-color:#ff1493;
+}
+.text-box{
+background:#141414;
+border:2px solid #ff1493;
+border-radius:20px;
+padding:20px;
+margin-top:30px;
+box-shadow:0 0 25px #ff149344;
+}
+.text-box h3{
+text-align:center;
+color:#ff6fd8;
+text-shadow:0 0 10px #ff1493;
+}
+.star{
+color:#ff1493;
+font-size:40px;
+text-align:center;
+text-shadow:0 0 15px #ff1493;
+}
+.note{
+color:#bbb;
+text-align:center;
+}
+textarea{
+width:100%;
+min-height:320px;
+background:#0d0d0d;
+color:#fff;
+border:1px solid #ff1493;
+border-radius:14px;
+padding:12px;
+box-sizing:border-box;
+}
+.copy-btn{
+width:100%;
+padding:16px;
+margin-top:15px;
+background:linear-gradient(90deg,#ff1493,#ff4fd8);
+color:#fff;
+border:none;
+border-radius:14px;
+font-size:1rem;
+font-weight:700;
+box-shadow:0 0 15px #ff1493;
+}
+.copy-btn:active{
+transform:scale(.98);
+}
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>🍬 FINI NEON CONTROL</h1>
+        <div class="lojas-title">Lojas</div>
+        <div class="checkbox-list" id="lojas"></div>
+        <div id="categorias"></div>
+        <div class="text-box">
+            <h3>COPIE E COLE NOS GRUPOS</h3>
+            <div class="star">★</div>
+            <p class="note">Criado para agilizar o dia a dia nas lojas - Rickson C.</p>
+            <textarea id="communicationText" readonly></textarea>
+            <button class="copy-btn" onclick="copyText()">COPIAR TEXTO</button>
+        </div>
+    </div>
+    <script type="module">
+import { lojas, produtos, categoriaNomes } from "./dados.js";
+        
+
+        const categoriaNomes = {
+            sm: "SM+", tubes: "TUBES+", chicle: "CHICLE+", mash: "MASH+",
+            bemEstar: "BEM ESTAR", zeroAcucares: "ZERO AÇÚCARES",
+            algodaoPipo: "ALGODÃO / PIPÓ", caldas: "CALDAS",
+            caldaRecheio: "CALDA RECHEIO", drGood: "DR. GOOD", roller: "ROLLER"
+        };
+
+        // Gerar lojas
+        const lojasDiv = document.getElementById('lojas');
+        lojas.forEach(loja => {
+            lojasDiv.innerHTML += `<label><input type="checkbox" name="loja" value="${loja}"> ${loja}</label>`;
+        });
+
+        // Gerar categorias (todas fechadas)
+        const categoriasDiv = document.getElementById('categorias');
+        Object.keys(produtos).forEach(catKey => {
+            const catNome = categoriaNomes[catKey];
+            Object.keys(produtos[catKey]).forEach(gramatura => {
+                const lista = produtos[catKey][gramatura];
+                if (lista.length === 0) return;
+                const titulo = `${catNome} ${gramatura.toUpperCase()}`;
+                const sectionId = `section-${catKey}-${gramatura.replace('.', '')}`;
+                categoriasDiv.innerHTML += `
+                    <div class="categoria-header" onclick="toggleSection('${sectionId}', this)">${titulo}</div>
+                    <div id="${sectionId}" class="categoria-content">
+                        <table>
+                            <tr>
+                                <th class="produto">Produto</th>
+                                <th class="status">Baixo Volume</th>
+                                <th class="status">Ruptura</th>
+                            </tr>
+                            ${lista.map(prod => {
+                                const id = prod.replace(/[^a-zA-Z0-9]/g, '_');
+                                return `
+                                    <tr>
+                                        <td>${prod}</td>
+                                        <td class="status"><input type="radio" name="${id}" value="baixo"></td>
+                                        <td class="status"><input type="radio" name="${id}" value="ruptura"></td>
+                                    </tr>`;
+                            }).join('')}
+                        </table>
+                    </div>`;
+            });
+        });
+
+        function toggleSection(id, header) {
+            const content = document.getElementById(id);
+            header.classList.toggle('open');
+            content.classList.toggle('open');
+        }
+
+        function updateText() {
+            let text = "COMUNICAÇÃO DE OCORRÊNCIA\n\n";
+            const selectedLojas = Array.from(document.querySelectorAll('input[name="loja"]:checked')).map(cb => cb.value);
+            text += selectedLojas.length > 0 ? "LOJA: " + selectedLojas.join(', ') + "\n\n" : "LOJA: Nenhuma selecionada\n\n";
+
+            let baixo = [];
+            let ruptura = [];
+            document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                const row = radio.closest('tr');
+                const produto = row.querySelector('td:first-child').textContent.trim();
+                if (radio.value === "baixo") baixo.push(produto);
+                else if (radio.value === "ruptura") ruptura.push(produto);
+            });
+
+            if (baixo.length > 0) {
+                text += "• OCORRÊNCIA DE Baixo Volume\n\n• Produtos em Baixo Volume\n\n";
+                baixo.forEach(p => text += `- ${p}\n`);
+                text += "\n";
+            }
+            if (ruptura.length > 0) {
+                text += "• OCORRÊNCIA DE Ruptura\n\n• Produtos em Ruptura\n\n";
+                ruptura.forEach(p => text += `- ${p}\n`);
+                text += "\n";
+            }
+            if (baixo.length === 0 && ruptura.length === 0) {
+                text += "• Nenhuma ocorrência marcada\n\n";
+            }
+
+            const hoje = new Date().toLocaleDateString('pt-BR');
+            text += `Data: ${hoje}`;
+            document.getElementById('communicationText').value = text;
+        }
+
+        function copyText() {
+            const textarea = document.getElementById('communicationText');
+            textarea.select();
+            document.execCommand('copy');
+            alert('Texto copiado para a área de transferência!');
+        }
+
+        document.addEventListener('change', updateText);
+
+        // Inicializa com texto vazio correto
+        updateText();
+    </script>
+</body>
+</html>
+
