@@ -1,14 +1,3 @@
-const lojas = [
-    "Assai Barra da Tijuca",
-    "Caçula Barra Da Tijuca",
-    "100 - Lasa SHC Via Parque RJ",
-    "858 - Lasa SHC Uptown Express",
-    "Lilipe Festas",
-    "Aidan Barra",
-    "Upup Doces e Festas LTDA",
-    "Vivian Festas Barra da Tijuca"
-];
-
 const produtos = {
     sm: {
         "80g": ["Dentadura 80g", "Beijos Morango 80g", "Banana 80g", "Minhoca Brilho 80g", "Minhoca Cítrica 80g", "Amora 80g", "Ursinho 80g", "Polvo 80g", "Sapo 80g", "Finiburguer 80g", "Aros 80g", "Ovo Frito 80g", "HP Coruja 80g", "HP Óculos 80g", "HP Chapeu 80g", "HP Raio 80g", "Rato 80g", "Escovinha 80g", "Oceanitos 80g", "Sorvetinho 80g", "Caveira Recheada 80g", "Fazendo Arte 80g", "Mix Surpresa 80g", "Morango 80g", "Melancia 80g"],
