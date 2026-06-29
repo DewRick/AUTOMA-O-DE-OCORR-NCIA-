@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧶 Meu Crochê</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose:       #f9a8c9;
+    --rose-light: #fde8f2;
+    --rose-deep:  #e879a8;
+    --lilac:      #c4b5e8;
+    --lilac-light:#f0ecfb;
+    --lilac-deep: #9b7dd4;
+    --white:      #ffffff;
+    --gray-50:    #fafafa;
+    --gray-100:   #f3f3f5;
+    --gray-300:   #d1d1d8;
+    --gray-500:   #8e8e9e;
+    --gray-700:   #4a4a5a;
+    --shadow-sm:  0 2px 8px rgba(180,130,190,0.10);
+    --shadow-md:  0 6px 24px rgba(180,130,190,0.16);
+    --shadow-lg:  0 12px 40px rgba(180,130,190,0.22);
+    --radius-sm:  12px;
+    --radius-md:  20px;
+    --radius-lg:  28px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(145deg, #fce8f5 0%, #ede8fb 50%, #fce8f5 100%);
+    min-height: 100vh;
+    color: var(--gray-700);
+    padding-bottom: 60px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%);
+    padding: 28px 20px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: #fff;
+    letter-spacing: -0.5px;
+    position: relative;
+  }
+  header p {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    margin-top: 6px;
+    font-weight: 500;
+    position: relative;
+  }
+  .header-emoji {
+    font-size: 2.6rem;
+    display: block;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  /* ── CONTAINER ── */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* ── SECTION TITLE ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 32px 0 14px;
+  }
+  .section-label .icon-badge {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .badge-rose   { background: var(--rose-light); }
+  .badge-lilac  { background: var(--lilac-light); }
+  .badge-green  { background: #e8f8f0; }
+  .section-label h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--gray-700);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1.5px solid rgba(255,255,255,0.9);
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: var(--shadow-md); }
+
+  /* ── FORM FIELDS ── */
+  .field-group { display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .field input {
+    padding: 14px 16px;
+    border: 2px solid var(--gray-100);
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    background: var(--gray-50);
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .field input:focus {
+    border-color: var(--lilac-deep);
+    background: #fff;
+  }
+  .field input::placeholder { color: var(--gray-300); font-weight: 500; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── HIGHLIGHT RESULT ── */
+  .result-highlight {
+    margin-top: 18px;
+    background: linear-gradient(135deg, var(--lilac-light) 0%, var(--rose-light) 100%);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1.5px solid rgba(196,181,232,0.4);
+  }
+  .result-highlight .res-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--lilac-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .result-highlight .res-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--lilac-deep);
+  }
+  .result-highlight .res-value.empty {
+    color: var(--gray-300);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* ── ADD BUTTON ── */
+  .btn-add {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--rose-deep) 0%, var(--lilac-deep) 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 16px rgba(168,85,247,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.2px;
+  }
+  .btn-add:hover   { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(168,85,247,0.38); }
+  .btn-add:active  { transform: translateY(0); }
+
+  /* ── PROJECT CARDS ── */
+  .projects-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .project-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1.5px solid rgba(255,255,255,0.9);
+    position: relative;
+    animation: slideIn 0.28s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .project-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .project-number {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--rose) 0%, var(--lilac) 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .project-fields { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .project-fields .field input { padding: 12px 14px; font-size: 0.95rem; }
+
+  .btn-delete {
+    width: 34px; height: 34px;
+    background: #fff0f3;
+    border: 1.5px solid #ffd6e0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    color: #e57373;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-delete:hover { background: #ffe0e6; border-color: #e57373; }
+
+  .project-result {
+    background: var(--rose-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1.5px solid rgba(249,168,201,0.35);
+    margin-top: 4px;
+  }
+  .project-result .pr-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--rose-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .project-result .pr-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--rose-deep);
+  }
+  .project-result .pr-value.empty {
+    color: var(--gray-300);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--gray-500);
+  }
+  .empty-state .es-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+  .empty-state p { font-size: 0.9rem; font-weight: 500; }
+
+  /* ── SUMMARY ── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .summary-item {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 18px 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1.5px solid rgba(255,255,255,0.9);
+    text-align: center;
+  }
+  .summary-item .si-icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+  .summary-item .si-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .summary-item .si-value {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--gray-700);
+  }
+  .summary-item.accent-rose   { background: linear-gradient(135deg, var(--rose-light) 0%, #fff 100%); }
+  .summary-item.accent-lilac  { background: linear-gradient(135deg, var(--lilac-light) 0%, #fff 100%); }
+  .summary-item.accent-green  { background: linear-gradient(135deg, #e8f8f0 0%, #fff 100%); }
+  .summary-item.accent-gold   { background: linear-gradient(135deg, #fef9e7 0%, #fff 100%); }
+
+  .accent-rose  .si-value { color: var(--rose-deep); }
+  .accent-lilac .si-value { color: var(--lilac-deep); }
+  .accent-green .si-value { color: #27ae60; }
+  .accent-gold  .si-value { color: #c0913a; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 28px 20px 12px;
+    color: var(--gray-500);
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    header { padding: 22px 16px 30px; }
+    .card, .project-card { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <span class="header-emoji">🧶</span>
+    <h1>Meu Crochê</h1>
+    <p>Controle de linhas e projetos</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ── SEÇÃO 1: MATERIAL ── -->
+  <div class="section-label">
+    <div class="icon-badge badge-lilac">🪡</div>
+    <h2>Material</h2>
+  </div>
+
+  <div class="card">
+    <div class="field-group">
+      <div class="field">
+        <label>Nome da linha</label>
+        <input type="text" id="lineName" placeholder="Ex.: Anne 4/6 Círculo" autocomplete="off">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Peso do novelo (g)</label>
+          <input type="number" id="lineWeight" placeholder="100" min="0" step="any">
+        </div>
+        <div class="field">
+          <label>Valor pago (R$)</label>
+          <input type="number" id="linePrice" placeholder="18,90" min="0" step="any">
+        </div>
+      </div>
+    </div>
+
+    <div class="result-highlight">
+      <div>
+        <div class="res-label">Valor por grama</div>
+        <div class="res-value empty" id="pricePerGram">— preencha os campos</div>
+      </div>
+      <span style="font-size:1.8rem">💎</span>
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 2: PROJETOS ── -->
+  <div class="section-label">
+    <div class="icon-badge badge-rose">🌸</div>
+    <h2>Projetos</h2>
+  </div>
+
+  <button class="btn-add" id="btnAddProject">
+    <span style="font-size:1.3rem">➕</span>
+    Adicionar Projeto
+  </button>
+
+  <div style="height:16px"></div>
+
+  <div class="projects-list" id="projectsList">
+    <div class="empty-state" id="emptyState">
+      <span class="es-icon">🌷</span>
+      <p>Nenhum projeto ainda.<br>Clique no botão acima para começar!</p>
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 3: RESUMO ── -->
+  <div class="section-label">
+    <div class="icon-badge badge-green">📊</div>
+    <h2>Resumo</h2>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-item accent-lilac">
+      <span class="si-icon">⚖️</span>
+      <span class="si-label">Peso inicial</span>
+      <span class="si-value" id="sumInitial">— g</span>
+    </div>
+    <div class="summary-item accent-rose">
+      <span class="si-icon">✂️</span>
+      <span class="si-label">Peso utilizado</span>
+      <span class="si-value" id="sumUsed">0 g</span>
+    </div>
+    <div class="summary-item accent-green">
+      <span class="si-icon">🎀</span>
+      <span class="si-label">Peso restante</span>
+      <span class="si-value" id="sumRemaining">— g</span>
+    </div>
+    <div class="summary-item accent-gold">
+      <span class="si-icon">💰</span>
+      <span class="si-label">Total gasto</span>
+      <span class="si-value" id="sumCost">R$ 0,00</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Feito com 💕 para quem ama crochê
+</footer>
+
+<script>
+  // ── STATE ──
+  let state = {
+    line: { name: '', weight: '', price: '' },
+    projects: []
+  };
+
+  // ── LOAD FROM LOCALSTORAGE ──
+  function loadState() {
+    try {
+      const saved = localStorage.getItem('croche_state');
+      if (saved) state = JSON.parse(saved);
+    } catch(e) {}
+  }
+
+  function saveState() {
+    localStorage.setItem('croche_state', JSON.stringify(state));
+  }
+
+  // ── HELPERS ──
+  function fmt(num) {
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtG(num) {
+    return num % 1 === 0 ? num + ' g' : num.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + ' g';
+  }
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  }
+
+  // ── MATERIAL SECTION ──
+  function initMaterialFields() {
+    document.getElementById('lineName').value   = state.line.name   || '';
+    document.getElementById('lineWeight').value = state.line.weight || '';
+    document.getElementById('linePrice').value  = state.line.price  || '';
+  }
+
+  function getPricePerGram() {
+    const w = parseFloat(state.line.weight);
+    const p = parseFloat(state.line.price);
+    if (w > 0 && p >= 0) return p / w;
+    return null;
+  }
+
+  function updateMaterialResult() {
+    const ppg = getPricePerGram();
+    const el = document.getElementById('pricePerGram');
+    if (ppg !== null) {
+      el.textContent = 'R$ ' + ppg.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 4 }) + ' por grama';
+      el.classList.remove('empty');
+    } else {
+      el.textContent = '— preencha os campos';
+      el.classList.add('empty');
+    }
+  }
+
+  document.getElementById('lineName').addEventListener('input', e => {
+    state.line.name = e.target.value;
+    saveState();
+    updateSummary();
+  });
+  document.getElementById('lineWeight').addEventListener('input', e => {
+    state.line.weight = e.target.value;
+    saveState();
+    updateMaterialResult();
+    renderProjects();
+    updateSummary();
+  });
+  document.getElementById('linePrice').addEventListener('input', e => {
+    state.line.price = e.target.value;
+    saveState();
+    updateMaterialResult();
+    renderProjects();
+    updateSummary();
+  });
+
+  // ── PROJECTS ──
+  document.getElementById('btnAddProject').addEventListener('click', () => {
+    state.projects.push({ id: uid(), name: '', weight: '' });
+    saveState();
+    renderProjects();
+    updateSummary();
+    // scroll to bottom of list
+    setTimeout(() => {
+      const list = document.getElementById('projectsList');
+      const last = list.lastElementChild;
+      if (last && last.id !== 'emptyState') {
+        last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const input = last.querySelector('input');
+        if (input) input.focus();
+      }
+    }, 80);
+  });
+
+  function renderProjects() {
+    const list = document.getElementById('projectsList');
+    const ppg = getPricePerGram();
+
+    // Remove existing project cards (keep emptyState)
+    Array.from(list.querySelectorAll('.project-card')).forEach(c => c.remove());
+
+    const emptyState = document.getElementById('emptyState');
+
+    if (state.projects.length === 0) {
+      emptyState.style.display = '';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    state.projects.forEach((proj, idx) => {
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      card.dataset.id = proj.id;
+
+      const cost = (ppg !== null && proj.weight !== '' && parseFloat(proj.weight) >= 0)
+        ? ppg * parseFloat(proj.weight)
+        : null;
+
+      card.innerHTML = `
+        <div class="project-header">
+          <div class="project-number">${idx + 1}</div>
+          <div class="project-fields">
+            <div class="field">
+              <label>Nome do projeto</label>
+              <input type="text" class="proj-name" placeholder="Ex.: Toalha de mesa" value="${escHtml(proj.name)}" autocomplete="off">
+            </div>
+            <div class="field">
+              <label>Peso utilizado (g)</label>
+              <input type="number" class="proj-weight" placeholder="12" min="0" step="any" value="${escHtml(proj.weight)}">
+            </div>
+          </div>
+          <button class="btn-delete" title="Excluir projeto">🗑️</button>
+        </div>
+        <div class="project-result">
+          <span class="pr-label">Custo da linha</span>
+          <span class="pr-value ${cost === null ? 'empty' : ''}">
+            ${cost !== null ? 'R$ ' + fmt(cost) : '— informe o peso'}
+          </span>
+        </div>
+      `;
+
+      card.querySelector('.proj-name').addEventListener('input', e => {
+        const p = state.projects.find(p => p.id === proj.id);
+        if (p) { p.name = e.target.value; saveState(); }
+      });
+      card.querySelector('.proj-weight').addEventListener('input', e => {
+        const p = state.projects.find(p => p.id === proj.id);
+        if (p) {
+          p.weight = e.target.value;
+          saveState();
+          // update just this card's result
+          const ppg2 = getPricePerGram();
+          const w2 = parseFloat(p.weight);
+          const resEl = card.querySelector('.pr-value');
+          if (ppg2 !== null && p.weight !== '' && w2 >= 0) {
+            resEl.textContent = 'R$ ' + fmt(ppg2 * w2);
+            resEl.classList.remove('empty');
+          } else {
+            resEl.textContent = '— informe o peso';
+            resEl.classList.add('empty');
+          }
+          updateSummary();
+        }
+      });
+      card.querySelector('.btn-delete').addEventListener('click', () => {
+        state.projects = state.projects.filter(p => p.id !== proj.id);
+        saveState();
+        renderProjects();
+        updateSummary();
+      });
+
+      list.appendChild(card);
+    });
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/"/g,'&quot;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;');
+  }
+
+  // ── SUMMARY ──
+  function updateSummary() {
+    const w = parseFloat(state.line.weight) || null;
+    const ppg = getPricePerGram();
+
+    const usedRaw = state.projects.reduce((acc, p) => {
+      const v = parseFloat(p.weight);
+      return acc + (isNaN(v) ? 0 : v);
+    }, 0);
+
+    document.getElementById('sumInitial').textContent   = w !== null ? fmtG(w) : '— g';
+    document.getElementById('sumUsed').textContent      = fmtG(usedRaw);
+    document.getElementById('sumRemaining').textContent = w !== null ? fmtG(Math.max(0, w - usedRaw)) : '— g';
+    document.getElementById('sumCost').textContent      = ppg !== null ? 'R$ ' + fmt(ppg * usedRaw) : 'R$ 0,00';
+  }
+
+  // ── INIT ──
+  loadState();
+  initMaterialFields();
+  updateMaterialResult();
+  renderProjects();
+  updateSummary();
+</script>
+</body>
+</html>
