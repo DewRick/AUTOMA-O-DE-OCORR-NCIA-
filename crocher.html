@@ -5,346 +5,179 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🧶 Meu Crochê</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@600&display=swap');
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#f9a8c9;--rose-light:#fde8f2;--rose-deep:#e879a8;
+  --lilac:#c4b5e8;--lilac-light:#f0ecfb;--lilac-deep:#9b7dd4;
+  --green-light:#e8f8f0;--green:#27ae60;--green-deep:#1e8449;
+  --gold-light:#fef9e7;--gold:#c0913a;
+  --teal-light:#e8f6fb;--teal:#2980b9;
+  --white:#fff;--gray-50:#fafafa;--gray-100:#f3f3f5;
+  --gray-300:#d1d1d8;--gray-500:#8e8e9e;--gray-700:#4a4a5a;
+  --shadow-sm:0 2px 8px rgba(180,130,190,.10);
+  --shadow-md:0 6px 24px rgba(180,130,190,.16);
+  --radius-sm:12px;--radius-md:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(145deg,#fce8f5 0%,#ede8fb 50%,#fce8f5 100%);min-height:100vh;color:var(--gray-700);padding-bottom:80px}
 
-  :root {
-    --rose:       #f9a8c9;
-    --rose-light: #fde8f2;
-    --rose-deep:  #e879a8;
-    --lilac:      #c4b5e8;
-    --lilac-light:#f0ecfb;
-    --lilac-deep: #9b7dd4;
-    --white:      #ffffff;
-    --gray-50:    #fafafa;
-    --gray-100:   #f3f3f5;
-    --gray-300:   #d1d1d8;
-    --gray-500:   #8e8e9e;
-    --gray-700:   #4a4a5a;
-    --shadow-sm:  0 2px 8px rgba(180,130,190,0.10);
-    --shadow-md:  0 6px 24px rgba(180,130,190,0.16);
-    --shadow-lg:  0 12px 40px rgba(180,130,190,0.22);
-    --radius-sm:  12px;
-    --radius-md:  20px;
-    --radius-lg:  28px;
-  }
+/* HEADER */
+header{background:linear-gradient(135deg,#f472b6 0%,#a855f7 100%);padding:24px 20px 32px;text-align:center;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,5vw,2.6rem);color:#fff;position:relative}
+header p{color:rgba(255,255,255,.85);font-size:.9rem;margin-top:4px;font-weight:500;position:relative}
+.header-emoji{font-size:2.4rem;display:block;margin-bottom:4px;position:relative}
 
-  html { scroll-behavior: smooth; }
+/* NAV TABS */
+.nav-tabs{display:flex;gap:0;background:#fff;border-radius:var(--radius-md);margin:16px auto 0;max-width:680px;padding:5px;box-shadow:var(--shadow-sm);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-tab{flex:1;min-width:80px;padding:10px 6px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--gray-500);cursor:pointer;border-radius:var(--radius-sm);transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav-tab .tab-icon{font-size:1.1rem}
+.nav-tab.active{background:linear-gradient(135deg,#f472b6,#a855f7);color:#fff;box-shadow:0 3px 10px rgba(168,85,247,.3)}
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: linear-gradient(145deg, #fce8f5 0%, #ede8fb 50%, #fce8f5 100%);
-    min-height: 100vh;
-    color: var(--gray-700);
-    padding-bottom: 60px;
-  }
+/* CONTAINER */
+.container{max-width:680px;margin:0 auto;padding:0 16px}
+.tab-content{display:none}.tab-content.active{display:block}
 
-  /* ── HEADER ── */
-  header {
-    background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%);
-    padding: 28px 20px 36px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 5vw, 2.8rem);
-    color: #fff;
-    letter-spacing: -0.5px;
-    position: relative;
-  }
-  header p {
-    color: rgba(255,255,255,0.85);
-    font-size: 0.95rem;
-    margin-top: 6px;
-    font-weight: 500;
-    position: relative;
-  }
-  .header-emoji {
-    font-size: 2.6rem;
-    display: block;
-    margin-bottom: 6px;
-    position: relative;
-  }
+/* SECTION LABEL */
+.section-label{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
+.icon-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.badge-rose{background:var(--rose-light)}.badge-lilac{background:var(--lilac-light)}
+.badge-green{background:var(--green-light)}.badge-teal{background:var(--teal-light)}
+.badge-gold{background:var(--gold-light)}
+.section-label h2{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gray-700)}
 
-  /* ── CONTAINER ── */
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0 16px;
-  }
+/* CARD */
+.card{background:#fff;border-radius:var(--radius-md);padding:22px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(255,255,255,.9);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow-md)}
 
-  /* ── SECTION TITLE ── */
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 32px 0 14px;
-  }
-  .section-label .icon-badge {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-  .badge-rose   { background: var(--rose-light); }
-  .badge-lilac  { background: var(--lilac-light); }
-  .badge-green  { background: #e8f8f0; }
-  .section-label h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
-    color: var(--gray-700);
-  }
+/* FIELDS */
+.field-group{display:flex;flex-direction:column;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.78rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.6px}
+.field input,.field select{padding:13px 15px;border:2px solid var(--gray-100);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--gray-700);background:var(--gray-50);transition:border-color .2s,background .2s;outline:none;-webkit-appearance:none;width:100%}
+.field input:focus,.field select:focus{border-color:var(--lilac-deep);background:#fff}
+.field input::placeholder{color:var(--gray-300);font-weight:500}
+.field select{cursor:pointer}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 
-  /* ── CARDS ── */
-  .card {
-    background: var(--white);
-    border-radius: var(--radius-md);
-    padding: 24px;
-    box-shadow: var(--shadow-sm);
-    border: 1.5px solid rgba(255,255,255,0.9);
-    transition: box-shadow 0.2s;
-  }
-  .card:hover { box-shadow: var(--shadow-md); }
+/* BUTTONS */
+.btn-add{width:100%;padding:17px;background:linear-gradient(135deg,var(--rose-deep) 0%,var(--lilac-deep) 100%);color:#fff;border:none;border-radius:var(--radius-md);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 16px rgba(168,85,247,.3);transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.btn-add:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(168,85,247,.38)}
+.btn-add:active{transform:translateY(0)}
+.btn-save{padding:13px 20px;background:linear-gradient(135deg,var(--green) 0%,#2ecc71 100%);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 3px 12px rgba(39,174,96,.3);transition:transform .15s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.btn-save:hover{transform:translateY(-1px)}
+.btn-delete{width:32px;height:32px;background:#fff0f3;border:1.5px solid #ffd6e0;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#e57373;flex-shrink:0;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.btn-delete:hover{background:#ffe0e6;border-color:#e57373}
+.btn-sm{padding:8px 14px;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.btn-sm:hover{opacity:.85}
 
-  /* ── FORM FIELDS ── */
-  .field-group { display: flex; flex-direction: column; gap: 14px; }
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-  }
-  .field input {
-    padding: 14px 16px;
-    border: 2px solid var(--gray-100);
-    border-radius: var(--radius-sm);
-    font-family: 'Nunito', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--gray-700);
-    background: var(--gray-50);
-    transition: border-color 0.2s, background 0.2s;
-    outline: none;
-    -webkit-appearance: none;
-  }
-  .field input:focus {
-    border-color: var(--lilac-deep);
-    background: #fff;
-  }
-  .field input::placeholder { color: var(--gray-300); font-weight: 500; }
+/* RESULT HIGHLIGHT */
+.result-highlight{margin-top:16px;background:linear-gradient(135deg,var(--lilac-light) 0%,var(--rose-light) 100%);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px solid rgba(196,181,232,.4)}
+.res-label{font-size:.78rem;font-weight:700;color:var(--lilac-deep);text-transform:uppercase;letter-spacing:.5px}
+.res-value{font-size:1.25rem;font-weight:800;color:var(--lilac-deep)}
+.res-value.empty{color:var(--gray-300);font-size:.9rem;font-weight:600}
 
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* LIBRARY LIST */
+.lib-list{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.lib-item{background:#fff;border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow-sm);border:1.5px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;gap:10px;animation:slideIn .25s ease}
+.lib-item-info{flex:1;min-width:0}
+.lib-item-name{font-weight:800;font-size:.95rem;color:var(--gray-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lib-item-sub{font-size:.78rem;color:var(--gray-500);font-weight:600;margin-top:2px}
+.lib-item-badge{background:var(--lilac-light);color:var(--lilac-deep);font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.lib-item-badge.green{background:var(--green-light);color:var(--green-deep)}
+.empty-lib{text-align:center;padding:24px 16px;color:var(--gray-300);font-size:.88rem;font-weight:600}
 
-  /* ── HIGHLIGHT RESULT ── */
-  .result-highlight {
-    margin-top: 18px;
-    background: linear-gradient(135deg, var(--lilac-light) 0%, var(--rose-light) 100%);
-    border-radius: var(--radius-sm);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    border: 1.5px solid rgba(196,181,232,0.4);
-  }
-  .result-highlight .res-label {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--lilac-deep);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .result-highlight .res-value {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: var(--lilac-deep);
-  }
-  .result-highlight .res-value.empty {
-    color: var(--gray-300);
-    font-size: 1rem;
-    font-weight: 600;
-  }
+/* PROJECT CARDS */
+.projects-list{display:flex;flex-direction:column;gap:14px}
+.project-card{background:#fff;border-radius:var(--radius-md);padding:20px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(255,255,255,.9);animation:slideIn .28s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.project-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.project-number{width:26px;height:26px;background:linear-gradient(135deg,var(--rose) 0%,var(--lilac) 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#fff;flex-shrink:0;margin-top:2px}
+.project-fields{flex:1;display:flex;flex-direction:column;gap:10px}
+.project-fields .field input,.project-fields .field select{padding:11px 13px;font-size:.9rem}
 
-  /* ── ADD BUTTON ── */
-  .btn-add {
-    width: 100%;
-    padding: 18px;
-    background: linear-gradient(135deg, var(--rose-deep) 0%, var(--lilac-deep) 100%);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-md);
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 4px 16px rgba(168,85,247,0.3);
-    transition: transform 0.15s, box-shadow 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    letter-spacing: 0.2px;
-  }
-  .btn-add:hover   { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(168,85,247,0.38); }
-  .btn-add:active  { transform: translateY(0); }
+/* ACCESSORIES IN PROJECT */
+.acc-in-project{margin-top:10px}
+.acc-in-project-title{font-size:.78rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.acc-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin-bottom:6px}
+.acc-row input,.acc-row select{padding:9px 11px;font-size:.85rem}
+.btn-add-acc{background:var(--lilac-light);color:var(--lilac-deep);border:1.5px solid rgba(196,181,232,.5);padding:8px 12px;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-top:2px}
 
-  /* ── PROJECT CARDS ── */
-  .projects-list { display: flex; flex-direction: column; gap: 14px; }
+/* PRICING BREAKDOWN */
+.pricing-breakdown{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.pb-row{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-radius:var(--radius-sm);background:var(--gray-50);border:1.5px solid var(--gray-100)}
+.pb-label{font-size:.78rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.4px}
+.pb-value{font-size:.95rem;font-weight:800;color:var(--gray-700)}
+.pb-row.pb-reposicao{background:var(--lilac-light);border-color:rgba(196,181,232,.4)}
+.pb-row.pb-reposicao .pb-label,.pb-row.pb-reposicao .pb-value{color:var(--lilac-deep)}
+.pb-row.pb-mao{background:var(--rose-light);border-color:rgba(249,168,201,.35)}
+.pb-row.pb-mao .pb-label,.pb-row.pb-mao .pb-value{color:var(--rose-deep)}
+.pb-row.pb-acc{background:var(--teal-light);border-color:rgba(41,128,185,.2)}
+.pb-row.pb-acc .pb-label,.pb-row.pb-acc .pb-value{color:var(--teal)}
+.pb-row.pb-highlight{background:linear-gradient(135deg,var(--green-light),#f0fdf4);border-color:rgba(39,174,96,.25)}
+.pb-row.pb-highlight .pb-label{color:var(--green);font-size:.82rem}
+.pb-row.pb-highlight .pb-value{color:var(--green-deep);font-size:1.1rem}
+.pb-divider{height:1.5px;background:var(--gray-100);border-radius:2px;margin:2px 0}
+.pb-empty{text-align:center;font-size:.82rem;color:var(--gray-300);font-weight:600;padding:8px}
 
-  .project-card {
-    background: var(--white);
-    border-radius: var(--radius-md);
-    padding: 20px;
-    box-shadow: var(--shadow-sm);
-    border: 1.5px solid rgba(255,255,255,0.9);
-    position: relative;
-    animation: slideIn 0.28s ease;
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+/* MARGIN FIELD */
+.margin-row{display:flex;align-items:center;gap:8px;background:var(--gold-light);border:1.5px solid rgba(192,145,58,.2);border-radius:var(--radius-sm);padding:10px 14px;margin-top:10px}
+.margin-row label{font-size:.78rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.margin-row input{padding:7px 10px;border:1.5px solid rgba(192,145,58,.3);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;color:var(--gold);background:#fff;outline:none;width:70px;text-align:center}
+.margin-row input:focus{border-color:var(--gold)}
+.margin-row .margin-hint{font-size:.75rem;color:var(--gold);font-weight:600;opacity:.8}
 
-  .project-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .project-number {
-    width: 28px; height: 28px;
-    background: linear-gradient(135deg, var(--rose) 0%, var(--lilac) 100%);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: #fff;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-  .project-fields { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-  .project-fields .field input { padding: 12px 14px; font-size: 0.95rem; }
+/* SUMMARY GRID */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.summary-item{background:#fff;border-radius:var(--radius-sm);padding:16px 14px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(255,255,255,.9);text-align:center}
+.si-icon{font-size:1.4rem;display:block;margin-bottom:5px}
+.si-label{font-size:.72rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
+.si-value{font-size:1.1rem;font-weight:800;color:var(--gray-700)}
+.summary-item.accent-rose{background:linear-gradient(135deg,var(--rose-light),#fff)}.accent-rose .si-value{color:var(--rose-deep)}
+.summary-item.accent-lilac{background:linear-gradient(135deg,var(--lilac-light),#fff)}.accent-lilac .si-value{color:var(--lilac-deep)}
+.summary-item.accent-green{background:linear-gradient(135deg,var(--green-light),#fff)}.accent-green .si-value{color:var(--green)}
+.summary-item.accent-gold{background:linear-gradient(135deg,var(--gold-light),#fff)}.accent-gold .si-value{color:var(--gold)}
 
-  .btn-delete {
-    width: 34px; height: 34px;
-    background: #fff0f3;
-    border: 1.5px solid #ffd6e0;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
-    color: #e57373;
-    flex-shrink: 0;
-    transition: background 0.15s, border-color 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .btn-delete:hover { background: #ffe0e6; border-color: #e57373; }
+/* PROMO SECTION */
+.promo-card{background:#fff;border-radius:var(--radius-md);padding:22px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(255,255,255,.9)}
+.promo-result{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.promo-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:var(--radius-sm);background:var(--gray-50);border:1.5px solid var(--gray-100)}
+.promo-row .pr-l{font-size:.78rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.4px}
+.promo-row .pr-v{font-size:.98rem;font-weight:800;color:var(--gray-700)}
+.promo-row.promo-final{background:linear-gradient(135deg,#fff8e7,#fff);border-color:rgba(192,145,58,.3)}
+.promo-row.promo-final .pr-l{color:var(--gold)}
+.promo-row.promo-final .pr-v{color:var(--gold);font-size:1.15rem}
+.promo-row.promo-saving{background:var(--green-light);border-color:rgba(39,174,96,.25)}
+.promo-row.promo-saving .pr-l{color:var(--green)}
+.promo-row.promo-saving .pr-v{color:var(--green-deep)}
+.discount-slider-wrap{margin-top:14px;background:var(--rose-light);border:1.5px solid rgba(249,168,201,.35);border-radius:var(--radius-sm);padding:14px 16px}
+.discount-slider-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.discount-slider-label span{font-size:.78rem;font-weight:700;color:var(--rose-deep);text-transform:uppercase;letter-spacing:.4px}
+.discount-slider-label strong{font-size:1.1rem;font-weight:800;color:var(--rose-deep)}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:4px;background:linear-gradient(135deg,var(--rose-deep),var(--lilac-deep));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--rose-deep);box-shadow:0 2px 6px rgba(232,121,168,.4);cursor:pointer}
+.discount-warn{font-size:.78rem;color:var(--rose-deep);font-weight:700;margin-top:6px;display:none}
 
-  .project-result {
-    background: var(--rose-light);
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1.5px solid rgba(249,168,201,0.35);
-    margin-top: 4px;
-  }
-  .project-result .pr-label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--rose-deep);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .project-result .pr-value {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: var(--rose-deep);
-  }
-  .project-result .pr-value.empty {
-    color: var(--gray-300);
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gray-700);color:#fff;padding:12px 22px;border-radius:30px;font-size:.88rem;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .3s ease;z-index:999;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
 
-  .empty-state {
-    text-align: center;
-    padding: 32px 20px;
-    color: var(--gray-500);
-  }
-  .empty-state .es-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
-  .empty-state p { font-size: 0.9rem; font-weight: 500; }
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:28px 16px;color:var(--gray-500)}
+.es-icon{font-size:2.2rem;display:block;margin-bottom:8px}
+.empty-state p{font-size:.88rem;font-weight:500}
 
-  /* ── SUMMARY ── */
-  .summary-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .summary-item {
-    background: var(--white);
-    border-radius: var(--radius-sm);
-    padding: 18px 16px;
-    box-shadow: var(--shadow-sm);
-    border: 1.5px solid rgba(255,255,255,0.9);
-    text-align: center;
-  }
-  .summary-item .si-icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
-  .summary-item .si-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: block;
-    margin-bottom: 6px;
-  }
-  .summary-item .si-value {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: var(--gray-700);
-  }
-  .summary-item.accent-rose   { background: linear-gradient(135deg, var(--rose-light) 0%, #fff 100%); }
-  .summary-item.accent-lilac  { background: linear-gradient(135deg, var(--lilac-light) 0%, #fff 100%); }
-  .summary-item.accent-green  { background: linear-gradient(135deg, #e8f8f0 0%, #fff 100%); }
-  .summary-item.accent-gold   { background: linear-gradient(135deg, #fef9e7 0%, #fff 100%); }
+footer{text-align:center;padding:24px 20px 10px;color:var(--gray-500);font-size:.78rem;font-weight:500}
 
-  .accent-rose  .si-value { color: var(--rose-deep); }
-  .accent-lilac .si-value { color: var(--lilac-deep); }
-  .accent-green .si-value { color: #27ae60; }
-  .accent-gold  .si-value { color: #c0913a; }
-
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 28px 20px 12px;
-    color: var(--gray-500);
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 480px) {
-    .field-row { grid-template-columns: 1fr; }
-    .summary-grid { grid-template-columns: 1fr 1fr; }
-    header { padding: 22px 16px 30px; }
-    .card, .project-card { padding: 18px 16px; }
-  }
+@media(max-width:480px){
+  .field-row,.field-row-3{grid-template-columns:1fr}
+  .summary-grid{grid-template-columns:1fr 1fr}
+  .nav-tab{font-size:.72rem;padding:9px 4px}
+  .acc-row{grid-template-columns:1fr auto auto}
+}
 </style>
 </head>
 <body>
@@ -353,305 +186,673 @@
   <div class="container">
     <span class="header-emoji">🧶</span>
     <h1>Meu Crochê</h1>
-    <p>Controle de linhas e projetos</p>
+    <p>Controle de linhas, projetos e preços</p>
   </div>
+  <nav class="container">
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="tab-linhas"><span class="tab-icon">🪡</span>Linhas</button>
+      <button class="nav-tab" data-tab="tab-acessorios"><span class="tab-icon">🪢</span>Acessórios</button>
+      <button class="nav-tab" data-tab="tab-projetos"><span class="tab-icon">🌸</span>Projetos</button>
+      <button class="nav-tab" data-tab="tab-resumo"><span class="tab-icon">📊</span>Resumo</button>
+      <button class="nav-tab" data-tab="tab-promo"><span class="tab-icon">🎀</span>Promoção</button>
+    </div>
+  </nav>
 </header>
 
 <div class="container">
 
-  <!-- ── SEÇÃO 1: MATERIAL ── -->
-  <div class="section-label">
-    <div class="icon-badge badge-lilac">🪡</div>
-    <h2>Material</h2>
-  </div>
-
-  <div class="card">
-    <div class="field-group">
-      <div class="field">
-        <label>Nome da linha</label>
-        <input type="text" id="lineName" placeholder="Ex.: Anne 4/6 Círculo" autocomplete="off">
-      </div>
-      <div class="field-row">
+  <!-- ══ ABA: LINHAS ══ -->
+  <div class="tab-content active" id="tab-linhas">
+    <div class="section-label">
+      <div class="icon-badge badge-lilac">🪡</div>
+      <h2>Cadastrar Linha</h2>
+    </div>
+    <div class="card">
+      <div class="field-group">
         <div class="field">
-          <label>Peso do novelo (g)</label>
-          <input type="number" id="lineWeight" placeholder="100" min="0" step="any">
+          <label>Nome da linha</label>
+          <input type="text" id="newLineName" placeholder="Ex.: Anne 4/6 Círculo" autocomplete="off">
         </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Peso do cone (g)</label>
+            <input type="number" id="newLineWeight" placeholder="500" min="0" step="any">
+          </div>
+          <div class="field">
+            <label>Valor pago (R$)</label>
+            <input type="number" id="newLinePrice" placeholder="17,00" min="0" step="any">
+          </div>
+        </div>
+      </div>
+      <div class="result-highlight" style="margin-top:14px">
+        <div>
+          <div class="res-label">Valor por grama</div>
+          <div class="res-value empty" id="newLinePPG">— preencha os campos</div>
+        </div>
+        <span style="font-size:1.6rem">💎</span>
+      </div>
+      <button class="btn-save" id="btnSaveLine" style="width:100%;margin-top:14px">
+        ✅ Salvar linha na biblioteca
+      </button>
+    </div>
+
+    <div class="section-label">
+      <div class="icon-badge badge-rose">📚</div>
+      <h2>Biblioteca de Linhas</h2>
+    </div>
+    <div class="lib-list" id="linesList">
+      <div class="empty-lib">Nenhuma linha cadastrada ainda 🌷</div>
+    </div>
+  </div>
+
+  <!-- ══ ABA: ACESSÓRIOS ══ -->
+  <div class="tab-content" id="tab-acessorios">
+    <div class="section-label">
+      <div class="icon-badge badge-teal">🪢</div>
+      <h2>Cadastrar Acessório</h2>
+    </div>
+    <div class="card">
+      <div class="field-group">
         <div class="field">
-          <label>Valor pago (R$)</label>
-          <input type="number" id="linePrice" placeholder="18,90" min="0" step="any">
+          <label>Nome do acessório</label>
+          <input type="text" id="newAccName" placeholder="Ex.: Botão de pressão, Zíper 20cm" autocomplete="off">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Valor unitário (R$)</label>
+            <input type="number" id="newAccPrice" placeholder="0,50" min="0" step="any">
+          </div>
+          <div class="field">
+            <label>Unidade</label>
+            <input type="text" id="newAccUnit" placeholder="unid, par, metro..." autocomplete="off">
+          </div>
         </div>
       </div>
+      <button class="btn-save" id="btnSaveAcc" style="width:100%;margin-top:14px">
+        ✅ Salvar acessório na biblioteca
+      </button>
     </div>
 
-    <div class="result-highlight">
-      <div>
-        <div class="res-label">Valor por grama</div>
-        <div class="res-value empty" id="pricePerGram">— preencha os campos</div>
+    <div class="section-label">
+      <div class="icon-badge badge-green">📦</div>
+      <h2>Biblioteca de Acessórios</h2>
+    </div>
+    <div class="lib-list" id="accsList">
+      <div class="empty-lib">Nenhum acessório cadastrado ainda 🌷</div>
+    </div>
+  </div>
+
+  <!-- ══ ABA: PROJETOS ══ -->
+  <div class="tab-content" id="tab-projetos">
+    <div class="section-label">
+      <div class="icon-badge badge-rose">🌸</div>
+      <h2>Projetos</h2>
+    </div>
+    <button class="btn-add" id="btnAddProject">
+      <span style="font-size:1.2rem">➕</span> Adicionar Projeto
+    </button>
+    <div style="height:14px"></div>
+    <div class="projects-list" id="projectsList">
+      <div class="empty-state" id="emptyState">
+        <span class="es-icon">🌷</span>
+        <p>Nenhum projeto ainda.<br>Clique no botão acima para começar!</p>
       </div>
-      <span style="font-size:1.8rem">💎</span>
     </div>
   </div>
 
-  <!-- ── SEÇÃO 2: PROJETOS ── -->
-  <div class="section-label">
-    <div class="icon-badge badge-rose">🌸</div>
-    <h2>Projetos</h2>
-  </div>
+  <!-- ══ ABA: RESUMO ══ -->
+  <div class="tab-content" id="tab-resumo">
+    <div class="section-label">
+      <div class="icon-badge badge-green">📊</div>
+      <h2>Resumo Geral</h2>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-item accent-lilac">
+        <span class="si-icon">📦</span>
+        <span class="si-label">Projetos</span>
+        <span class="si-value" id="sumProjects">0</span>
+      </div>
+      <div class="summary-item accent-rose">
+        <span class="si-icon">✂️</span>
+        <span class="si-label">Peso utilizado</span>
+        <span class="si-value" id="sumUsed">0 g</span>
+      </div>
+      <div class="summary-item accent-green">
+        <span class="si-icon">💰</span>
+        <span class="si-label">Custo total material</span>
+        <span class="si-value" id="sumCost">R$ 0,00</span>
+      </div>
+      <div class="summary-item accent-gold">
+        <span class="si-icon">🏷️</span>
+        <span class="si-label">Preço sugerido total</span>
+        <span class="si-value" id="sumSell">R$ 0,00</span>
+      </div>
+    </div>
 
-  <button class="btn-add" id="btnAddProject">
-    <span style="font-size:1.3rem">➕</span>
-    Adicionar Projeto
-  </button>
-
-  <div style="height:16px"></div>
-
-  <div class="projects-list" id="projectsList">
-    <div class="empty-state" id="emptyState">
-      <span class="es-icon">🌷</span>
-      <p>Nenhum projeto ainda.<br>Clique no botão acima para começar!</p>
+    <div class="section-label" style="margin-top:24px">
+      <div class="icon-badge badge-lilac">🪡</div>
+      <h2>Linhas cadastradas</h2>
+    </div>
+    <div class="lib-list" id="resumoLines">
+      <div class="empty-lib">Nenhuma linha cadastrada</div>
     </div>
   </div>
 
-  <!-- ── SEÇÃO 3: RESUMO ── -->
-  <div class="section-label">
-    <div class="icon-badge badge-green">📊</div>
-    <h2>Resumo</h2>
+  <!-- ══ ABA: PROMOÇÃO ══ -->
+  <div class="tab-content" id="tab-promo">
+    <div class="section-label">
+      <div class="icon-badge badge-gold">🎀</div>
+      <h2>Simulador de Promoção</h2>
+    </div>
+    <div class="promo-card">
+      <div class="field-group">
+        <div class="field">
+          <label>Peça / Projeto</label>
+          <select id="promoProject">
+            <option value="">— escolha um projeto salvo ou digite abaixo —</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Preço unitário (R$)</label>
+            <input type="number" id="promoUnit" placeholder="20,00" min="0" step="any">
+          </div>
+          <div class="field">
+            <label>Quantidade</label>
+            <input type="number" id="promoQty" placeholder="6" min="1" step="1" value="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="discount-slider-wrap">
+        <div class="discount-slider-label">
+          <span>Desconto</span>
+          <strong id="discountLabel">10%</strong>
+        </div>
+        <input type="range" id="discountSlider" min="0" max="50" value="10" step="1">
+        <div class="discount-warn" id="discountWarn">⚠️ Desconto acima de 20% pode não cobrir seus custos!</div>
+      </div>
+
+      <div class="promo-result" id="promoResult">
+        <div class="pb-empty">— preencha os campos acima</div>
+      </div>
+    </div>
   </div>
 
-  <div class="summary-grid">
-    <div class="summary-item accent-lilac">
-      <span class="si-icon">⚖️</span>
-      <span class="si-label">Peso inicial</span>
-      <span class="si-value" id="sumInitial">— g</span>
-    </div>
-    <div class="summary-item accent-rose">
-      <span class="si-icon">✂️</span>
-      <span class="si-label">Peso utilizado</span>
-      <span class="si-value" id="sumUsed">0 g</span>
-    </div>
-    <div class="summary-item accent-green">
-      <span class="si-icon">🎀</span>
-      <span class="si-label">Peso restante</span>
-      <span class="si-value" id="sumRemaining">— g</span>
-    </div>
-    <div class="summary-item accent-gold">
-      <span class="si-icon">💰</span>
-      <span class="si-label">Total gasto</span>
-      <span class="si-value" id="sumCost">R$ 0,00</span>
-    </div>
-  </div>
+</div><!-- /container -->
 
-</div>
-
-<footer>
-  Feito com 💕 para quem ama crochê
-</footer>
+<div class="toast" id="toast"></div>
+<footer>Feito com 💕 para quem ama crochê</footer>
 
 <script>
-  // ── STATE ──
-  let state = {
-    line: { name: '', weight: '', price: '' },
-    projects: []
-  };
+const LABOR_RATE = 14.00;
 
-  // ── LOAD FROM LOCALSTORAGE ──
-  function loadState() {
-    try {
-      const saved = localStorage.getItem('croche_state');
-      if (saved) state = JSON.parse(saved);
-    } catch(e) {}
+// ── STATE ──
+let state = {
+  lines: [],      // biblioteca de linhas
+  accs: [],       // biblioteca de acessórios
+  projects: []    // projetos
+};
+
+// ── LOCALSTORAGE ──
+function loadState() {
+  try {
+    const s = localStorage.getItem('croche_v2');
+    if (s) state = JSON.parse(s);
+    // garantir arrays existam (migração de versão antiga)
+    if (!state.lines)    state.lines    = [];
+    if (!state.accs)     state.accs     = [];
+    if (!state.projects) state.projects = [];
+  } catch(e) {}
+}
+function saveState() {
+  localStorage.setItem('croche_v2', JSON.stringify(state));
+}
+
+// ── HELPERS ──
+function fmt(n) { return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtG(n) { return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:2})+' g'; }
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function parseTime(raw) {
+  if (!raw||raw.trim()==='') return null;
+  const s = raw.trim().toLowerCase().replace(/minutos?/g,'min').replace(/horas?/g,'h');
+  let m;
+  m = s.match(/^(\d+):(\d+)$/); if(m) return +m[1]+(+m[2]/60);
+  m = s.match(/^(\d+)h\s*(\d+)?/); if(m) return +m[1]+(m[2]?+m[2]/60:0);
+  m = s.match(/^(\d+(?:[.,]\d+)?)\s*min?$/); if(m) return parseFloat(m[1].replace(',','.'))/60;
+  m = s.match(/^(\d+(?:[.,]\d+)?)$/); if(m){const v=parseFloat(m[1].replace(',','.'));return v<=300?v/60:v;}
+  return null;
+}
+
+// ══════════════════════════════════════
+// ABA: LINHAS
+// ══════════════════════════════════════
+function calcPPG(weight, price) {
+  const w = parseFloat(weight), p = parseFloat(price);
+  return (w>0 && p>=0) ? p/w : null;
+}
+
+function updateNewLinePPG() {
+  const ppg = calcPPG(document.getElementById('newLineWeight').value, document.getElementById('newLinePrice').value);
+  const el = document.getElementById('newLinePPG');
+  if (ppg!==null) {
+    el.textContent = 'R$ '+ppg.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:4})+' por grama';
+    el.classList.remove('empty');
+  } else {
+    el.textContent = '— preencha os campos';
+    el.classList.add('empty');
   }
+}
 
-  function saveState() {
-    localStorage.setItem('croche_state', JSON.stringify(state));
+document.getElementById('newLineWeight').addEventListener('input', updateNewLinePPG);
+document.getElementById('newLinePrice').addEventListener('input', updateNewLinePPG);
+
+document.getElementById('btnSaveLine').addEventListener('click', () => {
+  const name   = document.getElementById('newLineName').value.trim();
+  const weight = document.getElementById('newLineWeight').value;
+  const price  = document.getElementById('newLinePrice').value;
+  if (!name||!weight||!price) { showToast('⚠️ Preencha todos os campos da linha'); return; }
+  state.lines.push({ id:uid(), name, weight, price });
+  saveState();
+  document.getElementById('newLineName').value='';
+  document.getElementById('newLineWeight').value='';
+  document.getElementById('newLinePrice').value='';
+  updateNewLinePPG();
+  renderLines();
+  renderPromoProjects();
+  showToast('✅ Linha salva na biblioteca!');
+});
+
+function renderLines() {
+  const el = document.getElementById('linesList');
+  const el2 = document.getElementById('resumoLines');
+  if (state.lines.length===0) {
+    el.innerHTML='<div class="empty-lib">Nenhuma linha cadastrada ainda 🌷</div>';
+    el2.innerHTML='<div class="empty-lib">Nenhuma linha cadastrada</div>';
+    return;
   }
+  const html = state.lines.map(l => {
+    const ppg = calcPPG(l.weight, l.price);
+    return `<div class="lib-item">
+      <div class="lib-item-info">
+        <div class="lib-item-name">🪡 ${escHtml(l.name)}</div>
+        <div class="lib-item-sub">${escHtml(l.weight)}g &nbsp;·&nbsp; R$ ${fmt(parseFloat(l.price))}</div>
+      </div>
+      <span class="lib-item-badge">${ppg!==null?'R$ '+ppg.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})+'/g':'—'}</span>
+      <button class="btn-delete" onclick="deleteLine('${l.id}')">🗑️</button>
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
+  el2.innerHTML=html;
+}
 
-  // ── HELPERS ──
-  function fmt(num) {
-    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function deleteLine(id) {
+  state.lines = state.lines.filter(l=>l.id!==id);
+  saveState(); renderLines(); renderProjects(); renderPromoProjects();
+  showToast('🗑️ Linha removida');
+}
+
+// ══════════════════════════════════════
+// ABA: ACESSÓRIOS
+// ══════════════════════════════════════
+document.getElementById('btnSaveAcc').addEventListener('click', () => {
+  const name  = document.getElementById('newAccName').value.trim();
+  const price = document.getElementById('newAccPrice').value;
+  const unit  = document.getElementById('newAccUnit').value.trim() || 'unid';
+  if (!name||!price) { showToast('⚠️ Preencha nome e valor do acessório'); return; }
+  state.accs.push({ id:uid(), name, price, unit });
+  saveState();
+  document.getElementById('newAccName').value='';
+  document.getElementById('newAccPrice').value='';
+  document.getElementById('newAccUnit').value='';
+  renderAccs();
+  showToast('✅ Acessório salvo na biblioteca!');
+});
+
+function renderAccs() {
+  const el = document.getElementById('accsList');
+  if (state.accs.length===0) {
+    el.innerHTML='<div class="empty-lib">Nenhum acessório cadastrado ainda 🌷</div>';
+    return;
   }
-  function fmtG(num) {
-    return num % 1 === 0 ? num + ' g' : num.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + ' g';
-  }
-  function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-  }
+  el.innerHTML = state.accs.map(a => `
+    <div class="lib-item">
+      <div class="lib-item-info">
+        <div class="lib-item-name">🪢 ${escHtml(a.name)}</div>
+        <div class="lib-item-sub">R$ ${fmt(parseFloat(a.price))} / ${escHtml(a.unit)}</div>
+      </div>
+      <span class="lib-item-badge green">R$ ${fmt(parseFloat(a.price))}</span>
+      <button class="btn-delete" onclick="deleteAcc('${a.id}')">🗑️</button>
+    </div>
+  `).join('');
+}
 
-  // ── MATERIAL SECTION ──
-  function initMaterialFields() {
-    document.getElementById('lineName').value   = state.line.name   || '';
-    document.getElementById('lineWeight').value = state.line.weight || '';
-    document.getElementById('linePrice').value  = state.line.price  || '';
-  }
+function deleteAcc(id) {
+  state.accs = state.accs.filter(a=>a.id!==id);
+  // remove do projetos também
+  state.projects.forEach(p => { p.accs = (p.accs||[]).filter(a=>a.accId!==id); });
+  saveState(); renderAccs(); renderProjects();
+  showToast('🗑️ Acessório removido');
+}
 
-  function getPricePerGram() {
-    const w = parseFloat(state.line.weight);
-    const p = parseFloat(state.line.price);
-    if (w > 0 && p >= 0) return p / w;
-    return null;
-  }
+// ══════════════════════════════════════
+// ABA: PROJETOS
+// ══════════════════════════════════════
+function calcPricing(proj) {
+  const line = state.lines.find(l=>l.id===proj.lineId);
+  if (!line) return null;
 
-  function updateMaterialResult() {
-    const ppg = getPricePerGram();
-    const el = document.getElementById('pricePerGram');
-    if (ppg !== null) {
-      el.textContent = 'R$ ' + ppg.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 4 }) + ' por grama';
-      el.classList.remove('empty');
-    } else {
-      el.textContent = '— preencha os campos';
-      el.classList.add('empty');
-    }
-  }
+  const coneW  = parseFloat(line.weight);
+  const coneP  = parseFloat(line.price);
+  const pieceW = parseFloat(proj.weight);
+  if (!(coneW>0)||!(coneP>=0)||!(pieceW>0)) return null;
 
-  document.getElementById('lineName').addEventListener('input', e => {
-    state.line.name = e.target.value;
-    saveState();
-    updateSummary();
-  });
-  document.getElementById('lineWeight').addEventListener('input', e => {
-    state.line.weight = e.target.value;
-    saveState();
-    updateMaterialResult();
-    renderProjects();
-    updateSummary();
-  });
-  document.getElementById('linePrice').addEventListener('input', e => {
-    state.line.price = e.target.value;
-    saveState();
-    updateMaterialResult();
-    renderProjects();
-    updateSummary();
-  });
+  const pecas        = coneW/pieceW;
+  const custoMat     = coneP/pecas;
+  const reposicao    = custoMat*2;
 
-  // ── PROJECTS ──
-  document.getElementById('btnAddProject').addEventListener('click', () => {
-    state.projects.push({ id: uid(), name: '', weight: '' });
-    saveState();
-    renderProjects();
-    updateSummary();
-    // scroll to bottom of list
-    setTimeout(() => {
-      const list = document.getElementById('projectsList');
-      const last = list.lastElementChild;
-      if (last && last.id !== 'emptyState') {
-        last.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        const input = last.querySelector('input');
-        if (input) input.focus();
-      }
-    }, 80);
-  });
+  const hours     = parseTime(proj.time);
+  const maoDeObra = hours!==null ? hours*LABOR_RATE : null;
 
-  function renderProjects() {
-    const list = document.getElementById('projectsList');
-    const ppg = getPricePerGram();
+  // acessórios
+  const accsCost = (proj.accs||[]).reduce((sum,a)=>{
+    const libAcc = state.accs.find(x=>x.id===a.accId);
+    if (!libAcc) return sum;
+    return sum + parseFloat(libAcc.price)*(parseFloat(a.qty)||0);
+  },0);
 
-    // Remove existing project cards (keep emptyState)
-    Array.from(list.querySelectorAll('.project-card')).forEach(c => c.remove());
+  const margin = parseFloat(proj.margin)||30;
+  const baseTotal = reposicao + (maoDeObra||0) + accsCost;
+  const precoFinal = maoDeObra!==null ? baseTotal*(1+margin/100) : null;
 
-    const emptyState = document.getElementById('emptyState');
+  return { pecas, custoMat, reposicao, maoDeObra, accsCost, baseTotal, precoFinal, margin };
+}
 
-    if (state.projects.length === 0) {
-      emptyState.style.display = '';
-      return;
-    }
-    emptyState.style.display = 'none';
+document.getElementById('btnAddProject').addEventListener('click', () => {
+  state.projects.push({ id:uid(), name:'', lineId:'', weight:'', time:'', margin:'30', accs:[] });
+  saveState(); renderProjects(); renderPromoProjects();
+  setTimeout(()=>{
+    const list=document.getElementById('projectsList');
+    const last=list.lastElementChild;
+    if(last&&last.id!=='emptyState'){last.scrollIntoView({behavior:'smooth',block:'center'});}
+  },80);
+});
 
-    state.projects.forEach((proj, idx) => {
-      const card = document.createElement('div');
-      card.className = 'project-card';
-      card.dataset.id = proj.id;
+function renderProjects() {
+  const list = document.getElementById('projectsList');
+  Array.from(list.querySelectorAll('.project-card')).forEach(c=>c.remove());
+  const empty = document.getElementById('emptyState');
+  if (state.projects.length===0){empty.style.display='';return;}
+  empty.style.display='none';
 
-      const cost = (ppg !== null && proj.weight !== '' && parseFloat(proj.weight) >= 0)
-        ? ppg * parseFloat(proj.weight)
-        : null;
+  const lineOptions = state.lines.map(l=>`<option value="${l.id}">${escHtml(l.name)} (${l.weight}g)</option>`).join('');
 
-      card.innerHTML = `
-        <div class="project-header">
-          <div class="project-number">${idx + 1}</div>
-          <div class="project-fields">
-            <div class="field">
-              <label>Nome do projeto</label>
-              <input type="text" class="proj-name" placeholder="Ex.: Toalha de mesa" value="${escHtml(proj.name)}" autocomplete="off">
-            </div>
+  state.projects.forEach((proj,idx)=>{
+    const card = document.createElement('div');
+    card.className='project-card'; card.dataset.id=proj.id;
+
+    const pricing = calcPricing(proj);
+    const accRowsHtml = buildAccRows(proj);
+
+    card.innerHTML=`
+      <div class="project-header">
+        <div class="project-number">${idx+1}</div>
+        <div class="project-fields">
+          <div class="field">
+            <label>Nome do projeto</label>
+            <input type="text" class="proj-name" placeholder="Ex.: Tapete redondo" value="${escHtml(proj.name)}" autocomplete="off">
+          </div>
+          <div class="field">
+            <label>Linha utilizada</label>
+            <select class="proj-line">
+              <option value="">— selecione a linha —</option>
+              ${lineOptions}
+            </select>
+          </div>
+          <div class="field-row">
             <div class="field">
               <label>Peso utilizado (g)</label>
-              <input type="number" class="proj-weight" placeholder="12" min="0" step="any" value="${escHtml(proj.weight)}">
+              <input type="number" class="proj-weight" placeholder="17" min="0" step="any" value="${escHtml(proj.weight)}">
+            </div>
+            <div class="field">
+              <label>Tempo de produção</label>
+              <input type="text" class="proj-time" placeholder="Ex.: 1h30, 45min" value="${escHtml(proj.time)}" autocomplete="off">
             </div>
           </div>
-          <button class="btn-delete" title="Excluir projeto">🗑️</button>
         </div>
-        <div class="project-result">
-          <span class="pr-label">Custo da linha</span>
-          <span class="pr-value ${cost === null ? 'empty' : ''}">
-            ${cost !== null ? 'R$ ' + fmt(cost) : '— informe o peso'}
-          </span>
-        </div>
-      `;
+        <button class="btn-delete proj-del">🗑️</button>
+      </div>
 
-      card.querySelector('.proj-name').addEventListener('input', e => {
-        const p = state.projects.find(p => p.id === proj.id);
-        if (p) { p.name = e.target.value; saveState(); }
-      });
-      card.querySelector('.proj-weight').addEventListener('input', e => {
-        const p = state.projects.find(p => p.id === proj.id);
-        if (p) {
-          p.weight = e.target.value;
-          saveState();
-          // update just this card's result
-          const ppg2 = getPricePerGram();
-          const w2 = parseFloat(p.weight);
-          const resEl = card.querySelector('.pr-value');
-          if (ppg2 !== null && p.weight !== '' && w2 >= 0) {
-            resEl.textContent = 'R$ ' + fmt(ppg2 * w2);
-            resEl.classList.remove('empty');
-          } else {
-            resEl.textContent = '— informe o peso';
-            resEl.classList.add('empty');
-          }
-          updateSummary();
-        }
-      });
-      card.querySelector('.btn-delete').addEventListener('click', () => {
-        state.projects = state.projects.filter(p => p.id !== proj.id);
-        saveState();
-        renderProjects();
-        updateSummary();
-      });
+      <div class="acc-in-project">
+        <div class="acc-in-project-title">🪢 Acessórios utilizados</div>
+        <div class="acc-rows-wrap">${accRowsHtml}</div>
+        <button class="btn-add-acc proj-add-acc">+ Adicionar acessório</button>
+      </div>
 
-      list.appendChild(card);
+      <div class="margin-row">
+        <label>Margem de lucro</label>
+        <input type="number" class="proj-margin" min="0" max="200" value="${escHtml(proj.margin||'30')}">
+        <span style="font-size:.9rem;font-weight:700;color:var(--gold)">%</span>
+        <span class="margin-hint">padrão 30%</span>
+      </div>
+
+      <div class="pricing-breakdown" id="breakdown-${proj.id}">
+        ${renderBreakdown(pricing)}
+      </div>
+    `;
+
+    // set select value
+    card.querySelector('.proj-line').value = proj.lineId||'';
+
+    // listeners
+    const refresh = () => {
+      const p = state.projects.find(x=>x.id===proj.id); if(!p) return;
+      const pr = calcPricing(p);
+      card.querySelector(`#breakdown-${proj.id}`).innerHTML = renderBreakdown(pr);
+      updateSummary();
+    };
+
+    card.querySelector('.proj-name').addEventListener('input',e=>{
+      const p=state.projects.find(x=>x.id===proj.id);if(p){p.name=e.target.value;saveState();renderPromoProjects();}
     });
-  }
+    card.querySelector('.proj-line').addEventListener('change',e=>{
+      const p=state.projects.find(x=>x.id===proj.id);if(p){p.lineId=e.target.value;saveState();refresh();}
+    });
+    card.querySelector('.proj-weight').addEventListener('input',e=>{
+      const p=state.projects.find(x=>x.id===proj.id);if(p){p.weight=e.target.value;saveState();refresh();}
+    });
+    card.querySelector('.proj-time').addEventListener('input',e=>{
+      const p=state.projects.find(x=>x.id===proj.id);if(p){p.time=e.target.value;saveState();refresh();}
+    });
+    card.querySelector('.proj-margin').addEventListener('input',e=>{
+      const p=state.projects.find(x=>x.id===proj.id);if(p){p.margin=e.target.value;saveState();refresh();}
+    });
+    card.querySelector('.proj-del').addEventListener('click',()=>{
+      state.projects=state.projects.filter(x=>x.id!==proj.id);
+      saveState();renderProjects();updateSummary();renderPromoProjects();
+    });
+    card.querySelector('.proj-add-acc').addEventListener('click',()=>{
+      const p=state.projects.find(x=>x.id===proj.id);
+      if(!p) return;
+      if(state.accs.length===0){showToast('⚠️ Cadastre acessórios primeiro na aba Acessórios');return;}
+      if(!p.accs) p.accs=[];
+      p.accs.push({id:uid(),accId:state.accs[0].id,qty:'1'});
+      saveState();renderProjects();
+    });
 
-  function escHtml(str) {
-    return String(str)
-      .replace(/&/g,'&amp;')
-      .replace(/"/g,'&quot;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;');
-  }
+    list.appendChild(card);
 
-  // ── SUMMARY ──
-  function updateSummary() {
-    const w = parseFloat(state.line.weight) || null;
-    const ppg = getPricePerGram();
+    // acc-row listeners (delegated after append)
+    card.querySelectorAll('.acc-select').forEach(sel=>{
+      sel.addEventListener('change',e=>{
+        const rowId=e.target.dataset.rowid;
+        const p=state.projects.find(x=>x.id===proj.id);if(!p)return;
+        const a=p.accs.find(x=>x.id===rowId);if(a){a.accId=e.target.value;saveState();refresh();}
+      });
+    });
+    card.querySelectorAll('.acc-qty').forEach(inp=>{
+      inp.addEventListener('input',e=>{
+        const rowId=e.target.dataset.rowid;
+        const p=state.projects.find(x=>x.id===proj.id);if(!p)return;
+        const a=p.accs.find(x=>x.id===rowId);if(a){a.qty=e.target.value;saveState();refresh();}
+      });
+    });
+    card.querySelectorAll('.acc-del-row').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        const rowId=e.target.dataset.rowid;
+        const p=state.projects.find(x=>x.id===proj.id);if(!p)return;
+        p.accs=p.accs.filter(x=>x.id!==rowId);
+        saveState();renderProjects();
+      });
+    });
+  });
 
-    const usedRaw = state.projects.reduce((acc, p) => {
-      const v = parseFloat(p.weight);
-      return acc + (isNaN(v) ? 0 : v);
-    }, 0);
-
-    document.getElementById('sumInitial').textContent   = w !== null ? fmtG(w) : '— g';
-    document.getElementById('sumUsed').textContent      = fmtG(usedRaw);
-    document.getElementById('sumRemaining').textContent = w !== null ? fmtG(Math.max(0, w - usedRaw)) : '— g';
-    document.getElementById('sumCost').textContent      = ppg !== null ? 'R$ ' + fmt(ppg * usedRaw) : 'R$ 0,00';
-  }
-
-  // ── INIT ──
-  loadState();
-  initMaterialFields();
-  updateMaterialResult();
-  renderProjects();
   updateSummary();
+}
+
+function buildAccRows(proj) {
+  if (!proj.accs||proj.accs.length===0) return '<div style="font-size:.78rem;color:var(--gray-300);font-weight:600;margin-bottom:6px">Nenhum acessório adicionado</div>';
+  const accOptions = state.accs.map(a=>`<option value="${a.id}">${escHtml(a.name)}</option>`).join('');
+  return proj.accs.map(a=>`
+    <div class="acc-row">
+      <select class="field-base acc-select" data-rowid="${a.id}" style="padding:9px 11px;font-size:.85rem;border:2px solid var(--gray-100);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:600;background:var(--gray-50);color:var(--gray-700);outline:none;-webkit-appearance:none;">
+        ${accOptions}
+      </select>
+      <input type="number" class="acc-qty" data-rowid="${a.id}" min="0" step="any" value="${escHtml(a.qty||'1')}"
+        style="padding:9px 10px;font-size:.85rem;width:64px;border:2px solid var(--gray-100);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:700;background:var(--gray-50);color:var(--gray-700);outline:none;text-align:center">
+      <button class="btn-delete acc-del-row" data-rowid="${a.id}">🗑️</button>
+    </div>
+  `).join('');
+}
+
+// set select values after render (needs to happen after innerHTML set)
+// handled inline via .value set
+
+function renderBreakdown(p) {
+  if (!p) return '<div class="pb-empty">— selecione a linha e informe o peso</div>';
+  const rows = [
+    {cls:'',label:'Peças possíveis no cone',value:p.pecas.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+' peças'},
+    {cls:'',label:'Custo do material',value:'R$ '+fmt(p.custoMat)},
+    {cls:'pb-reposicao',label:'Reposição do estoque (2×)',value:'R$ '+fmt(p.reposicao)},
+    p.accsCost>0?{cls:'pb-acc',label:'Acessórios',value:'R$ '+fmt(p.accsCost)}:null,
+    {cls:'pb-mao',label:'Mão de obra (R$14/h)',value:p.maoDeObra!==null?'R$ '+fmt(p.maoDeObra):'— informe o tempo'},
+    {cls:'',label:'Margem de lucro ('+p.margin+'%)',value:p.maoDeObra!==null?'R$ '+fmt(p.baseTotal*(p.margin/100)):'—'},
+  ].filter(Boolean);
+
+  const finalHtml = p.precoFinal!==null
+    ? `<div class="pb-divider"></div>
+       <div class="pb-row pb-highlight">
+         <span class="pb-label">💰 Preço sugerido de venda</span>
+         <span class="pb-value">R$ ${fmt(p.precoFinal)}</span>
+       </div>` : '';
+
+  return rows.map(r=>`<div class="pb-row ${r.cls}"><span class="pb-label">${r.label}</span><span class="pb-value">${r.value}</span></div>`).join('')+finalHtml;
+}
+
+// ══════════════════════════════════════
+// ABA: RESUMO
+// ══════════════════════════════════════
+function updateSummary() {
+  const usedG = state.projects.reduce((s,p)=>s+(parseFloat(p.weight)||0),0);
+  const totalCost = state.projects.reduce((s,p)=>{const pr=calcPricing(p);return s+(pr?pr.reposicao+pr.accsCost:0);},0);
+  const totalSell = state.projects.reduce((s,p)=>{const pr=calcPricing(p);return s+(pr&&pr.precoFinal?pr.precoFinal:0);},0);
+  document.getElementById('sumProjects').textContent   = state.projects.length;
+  document.getElementById('sumUsed').textContent       = fmtG(usedG);
+  document.getElementById('sumCost').textContent       = 'R$ '+fmt(totalCost);
+  document.getElementById('sumSell').textContent       = 'R$ '+fmt(totalSell);
+}
+
+// ══════════════════════════════════════
+// ABA: PROMOÇÃO
+// ══════════════════════════════════════
+function renderPromoProjects() {
+  const sel = document.getElementById('promoProject');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— escolha um projeto salvo ou digite abaixo —</option>';
+  state.projects.forEach(p=>{
+    const pr = calcPricing(p);
+    const price = pr&&pr.precoFinal ? pr.precoFinal : null;
+    const label = p.name||(price?'Projeto sem nome':'Projeto incompleto');
+    const opt = document.createElement('option');
+    opt.value = price||''; opt.textContent = label+(price?' — R$ '+fmt(price):'');
+    opt.dataset.price = price||'';
+    sel.appendChild(opt);
+  });
+  sel.value = cur;
+}
+
+document.getElementById('promoProject').addEventListener('change', e => {
+  const price = e.target.options[e.target.selectedIndex].dataset.price;
+  if (price) document.getElementById('promoUnit').value = parseFloat(price).toFixed(2);
+  calcPromo();
+});
+
+const sliderEl = document.getElementById('discountSlider');
+sliderEl.addEventListener('input', () => {
+  const v = sliderEl.value;
+  document.getElementById('discountLabel').textContent = v+'%';
+  document.getElementById('discountWarn').style.display = v>20 ? '' : 'none';
+  calcPromo();
+});
+
+document.getElementById('promoUnit').addEventListener('input', calcPromo);
+document.getElementById('promoQty').addEventListener('input', calcPromo);
+
+function calcPromo() {
+  const unit = parseFloat(document.getElementById('promoUnit').value);
+  const qty  = parseInt(document.getElementById('promoQty').value)||1;
+  const disc = parseInt(sliderEl.value)||0;
+  const el   = document.getElementById('promoResult');
+
+  if (!unit||unit<=0) { el.innerHTML='<div class="pb-empty">— preencha o preço unitário</div>'; return; }
+
+  const totalSem   = unit*qty;
+  const descUnit   = unit*(disc/100);
+  const precoComD  = unit-descUnit;
+  const totalComD  = precoComD*qty;
+  const economia   = totalSem-totalComD;
+  const descTotal  = economia;
+
+  el.innerHTML = `
+    <div class="promo-row"><span class="pr-l">Preço unitário original</span><span class="pr-v">R$ ${fmt(unit)}</span></div>
+    <div class="promo-row"><span class="pr-l">Desconto por peça (${disc}%)</span><span class="pr-v">− R$ ${fmt(descUnit)}</span></div>
+    <div class="promo-row"><span class="pr-l">Preço unitário com desconto</span><span class="pr-v">R$ ${fmt(precoComD)}</span></div>
+    <div class="promo-row"><span class="pr-l">Quantidade</span><span class="pr-v">${qty} peça${qty>1?'s':''}</span></div>
+    <div class="pb-divider"></div>
+    <div class="promo-row promo-final"><span class="pr-l">🏷️ Total da promoção</span><span class="pr-v">R$ ${fmt(totalComD)}</span></div>
+    <div class="promo-row promo-saving"><span class="pr-l">🎁 Economia da cliente</span><span class="pr-v">− R$ ${fmt(economia)}</span></div>
+    <div class="promo-row" style="background:var(--lilac-light);border-color:rgba(196,181,232,.4)">
+      <span class="pr-l" style="color:var(--lilac-deep)">Preço sem promoção (${qty}×)</span>
+      <span class="pr-v" style="color:var(--lilac-deep)">R$ ${fmt(totalSem)}</span>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════
+// TABS
+// ══════════════════════════════════════
+document.querySelectorAll('.nav-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ── INIT ──
+loadState();
+renderLines();
+renderAccs();
+renderProjects();
+updateSummary();
+renderPromoProjects();
 </script>
 </body>
 </html>
