@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bipa Balas — Contagem de Estoque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<style>
+  :root{
+    --bg:#14151A;
+    --surface:#1E2027;
+    --surface-2:#262933;
+    --surface-3:#2E313C;
+    --line: rgba(255,255,255,0.08);
+    --text:#F2EFE6;
+    --text-dim:#8B8D97;
+    --yellow:#F4C430;
+    --green:#4CAF7D;
+    --red:#E8534F;
+    --mono:'JetBrains Mono', monospace;
+    --display:'Oswald', sans-serif;
+    --body:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0; background:var(--bg); color:var(--text); font-family:var(--body); min-height:100vh;}
+  body{padding-bottom:40px;}
+
+  /* header */
+  header{
+    padding:22px 18px 16px;
+    border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, var(--bg) 80%, transparent);
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--yellow); margin:0 0 6px;
+  }
+  h1{
+    font-family:var(--display); font-weight:700; font-size:26px; letter-spacing:.01em;
+    margin:0; text-transform:uppercase;
+  }
+  .sub{color:var(--text-dim); font-size:13px; margin-top:4px;}
+
+  main{max-width:520px; margin:0 auto; padding:0 16px;}
+
+  section{margin-top:22px;}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px;
+  }
+  .label-row{
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;
+  }
+  .label{
+    font-family:var(--display); text-transform:uppercase; font-size:13px; letter-spacing:.08em; color:var(--text-dim);
+  }
+
+  /* mode toggle */
+  .mode-toggle{ display:flex; gap:8px; }
+  .mode-btn{
+    flex:1; padding:14px 0; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--surface-2); color:var(--text-dim); font-family:var(--display);
+    font-size:16px; text-transform:uppercase; letter-spacing:.05em; cursor:pointer;
+    transition: all .15s ease;
+  }
+  .mode-btn.active[data-mode="add"]{ background:rgba(76,175,125,.15); border-color:var(--green); color:var(--green); }
+  .mode-btn.active[data-mode="sub"]{ background:rgba(232,83,79,.15); border-color:var(--red); color:var(--red); }
+
+  /* quantity stepper */
+  .qty-row{ display:flex; align-items:center; gap:14px; margin-top:14px; }
+  .qty-btn{
+    width:46px; height:46px; border-radius:10px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--text); font-size:22px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; user-select:none;
+  }
+  .qty-display{
+    flex:1; text-align:center; font-family:var(--mono); font-size:30px; font-weight:700;
+  }
+
+  /* scanner */
+  .scanner-wrap{ position:relative; border-radius:14px; overflow:hidden; background:#000; border:1px solid var(--line);}
+  #reader{ width:100%; }
+  .scan-hint{
+    text-align:center; font-family:var(--mono); font-size:12px; color:var(--text-dim); padding:10px 4px 0;
+  }
+  .scan-toggle{
+    margin-top:12px; width:100%; padding:14px; border-radius:10px; border:none;
+    background:var(--yellow); color:#14151A; font-family:var(--display); font-size:15px;
+    text-transform:uppercase; letter-spacing:.06em; cursor:pointer;
+  }
+  .scan-toggle.stop{ background:var(--surface-3); color:var(--text); border:1px solid var(--line); }
+
+  /* manual entry fallback */
+  .manual-row{ display:flex; gap:8px; margin-top:12px; }
+  .manual-row input{
+    flex:1; padding:12px; border-radius:10px; border:1px solid var(--line); background:var(--surface-2);
+    color:var(--text); font-family:var(--mono); font-size:14px;
+  }
+  .manual-row button{
+    padding:12px 16px; border-radius:10px; border:1px solid var(--line); background:var(--surface-3);
+    color:var(--text); font-family:var(--body); font-weight:600; font-size:13px; cursor:pointer;
+  }
+
+  /* feedback receipt */
+  #feedback-zone{
+    position:fixed; top:0; left:0; right:0; display:flex; justify-content:center; z-index:100; pointer-events:none;
+  }
+  .receipt{
+    margin-top:-140px; width:min(92%,480px); background:var(--surface-2); border:1px solid var(--line);
+    border-top:4px solid var(--yellow); border-radius:0 0 12px 12px; padding:14px 18px;
+    font-family:var(--mono); box-shadow:0 12px 30px rgba(0,0,0,.5);
+    transition: margin-top .35s cubic-bezier(.2,.8,.3,1);
+  }
+  .receipt.show{ margin-top:0; }
+  .receipt.ok{ border-top-color:var(--green); }
+  .receipt.err{ border-top-color:var(--red); }
+  .receipt .code{ font-size:11px; color:var(--text-dim); }
+  .receipt .name{ font-family:var(--body); font-weight:700; font-size:16px; margin:2px 0; color:var(--text); }
+  .receipt .delta{ font-size:22px; font-weight:700; }
+  .receipt.ok .delta{ color:var(--green); }
+  .receipt.err .delta{ color:var(--red); }
+
+  /* totals list */
+  .totals-item{
+    display:flex; align-items:center; justify-content:space-between; padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .totals-item:last-child{ border-bottom:none; }
+  .ti-name{ font-weight:600; font-size:14px; }
+  .ti-cat{ font-size:11px; color:var(--text-dim); font-family:var(--mono); }
+  .ti-count{ font-family:var(--mono); font-size:20px; font-weight:700; min-width:44px; text-align:right; }
+  .ti-count.zero{ color:var(--text-dim); }
+  .ti-reset{
+    background:none; border:1px solid var(--line); color:var(--text-dim); border-radius:8px;
+    padding:5px 9px; font-size:11px; cursor:pointer; margin-left:10px; font-family:var(--body);
+  }
+  .empty-hint{ color:var(--text-dim); font-size:13px; text-align:center; padding:18px 0; }
+
+  /* product management */
+  details{ border:1px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden; }
+  summary{
+    padding:14px 16px; cursor:pointer; font-family:var(--display); text-transform:uppercase;
+    font-size:13px; letter-spacing:.08em; color:var(--text-dim); list-style:none; display:flex; justify-content:space-between; align-items:center;
+  }
+  summary::-webkit-details-marker{ display:none; }
+  summary::after{ content:'+'; font-size:18px; color:var(--text-dim); }
+  details[open] summary::after{ content:'–'; }
+  .panel-body{ padding:0 16px 16px; }
+  .prod-row{
+    display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px;
+  }
+  .prod-row:last-child{ border-bottom:none; }
+  .prod-row .pcode{ font-family:var(--mono); color:var(--text-dim); font-size:11px; }
+  .del-btn{ background:none; border:none; color:var(--red); font-size:16px; cursor:pointer; padding:4px 8px; }
+  .add-form{ display:grid; gap:8px; margin-top:12px; }
+  .add-form input{
+    padding:11px; border-radius:9px; border:1px solid var(--line); background:var(--surface-2);
+    color:var(--text); font-size:13px; font-family:var(--body);
+  }
+  .add-form button{
+    padding:11px; border-radius:9px; border:none; background:var(--green); color:#0d1410;
+    font-weight:700; font-size:13px; cursor:pointer;
+  }
+  footer{ text-align:center; color:var(--text-dim); font-size:11px; font-family:var(--mono); margin-top:30px; padding:0 20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Estoque em loja</p>
+  <h1>Bipa Balas</h1>
+  <p class="sub">Aponte a câmera, escolha entrada ou saída, informe a quantidade e bipe.</p>
+</header>
+
+<div id="feedback-zone"><div class="receipt" id="receipt"></div></div>
+
+<main>
+
+  <section class="card">
+    <div class="label-row"><span class="label">Operação</span></div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="add" onclick="setMode('add')">+ Entrada</button>
+      <button class="mode-btn" data-mode="sub" onclick="setMode('sub')">– Saída</button>
+    </div>
+    <div class="qty-row">
+      <div class="qty-btn" onclick="stepQty(-1)">–</div>
+      <div class="qty-display" id="qtyDisplay">1</div>
+      <div class="qty-btn" onclick="stepQty(1)">+</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="scanner-wrap">
+      <div id="reader"></div>
+    </div>
+    <p class="scan-hint" id="scanHint">Câmera parada</p>
+    <button class="scan-toggle" id="scanToggle" onclick="toggleScan()">Ligar câmera</button>
+    <div class="manual-row">
+      <input type="text" id="manualCode" placeholder="ou digite o código manualmente">
+      <button onclick="manualSubmit()">Bipar</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="label-row">
+      <span class="label">Contagem por produto</span>
+      <span class="label" id="totalCountLabel">0 itens</span>
+    </div>
+    <div id="totalsList"></div>
+  </section>
+
+  <section>
+    <details>
+      <summary>Gerenciar produtos cadastrados</summary>
+      <div class="panel-body">
+        <div id="productList"></div>
+        <div class="add-form">
+          <input type="text" id="newCode" placeholder="Código de barras (ex: 7891234500019)">
+          <input type="text" id="newName" placeholder="Nome do produto (ex: Bala de Morango)">
+          <input type="text" id="newCat" placeholder="Categoria (opcional, ex: Balas de Goma)">
+          <button onclick="addProduct()">Cadastrar produto</button>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <footer>dados salvos neste dispositivo · toque em um item para zerar a contagem</footer>
+</main>
+
+<script>
+let products = {};
+let totals = {};
+let mode = 'add';
+let qty = 1;
+let scanning = false;
+let html5QrCode = null;
+let lastCode = null, lastTime = 0;
+
+const seedProducts = {
+  "7891234500019": { name: "Bala de Goma Morango", category: "Balas de Goma" },
+  "7891234500026": { name: "Bala de Menta",         category: "Balas Duras" },
+  "7891234500033": { name: "Pirulito Tutti-Frutti", category: "Pirulitos" },
+  "7891234500040": { name: "Chocolate ao Leite Mini", category: "Chocolates" },
+  "7891234500057": { name: "Bala de Goma Uva",      category: "Balas de Goma" }
+};
+
+async function loadState(){
+  try{
+    const p = await window.storage.get('products');
+    products = p ? JSON.parse(p.value) : seedProducts;
+  }catch(e){ products = seedProducts; }
+  try{
+    const t = await window.storage.get('totals');
+    totals = t ? JSON.parse(t.value) : {};
+  }catch(e){ totals = {}; }
+  if(Object.keys(products).length === 0) products = seedProducts;
+  renderProducts();
+  renderTotals();
+}
+
+async function saveProducts(){
+  try{ await window.storage.set('products', JSON.stringify(products)); }catch(e){ console.error('storage error', e); }
+}
+async function saveTotals(){
+  try{ await window.storage.set('totals', JSON.stringify(totals)); }catch(e){ console.error('storage error', e); }
+}
+
+function setMode(m){
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.mode-btn[data-mode="${m}"]`).classList.add('active');
+}
+
+function stepQty(delta){
+  qty = Math.max(1, qty + delta);
+  document.getElementById('qtyDisplay').textContent = qty;
+}
+
+function showReceipt(kind, codeText, nameText, deltaText){
+  const r = document.getElementById('receipt');
+  r.className = 'receipt show ' + (kind === 'ok' ? 'ok' : 'err');
+  r.innerHTML = `<div class="code">${codeText}</div><div class="name">${nameText}</div><div class="delta">${deltaText}</div>`;
+  clearTimeout(showReceipt._t);
+  showReceipt._t = setTimeout(()=>{ r.classList.remove('show'); }, 1800);
+}
+
+function processScan(code){
+  code = (code || '').trim();
+  if(!code) return;
+  const now = Date.now();
+  if(code === lastCode && (now - lastTime) < 1500) return; // debounce repeat reads
+  lastCode = code; lastTime = now;
+
+  const product = products[code];
+  if(!product){
+    showReceipt('err', code, 'Código não cadastrado', 'cadastre abaixo ↓');
+    document.getElementById('newCode').value = code;
+    return;
+  }
+  const signedQty = mode === 'add' ? qty : -qty;
+  totals[code] = (totals[code] || 0) + signedQty;
+  saveTotals();
+  renderTotals();
+  showReceipt('ok', code, product.name, (signedQty > 0 ? '+' : '') + signedQty);
+}
+
+function manualSubmit(){
+  const input = document.getElementById('manualCode');
+  processScan(input.value);
+  input.value = '';
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('manualCode').addEventListener('keydown', e=>{
+    if(e.key === 'Enter') manualSubmit();
+  });
+});
+
+function toggleScan(){
+  if(scanning){ stopScan(); } else { startScan(); }
+}
+
+function startScan(){
+  const btn = document.getElementById('scanToggle');
+  const hint = document.getElementById('scanHint');
+  html5QrCode = new Html5Qrcode("reader");
+  const config = {
+    fps: 10,
+    qrbox: { width: 260, height: 140 },
+    formatsToSupport: [
+      Html5QrcodeSupportedFormats.EAN_13,
+      Html5QrcodeSupportedFormats.EAN_8,
+      Html5QrcodeSupportedFormats.CODE_128,
+      Html5QrcodeSupportedFormats.CODE_39,
+      Html5QrcodeSupportedFormats.UPC_A,
+      Html5QrcodeSupportedFormats.UPC_E,
+      Html5QrcodeSupportedFormats.CODABAR,
+      Html5QrcodeSupportedFormats.QR_CODE
+    ]
+  };
+  html5QrCode.start(
+    { facingMode: "environment" },
+    config,
+    (decodedText)=> processScan(decodedText),
+    ()=>{ /* ignore per-frame no-match */ }
+  ).then(()=>{
+    scanning = true;
+    btn.textContent = 'Desligar câmera';
+    btn.classList.add('stop');
+    hint.textContent = 'Câmera ativa — aponte para o código';
+  }).catch(err=>{
+    hint.textContent = 'Não foi possível acessar a câmera. Permita o acesso ou use a entrada manual.';
+    console.error(err);
+  });
+}
+
+function stopScan(){
+  const btn = document.getElementById('scanToggle');
+  const hint = document.getElementById('scanHint');
+  if(html5QrCode){
+    html5QrCode.stop().then(()=>{
+      html5QrCode.clear();
+      scanning = false;
+      btn.textContent = 'Ligar câmera';
+      btn.classList.remove('stop');
+      hint.textContent = 'Câmera parada';
+    }).catch(()=>{
+      scanning = false;
+      btn.textContent = 'Ligar câmera';
+      btn.classList.remove('stop');
+    });
+  }
+}
+
+function renderTotals(){
+  const list = document.getElementById('totalsList');
+  const codes = Object.keys(products).sort((a,b)=> products[a].name.localeCompare(products[b].name));
+  let itemsWithCount = 0;
+  if(codes.length === 0){
+    list.innerHTML = '<p class="empty-hint">Nenhum produto cadastrado ainda.</p>';
+  }else{
+    list.innerHTML = codes.map(code=>{
+      const p = products[code];
+      const count = totals[code] || 0;
+      if(count !== 0) itemsWithCount++;
+      return `
+        <div class="totals-item">
+          <div>
+            <div class="ti-name">${p.name}</div>
+            <div class="ti-cat">${p.category || 'sem categoria'} · ${code}</div>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <div class="ti-count ${count===0?'zero':''}">${count}</div>
+            <button class="ti-reset" onclick="resetCount('${code}')">zerar</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  document.getElementById('totalCountLabel').textContent = itemsWithCount + ' com contagem';
+}
+
+function resetCount(code){
+  totals[code] = 0;
+  saveTotals();
+  renderTotals();
+}
+
+function renderProducts(){
+  const list = document.getElementById('productList');
+  const codes = Object.keys(products);
+  if(codes.length === 0){
+    list.innerHTML = '<p class="empty-hint">Nenhum produto cadastrado.</p>';
+    return;
+  }
+  list.innerHTML = codes.map(code=>{
+    const p = products[code];
+    return `
+      <div class="prod-row">
+        <div>
+          <div>${p.name}</div>
+          <div class="pcode">${code} · ${p.category || 'sem categoria'}</div>
+        </div>
+        <button class="del-btn" onclick="deleteProduct('${code}')">✕</button>
+      </div>`;
+  }).join('');
+}
+
+function addProduct(){
+  const code = document.getElementById('newCode').value.trim();
+  const name = document.getElementById('newName').value.trim();
+  const cat = document.getElementById('newCat').value.trim();
+  if(!code || !name){ alert('Informe ao menos o código e o nome do produto.'); return; }
+  products[code] = { name, category: cat };
+  saveProducts();
+  renderProducts();
+  renderTotals();
+  document.getElementById('newCode').value = '';
+  document.getElementById('newName').value = '';
+  document.getElementById('newCat').value = '';
+}
+
+function deleteProduct(code){
+  delete products[code];
+  delete totals[code];
+  saveProducts();
+  saveTotals();
+  renderProducts();
+  renderTotals();
+}
+
+loadState();
+</script>
+</body>
+</html>
