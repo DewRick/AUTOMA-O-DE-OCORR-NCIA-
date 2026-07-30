@@ -80,8 +80,9 @@
   }
 
   /* scanner */
-  .scanner-wrap{ position:relative; border-radius:14px; overflow:hidden; background:#000; border:1px solid var(--line);}
-  #reader{ width:100%; }
+  .scanner-wrap{ position:relative; border-radius:14px; overflow:hidden; background:#000; border:1px solid var(--line); aspect-ratio: 4/3; }
+  #reader{ width:100%; height:100%; }
+  #reader video{ width:100% !important; height:100% !important; object-fit:cover !important; }
   .scan-hint{
     text-align:center; font-family:var(--mono); font-size:12px; color:var(--text-dim); padding:10px 4px 0;
   }
@@ -192,11 +193,22 @@
   </section>
 
   <section>
+    <select id="cameraSelect" style="display:none; width:100%; padding:11px; margin-bottom:10px; border-radius:10px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); font-family:var(--body); font-size:13px;"></select>
     <div class="scanner-wrap">
       <div id="reader"></div>
     </div>
     <p class="scan-hint" id="scanHint">Câmera parada</p>
-    <button class="scan-toggle" id="scanToggle" onclick="toggleScan()">Ligar câmera</button>
+    <div style="display:flex; gap:8px; margin-top:0;">
+      <button class="scan-toggle" id="scanToggle" onclick="toggleScan()" style="flex:1;">Ligar câmera</button>
+      <button class="scan-toggle" id="refocusBtn" onclick="refocus()" style="flex:0 0 auto; width:120px; display:none; background:var(--surface-3); color:var(--text); border:1px solid var(--line);">Reforçar foco</button>
+    </div>
+    <div id="zoomRow" style="display:none; align-items:center; gap:10px; margin-top:10px;">
+      <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim);">zoom</span>
+      <input type="range" id="zoomSlider" min="1" max="5" step="0.1" value="1" style="flex:1;" oninput="applyZoom(this.value)">
+      <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim);" id="zoomVal">1.0x</span>
+    </div>
+    <p style="text-align:center; font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:8px;">mantenha o código a uns 15-20cm da câmera e parado por 1 segundo</p>
+
     <div class="manual-row">
       <input type="text" id="manualCode" placeholder="ou digite o código manualmente">
       <button onclick="manualSubmit()">Bipar</button>
@@ -317,17 +329,58 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
-function toggleScan(){
-  if(scanning){ stopScan(); } else { startScan(); }
+let cameraDevices = [];
+
+async function loadCameras(){
+  try{
+    const devices = await Html5Qrcode.getCameras();
+    cameraDevices = devices || [];
+    const select = document.getElementById('cameraSelect');
+    if(cameraDevices.length > 1){
+      select.innerHTML = cameraDevices.map((d,i)=>{
+        // Heuristic: prefer a label containing "back"/"traseira" without "wide"/"ultra" as the default main lens
+        return `<option value="${d.id}">${d.label || ('Câmera ' + (i+1))}</option>`;
+      }).join('');
+      const preferred = cameraDevices.findIndex(d => /back|traseira|rear/i.test(d.label) && !/wide|ultra|macro/i.test(d.label));
+      select.selectedIndex = preferred >= 0 ? preferred : 0;
+      select.style.display = 'block';
+    }
+  }catch(e){
+    console.error('Não foi possível listar câmeras', e);
+  }
 }
+
+async function toggleScan(){
+  if(scanning){
+    stopScan();
+  } else {
+    if(cameraDevices.length === 0){
+      await loadCameras();
+    }
+    startScan();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('cameraSelect').addEventListener('change', ()=>{
+    if(scanning){
+      html5QrCode.stop().then(()=>{
+        html5QrCode.clear();
+        startScan();
+      }).catch(()=> startScan());
+    }
+  });
+});
 
 function startScan(){
   const btn = document.getElementById('scanToggle');
   const hint = document.getElementById('scanHint');
   html5QrCode = new Html5Qrcode("reader");
   const config = {
-    fps: 10,
-    qrbox: { width: 260, height: 140 },
+    fps: 12,
+    qrbox: { width: 280, height: 160 },
+    aspectRatio: 1.333, // matches the 4:3-ish container below, avoids letterboxing that throws the box off-center
+    disableFlip: false,
     formatsToSupport: [
       Html5QrcodeSupportedFormats.EAN_13,
       Html5QrcodeSupportedFormats.EAN_8,
@@ -339,8 +392,27 @@ function startScan(){
       Html5QrcodeSupportedFormats.QR_CODE
     ]
   };
+
+  const select = document.getElementById('cameraSelect');
+  const chosenId = (select.style.display !== 'none' && select.value) ? select.value : null;
+
+  // High resolution + continuous autofocus request. Falls back gracefully if the browser ignores it.
+  const videoConstraints = chosenId
+    ? {
+        deviceId: { exact: chosenId },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        focusMode: "continuous"
+      }
+    : {
+        facingMode: { ideal: "environment" },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        focusMode: "continuous"
+      };
+
   html5QrCode.start(
-    { facingMode: "environment" },
+    videoConstraints,
     config,
     (decodedText)=> processScan(decodedText),
     ()=>{ /* ignore per-frame no-match */ }
@@ -348,7 +420,29 @@ function startScan(){
     scanning = true;
     btn.textContent = 'Desligar câmera';
     btn.classList.add('stop');
-    hint.textContent = 'Câmera ativa — aponte para o código';
+    hint.textContent = 'Câmera ativa — aponte para o código e mantenha 15-20cm de distância';
+    document.getElementById('refocusBtn').style.display = 'block';
+
+    // Try to force continuous autofocus explicitly after the stream starts (some browsers only honor it here)
+    try{
+      html5QrCode.applyVideoConstraints({ advanced: [{ focusMode: "continuous" }] }).catch(()=>{});
+    }catch(e){ /* not supported on this browser, ignore */ }
+
+    // Expose zoom control if this camera/browser supports it (common on Android Chrome)
+    try{
+      const caps = html5QrCode.getRunningTrackCapabilities();
+      if(caps && caps.zoom){
+        const zoomRow = document.getElementById('zoomRow');
+        const slider = document.getElementById('zoomSlider');
+        slider.min = caps.zoom.min;
+        slider.max = caps.zoom.max;
+        slider.step = caps.zoom.step || 0.1;
+        slider.value = caps.zoom.min;
+        zoomRow.style.display = 'flex';
+      }else{
+        document.getElementById('zoomRow').style.display = 'none';
+      }
+    }catch(e){ document.getElementById('zoomRow').style.display = 'none'; }
   }).catch(err=>{
     hint.textContent = 'Não foi possível acessar a câmera. Permita o acesso ou use a entrada manual.';
     console.error(err);
@@ -358,6 +452,8 @@ function startScan(){
 function stopScan(){
   const btn = document.getElementById('scanToggle');
   const hint = document.getElementById('scanHint');
+  document.getElementById('refocusBtn').style.display = 'none';
+  document.getElementById('zoomRow').style.display = 'none';
   if(html5QrCode){
     html5QrCode.stop().then(()=>{
       html5QrCode.clear();
@@ -371,6 +467,24 @@ function stopScan(){
       btn.classList.remove('stop');
     });
   }
+}
+
+function applyZoom(value){
+  document.getElementById('zoomVal').textContent = parseFloat(value).toFixed(1) + 'x';
+  if(!html5QrCode || !scanning) return;
+  try{
+    html5QrCode.applyVideoConstraints({ advanced: [{ zoom: parseFloat(value) }] }).catch(()=>{});
+  }catch(e){ /* zoom not supported, ignore */ }
+}
+
+// Quick trick: briefly restart the stream to force the camera's autofocus algorithm to re-lock.
+// Helps when focus gets "stuck" on the wrong distance after the initial lock.
+function refocus(){
+  const hint = document.getElementById('scanHint');
+  if(!scanning) return;
+  hint.textContent = 'Reajustando foco...';
+  stopScan();
+  setTimeout(()=> startScan(), 400);
 }
 
 function renderTotals(){
