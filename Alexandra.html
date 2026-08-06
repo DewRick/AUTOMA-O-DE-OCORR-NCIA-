@@ -1,197 +1,477 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alexandra - Fini</title>
-    <script src="dados.js"></script>
-    <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Fini - Comunicação de Ocorrência</title>
+
+<style>
+/* ============================================================
+   RESET / BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+
+:root{
+    --bg:#050505;
+    --panel:#111111;
+    --panel-2:#181818;
+    --border:#232323;
+    --green:#39FF14;
+    --green-dim:#1b8a0a;
+    --blue:#00d4ff;
+    --gray:#8a8a8a;
+    --gray-dark:#2b2b2b;
+    --white:#f5f5f5;
+    --radius:20px;
+    --radius-sm:14px;
+}
+
 body{
-font-family:'Segoe UI',sans-serif;
-background:#050505;
-background-image:
-radial-gradient(circle at top,#ff00ff33 0%,transparent 35%),
-radial-gradient(circle at bottom,#ff00ff33 0%,transparent 40%);
-margin:0;
-padding:12px;
-color:#fff;
+    font-family:'Segoe UI',Arial,sans-serif;
+    background:#050505;
+    background-image:
+        radial-gradient(circle at top,#39ff1422 0%,transparent 35%),
+        radial-gradient(circle at bottom,#00d4ff22 0%,transparent 40%);
+    margin:0;
+    padding:12px;
+    color:var(--white);
+    -webkit-tap-highlight-color: transparent;
 }
+
 .container{
-max-width:430px;
-margin:auto;
-background:#111;
-border:1px solid #ff1493;
-border-radius:24px;
-padding:18px;
-box-shadow:0 0 25px #ff149355,0 0 60px #ff149322;
+    max-width:430px;
+    margin:auto;
+    background:var(--panel);
+    border:1px solid var(--green);
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:0 0 25px rgba(57,255,20,0.25),0 0 60px rgba(57,255,20,0.1);
 }
+
 h1{
-text-align:center;
-font-size:1.6rem;
-color:#fff;
-text-shadow:0 0 10px #ff1493,0 0 20px #ff1493;
-margin-bottom:15px;
+    text-align:center;
+    font-size:1.5rem;
+    color:#fff;
+    text-shadow:0 0 10px var(--green),0 0 20px var(--green);
+    margin:0 0 4px;
 }
+
+.subtitle{
+    text-align:center;
+    font-size:11px;
+    color:var(--gray);
+    letter-spacing:1px;
+    margin-bottom:16px;
+}
+
+/* ============================================================
+   ALTERE OS DEPARTAMENTOS AQUI
+   (Botões de departamento — apenas compõem o texto final,
+   NÃO filtram e NÃO alteram as lojas)
+   ============================================================ */
+.dept-card{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:14px;
+    margin-bottom:18px;
+}
+
+.dept-title{
+    background:linear-gradient(90deg,#045a6b,#00819c);
+    color:#eafcff;
+    padding:12px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:12px;
+    box-shadow:0 0 15px rgba(0,212,255,0.35);
+}
+
+.dept-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.dept-btn{
+    position:relative;
+    border:1px solid var(--gray-dark);
+    background:#0d0d0d;
+    border-radius:12px;
+    padding:14px 8px;
+    text-align:center;
+    cursor:pointer;
+    transition:all .2s ease;
+    user-select:none;
+}
+
+.dept-btn input{
+    position:absolute;
+    opacity:0;
+    width:0; height:0;
+}
+
+.dept-btn span{
+    font-weight:700;
+    font-size:14px;
+    color:var(--gray);
+    letter-spacing:.5px;
+    transition:color .2s ease;
+}
+
+.dept-btn:active{ transform:scale(.97); }
+
+.dept-btn.active{
+    border-color:var(--green);
+    background:linear-gradient(145deg,#0d1a0a,#0a0a0a);
+    box-shadow:0 0 16px rgba(57,255,20,.35),inset 0 0 8px rgba(57,255,20,.1);
+}
+
+.dept-btn.active span{ color:var(--green); text-shadow:0 0 8px rgba(57,255,20,.5); }
+
+.dept-warning{
+    display:none;
+    margin-top:10px;
+    background:#2a0f0f;
+    border:1px solid #ff4444;
+    color:#ff8080;
+    padding:8px 10px;
+    border-radius:10px;
+    font-size:12px;
+    text-align:center;
+}
+
+/* ============================================================
+   ALTERE AS LOJAS AQUI
+   ============================================================ */
 .lojas-title{
-background:linear-gradient(90deg,#ff1493,#ff4fd8);
-color:#fff;
-padding:14px;
-border-radius:16px;
-text-align:center;
-margin:20px 0;
-width:auto;
-font-weight:700;
-letter-spacing:1px;
-box-shadow:0 0 15px #ff1493;
+    background:linear-gradient(90deg,var(--green-dim),#0e5c07);
+    color:#eafff0;
+    padding:14px;
+    border-radius:16px;
+    text-align:center;
+    margin:0 0 12px;
+    font-weight:700;
+    letter-spacing:1px;
+    box-shadow:0 0 15px rgba(57,255,20,.3);
 }
+
 .checkbox-list{
-background:#181818;
-padding:15px;
-border-radius:16px;
-margin-bottom:20px;
-border:1px solid #ff149344;
+    background:var(--panel-2);
+    padding:15px;
+    border-radius:16px;
+    margin-bottom:20px;
+    border:1px solid var(--border);
 }
+
 .checkbox-list label{
-display:block;
-padding:8px;
-border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px;
+    border-radius:10px;
 }
-.checkbox-list label:hover{
-background:#ff14931a;
-}
+
+.checkbox-list label:active{ background:rgba(57,255,20,.08); }
+
+/* ============================================================
+   CATEGORIAS DE PRODUTOS (colapsáveis)
+   ============================================================ */
 .categoria-header{
-background:#1b1b1b;
-border:1px solid #ff149355;
-color:#fff;
-text-align:center;
-font-weight:bold;
-padding:16px;
-margin:12px 0;
-border-radius:16px;
-cursor:pointer;
-position:relative;
-box-shadow:0 0 10px #ff149322;
+    background:#1b1b1b;
+    border:1px solid var(--border);
+    color:#fff;
+    text-align:center;
+    font-weight:bold;
+    padding:16px;
+    margin:12px 0;
+    border-radius:16px;
+    cursor:pointer;
+    position:relative;
+    box-shadow:0 0 10px rgba(57,255,20,.1);
+    transition:all .2s ease;
 }
+
 .categoria-header.open{
-background:linear-gradient(90deg,#ff1493,#ff4fd8);
-box-shadow:0 0 20px #ff1493;
+    background:linear-gradient(90deg,var(--green-dim),#0e5c07);
+    box-shadow:0 0 20px rgba(57,255,20,.4);
 }
+
 .categoria-header::after{
-content:"▶";
-position:absolute;
-right:15px;
-top:50%;
-transform:translateY(-50%);
+    content:"▶";
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--gray);
 }
+
 .categoria-header.open::after{
-content:"▼";
+    content:"▼";
+    color:#eafff0;
 }
+
 .categoria-content{
-max-height:0;
-overflow:hidden;
-transition:max-height .4s ease;
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .4s ease;
 }
+
 .categoria-content.open{
-max-height:4000px;
+    max-height:4000px;
 }
+
 table{
-width:100%;
-border-collapse:separate;
-border-spacing:0 6px;
-font-size:.82em;
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0 6px;
+    font-size:.82em;
 }
+
 th{
-background:#ff1493;
-color:#fff;
-padding:10px 5px;
+    background:var(--green-dim);
+    color:#eafff0;
+    padding:10px 5px;
 }
+
 td{
-background:#1a1a1a;
-padding:12px 6px;
+    background:#141414;
+    padding:12px 6px;
 }
-.produto{width:62%;}
-.status{text-align:center;width:19%;}
+
+.produto{ width:62%; }
+.status{ text-align:center; width:19%; }
+
 input[type=radio],input[type=checkbox]{
-transform:scale(1.5);
-accent-color:#ff1493;
+    transform:scale(1.5);
+    accent-color:var(--green);
 }
+
+/* ============================================================
+   CAIXA DE TEXTO FINAL
+   ============================================================ */
 .text-box{
-background:#141414;
-border:2px solid #ff1493;
-border-radius:20px;
-padding:20px;
-margin-top:30px;
-box-shadow:0 0 25px #ff149344;
+    background:#0e0e0e;
+    border:2px solid var(--green);
+    border-radius:20px;
+    padding:20px;
+    margin-top:30px;
+    box-shadow:0 0 25px rgba(57,255,20,.25);
 }
+
 .text-box h3{
-text-align:center;
-color:#ff6fd8;
-text-shadow:0 0 10px #ff1493;
+    text-align:center;
+    color:var(--green);
+    text-shadow:0 0 10px rgba(57,255,20,.5);
+    margin-top:0;
 }
-.star{
-color:#ff1493;
-font-size:40px;
-text-align:center;
-text-shadow:0 0 15px #ff1493;
-}
+
 .note{
-color:#bbb;
-text-align:center;
+    color:#bbb;
+    text-align:center;
+    font-size:12px;
 }
+
 textarea{
-width:100%;
-min-height:320px;
-background:#0d0d0d;
-color:#fff;
-border:1px solid #ff1493;
-border-radius:14px;
-padding:12px;
-box-sizing:border-box;
+    width:100%;
+    min-height:280px;
+    background:#0a0a0a;
+    color:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+    box-sizing:border-box;
+    font-family:'Courier New',monospace;
+    font-size:12.5px;
+    line-height:1.5;
 }
-.copy-btn{
-width:100%;
-padding:16px;
-margin-top:15px;
-background:linear-gradient(90deg,#ff1493,#ff4fd8);
-color:#fff;
-border:none;
-border-radius:14px;
-font-size:1rem;
-font-weight:700;
-box-shadow:0 0 15px #ff1493;
+
+textarea:focus{ outline:none; border-color:var(--green); }
+
+/* ============================================================
+   BOTÕES DE AÇÃO
+   ============================================================ */
+.action-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
 }
-.copy-btn:active{
-transform:scale(.98);
+
+.btn{
+    flex:1;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    font-size:.95rem;
+    font-weight:700;
+    letter-spacing:.4px;
+    cursor:pointer;
+    transition:transform .15s ease;
 }
-    </style>
+
+.btn:active{ transform:scale(.96); }
+
+.btn-copy{
+    background:linear-gradient(90deg,var(--green),#1fae0e);
+    color:#061a02;
+    box-shadow:0 0 15px rgba(57,255,20,.4);
+}
+
+.btn-clear{
+    background:#151515;
+    color:var(--gray);
+    border:1px solid var(--gray-dark);
+}
+
+.btn-clear:active{ color:#fff; border-color:var(--blue); }
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:26px;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--green);
+    color:#061a02;
+    padding:10px 20px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    box-shadow:0 0 20px rgba(57,255,20,.5);
+    opacity:0;
+    pointer-events:none;
+    transition:all .25s ease;
+    z-index:999;
+    white-space:nowrap;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+</style>
+
 </head>
 <body>
     <div class="container">
-        <h1>Alexandra - Fini</h1>
+        <h1>🍬 FINI NEON CONTROL</h1>
+        <div class="subtitle" id="headerWeekLine">SELECIONE UM DEPARTAMENTO | SEMANA --</div>
+
+        <!-- ============================================================
+             ALTERE OS DEPARTAMENTOS AQUI
+             (Botões de departamento — apenas compõem o texto final,
+             NÃO filtram e NÃO alteram as lojas)
+             ============================================================ -->
+        <div class="dept-card">
+            <div class="dept-title">SELECIONE O DEPARTAMENTO</div>
+            <div class="dept-grid">
+                <label class="dept-btn" id="deptBtn_CASH">
+                    <input type="radio" name="departamento" value="CASH">
+                    <span>CASH</span>
+                </label>
+                <label class="dept-btn" id="deptBtn_LASA">
+                    <input type="radio" name="departamento" value="LASA">
+                    <span>LASA</span>
+                </label>
+                <label class="dept-btn" id="deptBtn_REDES">
+                    <input type="radio" name="departamento" value="REDES">
+                    <span>REDES</span>
+                </label>
+                <label class="dept-btn" id="deptBtn_DOCEIRO">
+                    <input type="radio" name="departamento" value="DOCEIRO">
+                    <span>DOCEIRO</span>
+                </label>
+            </div>
+            <div class="dept-warning" id="deptWarning">Selecione um departamento.</div>
+        </div>
+
         <div class="lojas-title">Lojas</div>
         <div class="checkbox-list" id="lojas"></div>
         <div id="categorias"></div>
+
         <div class="text-box">
             <h3>COPIE E COLE NOS GRUPOS</h3>
-            <div class="star">★</div>
             <p class="note">Criado para agilizar o dia a dia nas lojas - Rickson C.</p>
             <textarea id="communicationText" readonly></textarea>
-            <button class="copy-btn" onclick="copyText()">COPIAR TEXTO</button>
+            <div class="action-buttons">
+                <button type="button" class="btn btn-copy" id="btnCopiar">COPIAR OCORRÊNCIA</button>
+                <button type="button" class="btn btn-clear" id="btnLimpar">LIMPAR</button>
+            </div>
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
-        // produtos e categoriaNomes vêm do dados.js
+        // ============================================================
+        // ALTERE AS LOJAS AQUI
+        // ============================================================
         const lojas = [
-            "Assai Barra da Tijuca",
-            "Caçula Barra Da Tijuca",
-            "100 - Lasa SHC Via Parque RJ",
-            "858 - Lasa SHC Uptown Express",
-            "Lilipe Festas",
-            "Aidan Barra",
-            "Upup Doces e Festas LTDA",
-            "Vivian Festas Barra da Tijuca"
+
+            "Vivian Festa Campo Grande",
+            "Caçula Campo Grande",
+            "Dom Atacadista Campo Grande",
+            "Drogaria Pacheco Campo Grande 4",
+            "Drogaria Pacheco Campo Grande 5",
+            "Drogaria Pacheco Campo Grande 6",
+            "Drogaria Pacheco Campo Grande 7",
+            "32 - Lasa - Campo Grande Rj",
+            "424 - Lasa - Barcelos Domingos",
+            "Superdoce Campo Grande",
+            "Ufa Campo Grande"
+        
         ];
+
+        // ============================================================
+        // ALTERE OS PRODUTOS/CATEGORIAS AQUI
+        // ============================================================
+        const produtos = {
+
+            sm: {
+                "80g": ["Dentadura 80g", "Beijos Morango 80g", "Banana 80g", "Minhoca Brilho 80g", "Minhoca Cítrica 80g", "Amora 80g", "Ursinho 80g", "Polvo 80g", "Sapo 80g", "Finiburguer 80g", "Aros 80g", "Ovo Frito 80g", "HP Coruja 80g", "HP Óculos 80g", "HP Chapeu 80g", "HP Raio 80g", "Rato 80g", "Escovinha 80g", "Oceanitos 80g", "Sorvetinho 80g", "Caveira Recheada 80g", "Fazendo Arte 80g", "Mix Surpresa 80g"],
+                "15g": ["Dentadura 15g", "Beijos Morango 15g", "Banana 15g", "Minhoca Brilho 15g", "Minhoca Cítrica 15g", "Amora 15g", "Ursinho 15g", "Dentadura da Bruxa 15g"],
+                "35g": ["Dentadura 35g", "Beijos Morango 35g", "Banana 35g", "Minhoca Brilho 35g", "Minhoca Cítrica 35g", "Amora 35g", "Ursinho 35g"],
+                "250g": ["Dentadura 250g", "Beijos 250g", "Banana 250g", "Minhoca Brilho 250g", "Minhoca Cítrica 250g", "Amora 250g", "Ursinho 250g", "Aros de Morango 250g", "Polvo 250g", "Sapo 250g", "Sorvetinho 250g", "Oceanitos 250g", "Mix Surpresa 250g", "Rato 250g", "Fazendo Arte 250g", "Caveira Recheada 250g", "Aranha 250g"],
+                "500g": ["Banana 500g", "Dentadura 500g", "Beijos Morango 500g", "Minhoca Brilho 500g", "Minhoca Cítrica 500g", "Amora 500g", "Ursinho 500g", "Aros de Morango 500g", "Polvo 500g", "Sapo 500g", "Sorvetinho 500g", "Oceanitos 500g", "Mix Surpresa 500g", "Rato 500g", "Fazendo Arte 500g", "Caveira Recheada 500g", "Aranha 500g"]
+            },
+            tubes: {
+                "80g": ["Morango Cítrico 80g", "Morango Nata 80g", "Tutti Fruti 80g", "Arco Íris 80g", "Twister Cítrico 80g", "Twister 80g", "Uva Cítrico 80g", "Uva 80g", "Tropical 80g", "Azedinho 80g", "Terror 80g"],
+                "35g": ["Morango 35g", "Morango Cítrico 35g", "Tutti Fruti 35g", "Twister 35g", "Azedíssimo 35g"],
+                "40g": ["Morango Cítrico 40g", "Morango Nata 40g", "Twister Cítrico 40g", "Twister 40g"],
+                "15g": ["Tubes Morango Cítrico 15g", "Tubes Morango Nata 15g", "Tubes Pinta Língua 15g", "Tubes Halloween 15g", "Três Cores Azedinho 15g", "Tutti Fruti 15g", "Twister 15g", "Morango com Laranja 15g", "Boo Uva 15g"],
+                "27g": ["Tubes Gigante 27g", "Tubes Iorgute 27g", "Tubes Morango 27g", "Tubes Morango Cítrico 27g", "Tubes Twister 27g", "Tubes Framboesa 27g", "Tubes Boo 27g"],
+                "240g": ["Morango 240g", "Morango Cítrico 240g"]
+            },
+            chicle: {
+                "80g": ["Chicle Salada de Fruta 80g", "Melancia 80g", "Ovo Dinossauro 80g"],
+                "140g": ["Fúria Ácida 140g"],
+                "230g": ["Melancia 230g", "Salada de Fruta 230g", "Ovo de Dino 230g"],
+                "250g": ["Chicle Melancia 250g", "Ovo Dinossauro 250g"],
+                "450g": ["Ovo de Dino 450g", "Melancia 450g", "Salada de Fruta 450g"]
+            },
+            mash: {
+                "80g": ["Torção Recheado 80g", "Torção Azul Rech 80g", "Torção Rosa Rech 80g", "Torção Tricolor 80g", "Torção Azul 80g", "Torção Rosa 80g", "Torção Branco 80g", "Alvorada 80g", "Flor 80g", "Coração 80g", "Borboleta 80g", "Morango 80g", "Vulcão Azul 80g", "Vulcão Rosa 80g", "Fondue 80g", "Maria Mole 80g", "Milho 80g", "Camping 80g", "Pipoca 80g", "Pistache 80g"],
+                "250g": ["Torção Recheado 250g", "Torção Azul Rech 250g", "Torção Rosa Rech 250g", "Torção Tricolor 250g", "Torção Azul 250g", "Torção Rosa 250g", "Torção Branco 250g", "Alvorada 250g", "Flor 250g", "Coração 250g", "Borboleta 250g", "Morango 250g", "Vulcão Azul 250g", "Vulcão Rosa 250g", "Fondue 250g", "Maria Mole 250g", "Milho 250g", "Camping 250g", "Pipoca 250g", "Mashboo 250g", "Mashboo RIP 250g", "Pistache 250g"],
+                "500g": ["Torção Recheado 500g", "Torção Azul Rech 500g", "Torção Rosa Rech 500g", "Torção Tricolor 500g", "Torção Azul 500g", "Torção Rosa 500g", "Torção Branco 500g", "Alvorada 500g", "Flor 500g", "Coração 500g", "Borboleta 500g", "Morango 500g", "Vulcão Azul 500g", "Vulcão Rosa 500g", "Fondue 500g", "Maria Mole 500g", "Milho 500g", "Camping 500g", "Pipoca 500g", "Pistache 500g"]
+            },
+            bemEstar: { "18g": ["Vitamina C Banana Kids 18g", "Vitamina C Morango Kids 18g", "Vitamina C 18g", "Colágeno 18g", "Ursinho Diet 18g"] },
+            zeroAcucares: { "35g": ["Natureza Zero 35g", "Coração Zero 35g", "Fruts Zero 35g", "Tropical Zero 35g"] },
+            algodaoPipo: { "80g": ["Pipoca Banana 80g Pipo-Fini", "Pipoca Dentadura 80g Pipo-Fini", "Pipoca Beijos 80g Pipo-Fini"] },
+            caldas: { "1kg": ["Calda para Sorvete Dentadura 1kg", "Calda para Sorvete Beijos 1kg", "Calda para Sorvete Banana 1kg"] },
+            caldaRecheio: { "1.01kg": ["Recheio Banana 1.01kg", "Recheio Dentadura 1.01kg", "Recheio Beijos 1.01kg"] },
+            drGood: { "unidades": ["Dr. Good Vitaminas C 30 unidades", "Dr. Good Vitaminas C Kids 60 unidades", "Dr. Good Multigood Kids 30 unidades", "Dr. Good Multigood 30 unidades", "Dr. Good 5+Imune 30 unidades", "Dr. Good 5+Imune Diet 30 unidades", "Dr. Good Hair 60 unidades", "Dr. Good Melatonina 60 unidades"] },
+            roller: { "20g": ["Tiras Roller Frutas Azedinho 20g", "Tiras Roller Morango Azedinho 20g"] }
+        };
+
+        const categoriaNomes = {
+
+            sm: "SM+", tubes: "TUBES+", chicle: "CHICLE+", mash: "MASH+",
+            bemEstar: "BEM ESTAR", zeroAcucares: "ZERO AÇÚCARES",
+            algodaoPipo: "ALGODÃO / PIPÓ", caldas: "CALDAS",
+            caldaRecheio: "CALDA RECHEIO", drGood: "DR. GOOD", roller: "ROLLER"
+        
+        };
 
         // Gerar lojas
         const lojasDiv = document.getElementById('lojas');
@@ -199,7 +479,7 @@ transform:scale(.98);
             lojasDiv.innerHTML += `<label><input type="checkbox" name="loja" value="${loja}"> ${loja}</label>`;
         });
 
-        // Gerar categorias
+        // Gerar categorias (todas fechadas)
         const categoriasDiv = document.getElementById('categorias');
         Object.keys(produtos).forEach(catKey => {
             const catNome = categoriaNomes[catKey];
@@ -237,62 +517,159 @@ transform:scale(.98);
             content.classList.toggle('open');
         }
 
-        function updateText() {
-            let text = "🚨 COMUNICAÇÃO DE OCORRÊNCIA\n\n";
+        // ============================================================
+        // CONFIGURAÇÕES DA SEMANA
+        // Cálculo automático da semana do ano atual (sem API, 100% local)
+        // ============================================================
+        function calcularSemanaAtual() {
+            const hoje = new Date();
+            const inicioAno = new Date(hoje.getFullYear(), 0, 1);
+            const diasPassados = Math.floor((hoje - inicioAno) / (24 * 60 * 60 * 1000));
+            return Math.ceil((diasPassados + inicioAno.getDay() + 1) / 7);
+        }
+        const SEMANA_ATUAL = calcularSemanaAtual();
 
-            const selectedLojas = Array.from(
-                document.querySelectorAll('input[name="loja"]:checked')
-            ).map(cb => cb.value);
+        // ============================================================
+        // ALTERE OS DEPARTAMENTOS AQUI
+        // Lógica dos botões de departamento (não filtra lojas, apenas
+        // compõe o cabeçalho do texto final)
+        // ============================================================
+        let departamentoSelecionado = null;
+        const deptButtons = document.querySelectorAll('.dept-btn');
+        const deptWarning = document.getElementById('deptWarning');
+        const headerWeekLine = document.getElementById('headerWeekLine');
 
-            text += "🏪 LOJA\n";
-            if (selectedLojas.length > 0) {
-                text += selectedLojas.join(", ");
+        deptButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                deptButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const input = btn.querySelector('input[type="radio"]');
+                input.checked = true;
+                departamentoSelecionado = input.value;
+                deptWarning.style.display = 'none';
+                updateText();
+            });
+        });
+
+        function atualizarLinhaCabecalho() {
+            if (departamentoSelecionado) {
+                headerWeekLine.textContent = `${departamentoSelecionado} ${SEMANA_ATUAL} | SEMANA ${SEMANA_ATUAL}`;
             } else {
-                text += "Nenhuma loja selecionada";
+                headerWeekLine.textContent = `SELECIONE UM DEPARTAMENTO | SEMANA ${SEMANA_ATUAL}`;
             }
-            text += "\n\n";
+        }
+
+        function updateText() {
+            atualizarLinhaCabecalho();
+
+            // ------------------------------------------------------------
+            // VALIDAÇÃO: departamento obrigatório
+            // ------------------------------------------------------------
+            if (!departamentoSelecionado) {
+                deptWarning.style.display = 'block';
+                document.getElementById('communicationText').value = 'Selecione um departamento.';
+                return;
+            }
+            deptWarning.style.display = 'none';
+
+            let text = `${departamentoSelecionado} ${SEMANA_ATUAL} | SEMANA ${SEMANA_ATUAL}\n\n`;
+            text += "COMUNICAÇÃO DE OCORRÊNCIA\n\n";
+            const selectedLojas = Array.from(document.querySelectorAll('input[name="loja"]:checked')).map(cb => cb.value);
+            text += selectedLojas.length > 0 ? "LOJA: " + selectedLojas.join(', ') + "\n\n" : "LOJA: Nenhuma selecionada\n\n";
 
             let baixo = [];
             let ruptura = [];
-
             document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                if (radio.name === 'departamento') return;
                 const row = radio.closest('tr');
+                if (!row) return;
                 const produto = row.querySelector('td:first-child').textContent.trim();
                 if (radio.value === "baixo") baixo.push(produto);
-                if (radio.value === "ruptura") ruptura.push(produto);
+                else if (radio.value === "ruptura") ruptura.push(produto);
             });
 
             if (baixo.length > 0) {
-                text += `📦 BAIXO VOLUME (${baixo.length})\n\n`;
-                baixo.forEach(produto => { text += `• ${produto}\n`; });
+                text += "• OCORRÊNCIA DE Baixo Volume\n\n• Produtos em Baixo Volume\n\n";
+                baixo.forEach(p => text += `- ${p}\n`);
                 text += "\n";
             }
-
             if (ruptura.length > 0) {
-                text += "━━━━━━━━━━━━━━\n\n";
-                text += `❌ RUPTURA (${ruptura.length})\n\n`;
-                ruptura.forEach(produto => { text += `• ${produto}\n`; });
+                text += "• OCORRÊNCIA DE Ruptura\n\n• Produtos em Ruptura\n\n";
+                ruptura.forEach(p => text += `- ${p}\n`);
                 text += "\n";
             }
-
             if (baixo.length === 0 && ruptura.length === 0) {
-                text += "✅ Nenhuma ocorrência encontrada\n\n";
+                text += "• Nenhuma ocorrência marcada\n\n";
             }
 
             const hoje = new Date().toLocaleDateString('pt-BR');
-            text += `📅 Data: ${hoje}`;
-
+            text += `Data: ${hoje}`;
             document.getElementById('communicationText').value = text;
         }
 
-        function copyText() {
-            const textarea = document.getElementById('communicationText');
-            textarea.select();
-            document.execCommand('copy');
-            alert('Texto copiado para a área de transferência!');
+        // ============================================================
+        // BOTÃO COPIAR
+        // ============================================================
+        const toast = document.getElementById('toast');
+        function mostrarToast(mensagem) {
+            toast.textContent = mensagem;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2200);
         }
 
-        document.addEventListener('change', updateText);
+        document.getElementById('btnCopiar').addEventListener('click', () => {
+            if (!departamentoSelecionado) {
+                deptWarning.style.display = 'block';
+                mostrarToast('Selecione um departamento.');
+                return;
+            }
+            const textarea = document.getElementById('communicationText');
+            const texto = textarea.value;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(texto).then(() => {
+                    mostrarToast('Ocorrência copiada');
+                }).catch(() => {
+                    copiarFallback(textarea);
+                });
+            } else {
+                copiarFallback(textarea);
+            }
+        });
+
+        function copiarFallback(textarea) {
+            textarea.removeAttribute('readonly');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                mostrarToast('Ocorrência copiada');
+            } catch (e) {
+                mostrarToast('Não foi possível copiar');
+            }
+            textarea.setAttribute('readonly', true);
+        }
+
+        // ============================================================
+        // BOTÃO LIMPAR
+        // ============================================================
+        document.getElementById('btnLimpar').addEventListener('click', () => {
+            document.querySelectorAll('input[name="loja"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('table input[type="radio"]').forEach(r => r.checked = false);
+            deptButtons.forEach(b => {
+                b.classList.remove('active');
+                b.querySelector('input[type="radio"]').checked = false;
+            });
+            departamentoSelecionado = null;
+            updateText();
+            mostrarToast('Formulário limpo');
+        });
+
+        document.addEventListener('change', (e) => {
+            if (e.target.name === 'departamento') return; // já tratado no clique do botão
+            updateText();
+        });
+
+        // Inicializa com texto vazio correto
         updateText();
     </script>
 </body>
