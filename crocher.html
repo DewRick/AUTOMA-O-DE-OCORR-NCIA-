@@ -598,7 +598,6 @@ function renderProjects() {
     card.className='project-card'; card.dataset.id=proj.id;
 
     const pricing = calcPricing(proj);
-    const accRowsHtml = buildAccRows(proj);
 
     card.innerHTML=`
       <div class="project-header">
@@ -631,7 +630,7 @@ function renderProjects() {
 
       <div class="acc-in-project">
         <div class="acc-in-project-title">🪢 Acessórios utilizados</div>
-        <div class="acc-rows-wrap">${accRowsHtml}</div>
+        <div class="acc-rows-wrap"></div>
         <button class="btn-add-acc proj-add-acc">+ Adicionar acessório</button>
       </div>
 
@@ -682,58 +681,122 @@ function renderProjects() {
       if(!p) return;
       if(state.accs.length===0){showToast('⚠️ Cadastre acessórios primeiro na aba Acessórios');return;}
       if(!p.accs) p.accs=[];
-      p.accs.push({id:uid(),accId:state.accs[0].id,qty:'1'});
-      saveState();renderProjects();
+      p.accs.push({id:uid(),accId:'',qty:'1'});
+      saveState();
+      buildAccRowsDOM(card, p, refresh);
+      refresh();
     });
 
     list.appendChild(card);
 
-    // acc-row listeners (delegated after append)
-    card.querySelectorAll('.acc-select').forEach(sel=>{
-      sel.addEventListener('change',e=>{
-        const rowId=e.target.dataset.rowid;
-        const p=state.projects.find(x=>x.id===proj.id);if(!p)return;
-        const a=p.accs.find(x=>x.id===rowId);if(a){a.accId=e.target.value;saveState();refresh();}
-      });
-    });
-    card.querySelectorAll('.acc-qty').forEach(inp=>{
-      inp.addEventListener('input',e=>{
-        const rowId=e.target.dataset.rowid;
-        const p=state.projects.find(x=>x.id===proj.id);if(!p)return;
-        const a=p.accs.find(x=>x.id===rowId);if(a){a.qty=e.target.value;saveState();refresh();}
-      });
-    });
-    card.querySelectorAll('.acc-del-row').forEach(btn=>{
-      btn.addEventListener('click',e=>{
-        const rowId=e.target.dataset.rowid;
-        const p=state.projects.find(x=>x.id===proj.id);if(!p)return;
-        p.accs=p.accs.filter(x=>x.id!==rowId);
-        saveState();renderProjects();
-      });
-    });
+    // build acc rows via DOM (avoids select value issues with innerHTML)
+    buildAccRowsDOM(card, proj, refresh);
+
+    // acc-row listeners handled inside buildAccRowsDOM
   });
 
   updateSummary();
 }
 
-function buildAccRows(proj) {
-  if (!proj.accs||proj.accs.length===0) return '<div style="font-size:.78rem;color:var(--gray-300);font-weight:600;margin-bottom:6px">Nenhum acessorio adicionado</div>';
-  return proj.accs.map(function(a){
-    var accOptions = state.accs.map(function(lib){
-      var sel = lib.id===a.accId ? ' selected' : '';
-      return '<option value="'+lib.id+'"'+sel+'>'+escHtml(lib.name)+' - R$ '+fmt(parseFloat(lib.price))+'/'+escHtml(lib.unit)+'</option>';
-    }).join('');
-    return '<div class="acc-row">'
-      +'<div class="field" style="flex:1"><select class="acc-select" data-rowid="'+a.id+'"'
-      +' style="padding:11px 13px;font-size:.88rem;border:2px solid var(--gray-100);border-radius:var(--radius-sm);'
-      +'font-family:Nunito,sans-serif;font-weight:600;background:var(--gray-50);color:var(--gray-700);outline:none;width:100%;cursor:pointer">'
-      +accOptions+'</select></div>'
-      +'<div class="field" style="width:72px"><input type="number" class="acc-qty" data-rowid="'+a.id+'" min="0" step="any" value="'+escHtml(a.qty||'1')+'"'
-      +' style="padding:11px 8px;font-size:.9rem;border:2px solid var(--gray-100);border-radius:var(--radius-sm);'
-      +'font-family:Nunito,sans-serif;font-weight:700;background:var(--gray-50);color:var(--gray-700);outline:none;text-align:center;width:100%"></div>'
-      +'<button class="btn-delete acc-del-row" data-rowid="'+a.id+'" style="margin-top:2px">🗑️</button>'
-      +'</div>';
-  }).join('');
+function buildAccRowsDOM(card, proj, refresh) {
+  const wrap = card.querySelector('.acc-rows-wrap');
+  wrap.innerHTML = '';
+
+  if (!proj.accs || proj.accs.length === 0) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'font-size:.78rem;color:var(--gray-300);font-weight:600;margin-bottom:6px';
+    empty.textContent = 'Nenhum acessório adicionado';
+    wrap.appendChild(empty);
+    return;
+  }
+
+  proj.accs.forEach(function(a) {
+    // row container
+    const row = document.createElement('div');
+    row.className = 'acc-row';
+    row.style.marginBottom = '8px';
+
+    // --- SELECT (escolher acessório) ---
+    const selWrap = document.createElement('div');
+    selWrap.style.cssText = 'flex:1';
+
+    const sel = document.createElement('select');
+    sel.style.cssText = 'padding:11px 13px;font-size:.88rem;border:2px solid var(--gray-100);'
+      +'border-radius:var(--radius-sm);font-family:Nunito,sans-serif;font-weight:600;'
+      +'background:var(--gray-50);color:var(--gray-700);outline:none;width:100%;cursor:pointer;'
+      +'transition:border-color .2s';
+
+    // placeholder option
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '— escolha o acessório —';
+    sel.appendChild(placeholder);
+
+    // one option per library accessory
+    state.accs.forEach(function(lib) {
+      const opt = document.createElement('option');
+      opt.value = lib.id;
+      opt.textContent = lib.name + ' — R$ ' + fmt(parseFloat(lib.price)) + '/' + lib.unit;
+      if (lib.id === a.accId) opt.selected = true;
+      sel.appendChild(opt);
+    });
+
+    sel.addEventListener('focus', function(){ sel.style.borderColor='var(--lilac-deep)'; });
+    sel.addEventListener('blur',  function(){ sel.style.borderColor='var(--gray-100)'; });
+    sel.addEventListener('change', function() {
+      var p = state.projects.find(function(x){ return x.id === proj.id; });
+      if (!p) return;
+      var acc = p.accs.find(function(x){ return x.id === a.id; });
+      if (acc) { acc.accId = sel.value; saveState(); refresh(); }
+    });
+
+    selWrap.appendChild(sel);
+
+    // --- QTY INPUT ---
+    const qtyWrap = document.createElement('div');
+    qtyWrap.style.cssText = 'width:72px';
+
+    const qty = document.createElement('input');
+    qty.type = 'number';
+    qty.min = '0';
+    qty.step = 'any';
+    qty.value = a.qty || '1';
+    qty.style.cssText = 'padding:11px 8px;font-size:.9rem;border:2px solid var(--gray-100);'
+      +'border-radius:var(--radius-sm);font-family:Nunito,sans-serif;font-weight:700;'
+      +'background:var(--gray-50);color:var(--gray-700);outline:none;text-align:center;width:100%;'
+      +'transition:border-color .2s';
+    qty.placeholder = 'Qtd';
+
+    qty.addEventListener('focus', function(){ qty.style.borderColor='var(--lilac-deep)'; });
+    qty.addEventListener('blur',  function(){ qty.style.borderColor='var(--gray-100)'; });
+    qty.addEventListener('input', function() {
+      var p = state.projects.find(function(x){ return x.id === proj.id; });
+      if (!p) return;
+      var acc = p.accs.find(function(x){ return x.id === a.id; });
+      if (acc) { acc.qty = qty.value; saveState(); refresh(); }
+    });
+
+    qtyWrap.appendChild(qty);
+
+    // --- DELETE BUTTON ---
+    const del = document.createElement('button');
+    del.className = 'btn-delete';
+    del.textContent = '🗑️';
+    del.style.marginTop = '2px';
+    del.addEventListener('click', function() {
+      var p = state.projects.find(function(x){ return x.id === proj.id; });
+      if (!p) return;
+      p.accs = p.accs.filter(function(x){ return x.id !== a.id; });
+      saveState();
+      buildAccRowsDOM(card, p, refresh);
+      refresh();
+    });
+
+    row.appendChild(selWrap);
+    row.appendChild(qtyWrap);
+    row.appendChild(del);
+    wrap.appendChild(row);
+  });
 }
 
 // set select values after render (needs to happen after innerHTML set)
