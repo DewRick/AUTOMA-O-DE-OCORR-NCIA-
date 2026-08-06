@@ -717,18 +717,23 @@ function renderProjects() {
 }
 
 function buildAccRows(proj) {
-  if (!proj.accs||proj.accs.length===0) return '<div style="font-size:.78rem;color:var(--gray-300);font-weight:600;margin-bottom:6px">Nenhum acessório adicionado</div>';
-  const accOptions = state.accs.map(a=>`<option value="${a.id}">${escHtml(a.name)}</option>`).join('');
-  return proj.accs.map(a=>`
-    <div class="acc-row">
-      <select class="field-base acc-select" data-rowid="${a.id}" style="padding:9px 11px;font-size:.85rem;border:2px solid var(--gray-100);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:600;background:var(--gray-50);color:var(--gray-700);outline:none;-webkit-appearance:none;">
-        ${accOptions}
-      </select>
-      <input type="number" class="acc-qty" data-rowid="${a.id}" min="0" step="any" value="${escHtml(a.qty||'1')}"
-        style="padding:9px 10px;font-size:.85rem;width:64px;border:2px solid var(--gray-100);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:700;background:var(--gray-50);color:var(--gray-700);outline:none;text-align:center">
-      <button class="btn-delete acc-del-row" data-rowid="${a.id}">🗑️</button>
-    </div>
-  `).join('');
+  if (!proj.accs||proj.accs.length===0) return '<div style="font-size:.78rem;color:var(--gray-300);font-weight:600;margin-bottom:6px">Nenhum acessorio adicionado</div>';
+  return proj.accs.map(function(a){
+    var accOptions = state.accs.map(function(lib){
+      var sel = lib.id===a.accId ? ' selected' : '';
+      return '<option value="'+lib.id+'"'+sel+'>'+escHtml(lib.name)+' - R$ '+fmt(parseFloat(lib.price))+'/'+escHtml(lib.unit)+'</option>';
+    }).join('');
+    return '<div class="acc-row">'
+      +'<div class="field" style="flex:1"><select class="acc-select" data-rowid="'+a.id+'"'
+      +' style="padding:11px 13px;font-size:.88rem;border:2px solid var(--gray-100);border-radius:var(--radius-sm);'
+      +'font-family:Nunito,sans-serif;font-weight:600;background:var(--gray-50);color:var(--gray-700);outline:none;width:100%;cursor:pointer">'
+      +accOptions+'</select></div>'
+      +'<div class="field" style="width:72px"><input type="number" class="acc-qty" data-rowid="'+a.id+'" min="0" step="any" value="'+escHtml(a.qty||'1')+'"'
+      +' style="padding:11px 8px;font-size:.9rem;border:2px solid var(--gray-100);border-radius:var(--radius-sm);'
+      +'font-family:Nunito,sans-serif;font-weight:700;background:var(--gray-50);color:var(--gray-700);outline:none;text-align:center;width:100%"></div>'
+      +'<button class="btn-delete acc-del-row" data-rowid="'+a.id+'" style="margin-top:2px">🗑️</button>'
+      +'</div>';
+  }).join('');
 }
 
 // set select values after render (needs to happen after innerHTML set)
