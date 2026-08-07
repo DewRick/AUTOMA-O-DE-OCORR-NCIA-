@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Fini - Dashboard de Ocorrências</title>
+
+<style>
+/* ============================================================
+   RESET / BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+
+:root{
+    --bg:#050505;
+    --panel:#111111;
+    --panel-2:#181818;
+    --border:#232323;
+    --green:#39FF14;
+    --green-dim:#1b8a0c;
+    --blue:#00d4ff;
+    --gray:#8a8a8a;
+    --gray-dark:#2b2b2b;
+    --white:#f5f5f5;
+    --radius:20px;
+    --radius-sm:14px;
+}
+
+body{
+    font-family:'Segoe UI',Arial,sans-serif;
+    background:#050505;
+    background-image:
+        radial-gradient(circle at top,#39ff1422 0%,transparent 35%),
+        radial-gradient(circle at bottom,#00d4ff22 0%,transparent 40%);
+    margin:0;
+    padding:12px;
+    color:var(--white);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.container{
+    max-width:460px;
+    margin:auto;
+    background:var(--panel);
+    border:1px solid var(--green);
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:0 0 25px rgba(57,255,20,0.2),0 0 60px rgba(57,255,20,0.08);
+}
+
+h1{
+    text-align:center;
+    font-size:1.4rem;
+    color:#fff;
+    text-shadow:0 0 10px var(--green),0 0 20px var(--green);
+    margin:0 0 4px;
+}
+
+.subtitle{
+    text-align:center;
+    font-size:11px;
+    color:var(--gray);
+    letter-spacing:1px;
+    margin-bottom:16px;
+}
+
+/* ============================================================
+   CARDS / SEÇÕES
+   ============================================================ */
+.card{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:16px;
+    margin-bottom:16px;
+}
+
+.section-title{
+    background:linear-gradient(90deg,var(--green-dim),#0e5c07);
+    color:#eafff0;
+    padding:10px 14px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:0.6px;
+    margin-bottom:12px;
+    box-shadow:0 0 14px rgba(57,255,20,0.18);
+}
+
+.section-title.blue{
+    background:linear-gradient(90deg,#045a6b,#00819c);
+    box-shadow:0 0 14px rgba(0,212,255,0.2);
+}
+
+textarea#rawInput{
+    width:100%;
+    min-height:220px;
+    background:#0a0a0a;
+    color:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+    box-sizing:border-box;
+    font-family:'Courier New',monospace;
+    font-size:12.5px;
+    line-height:1.5;
+    resize:vertical;
+}
+
+textarea#rawInput:focus{ outline:none; border-color:var(--green); }
+
+/* ============================================================
+   CONFIGURAÇÕES DO PAINEL
+   ============================================================ */
+.config-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px 4px;
+    border-bottom:1px solid var(--border);
+}
+
+.config-row:last-child{ border-bottom:none; }
+
+.config-row label{
+    font-size:12.5px;
+    color:var(--white);
+    flex:1;
+}
+
+.config-row .config-hint{
+    display:block;
+    font-size:10.5px;
+    color:var(--gray);
+    margin-top:2px;
+}
+
+.config-row input[type=number]{
+    width:64px;
+    background:#0a0a0a;
+    color:var(--green);
+    border:1px solid var(--gray-dark);
+    border-radius:8px;
+    padding:8px;
+    text-align:center;
+    font-size:14px;
+    font-weight:700;
+}
+
+.config-row input[type=number]:focus{ outline:none; border-color:var(--green); }
+
+/* ============================================================
+   BOTÕES
+   ============================================================ */
+.btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    font-size:.95rem;
+    font-weight:700;
+    letter-spacing:.4px;
+    cursor:pointer;
+    transition:transform .15s ease;
+}
+
+.btn:active{ transform:scale(.97); }
+
+.btn-primary{
+    background:linear-gradient(90deg,var(--green),#1fae0e);
+    color:#061a02;
+    box-shadow:0 0 15px rgba(57,255,20,.4);
+    margin-bottom:10px;
+}
+
+.action-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.action-buttons .btn{ margin-bottom:0; }
+
+.btn-copy{
+    background:linear-gradient(90deg,var(--green),#1fae0e);
+    color:#061a02;
+    box-shadow:0 0 15px rgba(57,255,20,.4);
+}
+
+.btn-clear{
+    background:#151515;
+    color:var(--gray);
+    border:1px solid var(--gray-dark);
+}
+
+.btn-clear:active{ color:#fff; border-color:var(--blue); }
+
+/* ============================================================
+   CHIPS DE ESTATÍSTICA RÁPIDA
+   ============================================================ */
+.stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:6px;
+}
+
+.stat-chip{
+    background:#0d0d0d;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 8px;
+    text-align:center;
+}
+
+.stat-chip .stat-num{
+    font-size:20px;
+    font-weight:800;
+    color:var(--green);
+    text-shadow:0 0 8px rgba(57,255,20,.4);
+    display:block;
+}
+
+.stat-chip .stat-label{
+    font-size:10px;
+    color:var(--gray);
+    letter-spacing:.4px;
+    text-transform:uppercase;
+}
+
+.stat-chip.blue .stat-num{ color:var(--blue); text-shadow:0 0 8px rgba(0,212,255,.4); }
+
+/* ============================================================
+   SELETOR DE FORMATO
+   ============================================================ */
+.format-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.format-btn{
+    border:1px solid var(--gray-dark);
+    background:#0d0d0d;
+    border-radius:12px;
+    padding:14px 8px;
+    text-align:center;
+    cursor:pointer;
+    transition:all .2s ease;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+}
+
+.format-btn:active{ transform:scale(.97); }
+
+.format-btn.active{
+    border-color:var(--green);
+    background:linear-gradient(145deg,#0d1a0a,#0a0a0a);
+    box-shadow:0 0 16px rgba(57,255,20,.35),inset 0 0 8px rgba(57,255,20,.1);
+}
+
+.format-icon{
+    font-size:20px;
+}
+
+.format-name{
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--gray);
+    letter-spacing:.4px;
+}
+
+.format-btn.active .format-name{ color:var(--green); text-shadow:0 0 6px rgba(57,255,20,.5); }
+
+.format-desc{
+    font-size:9px;
+    color:var(--gray-dark);
+}
+
+.warning-box{
+    display:none;
+    background:#2a0f0f;
+    border:1px solid #ff4444;
+    color:#ff8080;
+    padding:10px 12px;
+    border-radius:10px;
+    font-size:12px;
+    text-align:center;
+    margin-bottom:12px;
+}
+
+/* ============================================================
+   RESULTADO / RELATÓRIO FINAL
+   ============================================================ */
+.text-box{
+    background:#0e0e0e;
+    border:2px solid var(--green);
+    border-radius:20px;
+    padding:18px;
+    box-shadow:0 0 25px rgba(57,255,20,.2);
+}
+
+.text-box h3{
+    text-align:center;
+    color:var(--green);
+    text-shadow:0 0 10px rgba(57,255,20,.5);
+    margin-top:0;
+    font-size:14px;
+}
+
+textarea#reportOutput{
+    width:100%;
+    min-height:340px;
+    background:#0a0a0a;
+    color:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+    box-sizing:border-box;
+    font-family:'Courier New',monospace;
+    font-size:12px;
+    line-height:1.55;
+    resize:vertical;
+}
+
+textarea#reportOutput:focus{ outline:none; border-color:var(--green); }
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:26px;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--green);
+    color:#061a02;
+    padding:10px 20px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    box-shadow:0 0 20px rgba(57,255,20,.5);
+    opacity:0;
+    pointer-events:none;
+    transition:all .25s ease;
+    z-index:999;
+    white-space:nowrap;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <h1>📊 FINI NEON DASHBOARD</h1>
+    <div class="subtitle">GERADOR DE RELATÓRIO SEMANAL DE OCORRÊNCIAS</div>
+
+    <!-- ============================================================
+         ENTRADA DE DADOS
+         Cole aqui todas as mensagens de ocorrência (pode colar
+         1000+ linhas, várias mensagens juntas, de várias lojas)
+         ============================================================ -->
+    <div class="card">
+        <div class="section-title">COLE AS MENSAGENS AQUI</div>
+        <textarea id="rawInput" placeholder="Cole aqui todas as mensagens de ocorrência recebidas (pode colar quantas quiser, de uma vez)..."></textarea>
+    </div>
+
+    <!-- ============================================================
+         CONFIGURAÇÕES DO PAINEL
+         ============================================================ -->
+    <div class="card">
+        <div class="section-title blue">CONFIGURAÇÕES DO RELATÓRIO</div>
+        <div class="config-row">
+            <label for="cfgCritico">Limite para loja crítica
+                <span class="config-hint">Total de itens (Baixo Volume + Ruptura) para a loja entrar na lista de críticas</span>
+            </label>
+            <input type="number" id="cfgCritico" value="5" min="1">
+        </div>
+        <div class="config-row">
+            <label for="cfgTopN">Tamanho do ranking de produtos
+                <span class="config-hint">Quantos produtos mostrar em cada ranking (Baixo Volume / Ruptura)</span>
+            </label>
+            <input type="number" id="cfgTopN" value="5" min="1" max="30">
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="btnGerar">GERAR DASHBOARD</button>
+
+    <div class="warning-box" id="warningBox">Cole ao menos uma mensagem de ocorrência válida antes de gerar.</div>
+
+    <!-- ============================================================
+         ESTATÍSTICAS RÁPIDAS
+         ============================================================ -->
+    <div class="card" id="statsCard" style="display:none;">
+        <div class="section-title">VISÃO RÁPIDA</div>
+        <div class="stats-grid">
+            <div class="stat-chip">
+                <span class="stat-num" id="statMensagens">0</span>
+                <span class="stat-label">Mensagens lidas</span>
+            </div>
+            <div class="stat-chip blue">
+                <span class="stat-num" id="statLojas">0</span>
+                <span class="stat-label">Lojas identificadas</span>
+            </div>
+            <div class="stat-chip">
+                <span class="stat-num" id="statBaixo">0</span>
+                <span class="stat-label">Itens Baixo Volume</span>
+            </div>
+            <div class="stat-chip blue">
+                <span class="stat-num" id="statRuptura">0</span>
+                <span class="stat-label">Itens Ruptura</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SELETOR DE FORMATO DO RELATÓRIO
+         ============================================================ -->
+    <div class="card" id="formatCard" style="display:none;">
+        <div class="section-title blue">ESCOLHA O FORMATO</div>
+        <div class="format-grid">
+            <button type="button" class="format-btn active" id="btnFormatExecutivo">
+                <span class="format-icon">📊</span>
+                <span class="format-name">EXECUTIVO</span>
+                <span class="format-desc">Para Diretoria</span>
+            </button>
+            <button type="button" class="format-btn" id="btnFormatEquipe">
+                <span class="format-icon">💬</span>
+                <span class="format-name">EQUIPE</span>
+                <span class="format-desc">Mensagem Informativa</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         RELATÓRIO FINAL (TEXTO ESTILO E-MAIL)
+         ============================================================ -->
+    <div class="text-box" id="reportBox" style="display:none;">
+        <h3 id="reportTitle">RELATÓRIO PRONTO — COPIE E COLE NO E-MAIL</h3>
+        <textarea id="reportOutput" readonly></textarea>
+        <div class="action-buttons">
+            <button type="button" class="btn btn-copy" id="btnCopiar">COPIAR RELATÓRIO</button>
+            <button type="button" class="btn btn-clear" id="btnLimpar">LIMPAR TUDO</button>
+        </div>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================================================================
+   CONFIGURAÇÕES DA SEMANA
+   Cálculo automático da semana do ano atual (sem API, 100% local)
+   Usado apenas como fallback caso nenhuma mensagem traga a semana
+   ================================================================ */
+function calcularSemanaAtual() {
+    const hoje = new Date();
+    const inicioAno = new Date(hoje.getFullYear(), 0, 1);
+    const diasPassados = Math.floor((hoje - inicioAno) / (24 * 60 * 60 * 1000));
+    return Math.ceil((diasPassados + inicioAno.getDay() + 1) / 7);
+}
+const SEMANA_FALLBACK = calcularSemanaAtual();
+
+/* ================================================================
+   LÓGICA DE PARSING DAS MENSAGENS
+   Recebe o texto bruto colado (várias mensagens juntas) e separa
+   cada mensagem individual em um objeto estruturado.
+   ================================================================ */
+function parseMensagens(textoBruto) {
+    // Cada mensagem sempre contém "COMUNICAÇÃO DE OCORRÊNCIA" uma vez.
+    // Usamos essa âncora para separar os blocos.
+    const ancoraRegex = /COMUNICAÇÃO DE OCORRÊNCIA/g;
+    const posicoes = [];
+    let m;
+    while ((m = ancoraRegex.exec(textoBruto)) !== null) {
+        posicoes.push(m.index);
+    }
+
+    if (posicoes.length === 0) return [];
+
+    const blocos = [];
+    for (let i = 0; i < posicoes.length; i++) {
+        const inicioCorpo = posicoes[i];
+        const fimCorpo = (i + 1 < posicoes.length) ? posicoes[i + 1] : textoBruto.length;
+
+        // Janela de até 120 caracteres antes da âncora, para capturar
+        // o cabeçalho de departamento/semana, se existir.
+        const inicioJanela = Math.max(0, inicioCorpo - 120);
+        const janelaCabecalho = textoBruto.slice(inicioJanela, inicioCorpo);
+        const corpo = textoBruto.slice(inicioCorpo, fimCorpo);
+
+        blocos.push(parseBloco(janelaCabecalho, corpo));
+    }
+    return blocos;
+}
+
+function parseBloco(janelaCabecalho, corpo) {
+    // ----------------------------------------------------------
+    // Departamento e semana (opcional, se o cabeçalho existir)
+    // ----------------------------------------------------------
+    let departamento = null;
+    let semana = null;
+    const headerMatch = janelaCabecalho.match(/([A-ZÀ-Ú]{3,})\s+\d{1,3}\s*\|\s*SEMANA\s*(\d{1,3})/i);
+    if (headerMatch) {
+        departamento = headerMatch[1].toUpperCase();
+        semana = parseInt(headerMatch[2], 10);
+    }
+
+    // ----------------------------------------------------------
+    // Loja(s)
+    // ----------------------------------------------------------
+    let lojas = [];
+    const lojaMatch = corpo.match(/LOJA:\s*(.+)/);
+    if (lojaMatch) {
+        const valor = lojaMatch[1].trim();
+        const invalidos = ['nenhuma loja selecionada', 'nenhuma selecionada'];
+        if (!invalidos.includes(valor.toLowerCase())) {
+            lojas = valor.split(',').map(l => l.trim()).filter(Boolean);
+        }
+    }
+
+    // ----------------------------------------------------------
+    // Produtos por tipo de ocorrência (Baixo Volume / Ruptura)
+    // Funciona tanto para mensagens com "CATEGORIA X" quanto sem.
+    // ----------------------------------------------------------
+    function extrairProdutos(tipo) {
+        const regexSecao = new RegExp(
+            `OCORRÊNCIA DE ${tipo}[\\s\\S]*?Produtos em ${tipo}([\\s\\S]*?)(?=•|Data:|$)`,
+            'i'
+        );
+        const secaoMatch = corpo.match(regexSecao);
+        if (!secaoMatch) return [];
+        const linhas = secaoMatch[1].split('\n');
+        return linhas
+            .map(l => l.trim())
+            .filter(l => l.startsWith('- '))
+            .map(l => l.slice(2).trim())
+            .filter(Boolean);
+    }
+
+    const produtosBaixo = extrairProdutos('Baixo Volume');
+    const produtosRuptura = extrairProdutos('Ruptura');
+
+    return { departamento, semana, lojas, produtosBaixo, produtosRuptura };
+}
+
+/* ================================================================
+   GERAÇÃO DO RELATÓRIO
+   Agrega os blocos processados em contadores e monta o texto
+   final em dois formatos: executivo (para diretoria) e equipe
+   (informativo, conversacional).
+   ================================================================ */
+function gerarRelatorio(blocos, limiteCritico, topN) {
+    const produtoBaixoCount = new Map();
+    const produtoRupturaCount = new Map();
+    const lojaBaixoCount = new Map();
+    const lojaRupturaCount = new Map();
+    const departamentosEncontrados = new Set();
+    const semanasEncontradas = new Map(); // semana -> ocorrências
+
+    let mensagensComLoja = 0;
+    let totalItensBaixo = 0;
+    let totalItensRuptura = 0;
+
+    blocos.forEach(bloco => {
+        if (bloco.departamento) departamentosEncontrados.add(bloco.departamento);
+        if (bloco.semana) {
+            semanasEncontradas.set(bloco.semana, (semanasEncontradas.get(bloco.semana) || 0) + 1);
+        }
+
+        bloco.produtosBaixo.forEach(p => {
+            produtoBaixoCount.set(p, (produtoBaixoCount.get(p) || 0) + 1);
+        });
+        bloco.produtosRuptura.forEach(p => {
+            produtoRupturaCount.set(p, (produtoRupturaCount.get(p) || 0) + 1);
+        });
+
+        totalItensBaixo += bloco.produtosBaixo.length;
+        totalItensRuptura += bloco.produtosRuptura.length;
+
+        if (bloco.lojas.length > 0) {
+            mensagensComLoja++;
+            bloco.lojas.forEach(loja => {
+                lojaBaixoCount.set(loja, (lojaBaixoCount.get(loja) || 0) + bloco.produtosBaixo.length);
+                lojaRupturaCount.set(loja, (lojaRupturaCount.get(loja) || 0) + bloco.produtosRuptura.length);
+            });
+        }
+    });
+
+    // Semana predominante entre as mensagens (fallback: semana atual)
+    let semanaRelatorio = SEMANA_FALLBACK;
+    if (semanasEncontradas.size > 0) {
+        semanaRelatorio = [...semanasEncontradas.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    }
+
+    // Lista unificada de lojas (união dos dois mapas)
+    const todasLojas = new Set([...lojaBaixoCount.keys(), ...lojaRupturaCount.keys()]);
+    const lojaTotalCount = new Map();
+    todasLojas.forEach(loja => {
+        const total = (lojaBaixoCount.get(loja) || 0) + (lojaRupturaCount.get(loja) || 0);
+        lojaTotalCount.set(loja, total);
+    });
+
+    const ordenarDesc = (mapa) => [...mapa.entries()].sort((a, b) => b[1] - a[1]);
+
+    const rankingBaixo = ordenarDesc(produtoBaixoCount).slice(0, topN);
+    const rankingRuptura = ordenarDesc(produtoRupturaCount).slice(0, topN);
+    const rankingLojaBaixo = ordenarDesc(lojaBaixoCount);
+    const rankingLojaRuptura = ordenarDesc(lojaRupturaCount);
+    const lojasCriticas = ordenarDesc(lojaTotalCount).filter(([, total]) => total >= limiteCritico);
+
+    // ----------------------------------------------------------
+    // Montagem do texto final (estilo e-mail profissional)
+    // ----------------------------------------------------------
+    const hoje = new Date().toLocaleDateString('pt-BR');
+    let texto = '';
+
+    texto += `Assunto: Relatório Semanal de Ocorrências — Semana ${semanaRelatorio}\n\n`;
+    texto += `Prezados,\n\n`;
+    texto += `Segue o resumo consolidado das ocorrências reportadas pelas lojas ${departamentosEncontrados.size > 0 ? '(' + [...departamentosEncontrados].join(', ') + ') ' : ''}referente à Semana ${semanaRelatorio}.\n\n`;
+
+    texto += `RESUMO GERAL\n`;
+    texto += `- Mensagens processadas: ${blocos.length}\n`;
+    texto += `- Lojas identificadas: ${todasLojas.size}\n`;
+    texto += `- Total de itens em Baixo Volume: ${totalItensBaixo}\n`;
+    texto += `- Total de itens em Ruptura: ${totalItensRuptura}\n\n`;
+
+    texto += `PRODUTOS MAIS RECORRENTES — BAIXO VOLUME\n`;
+    if (rankingBaixo.length > 0) {
+        rankingBaixo.forEach(([produto, count], i) => {
+            texto += `${i + 1}. ${produto} — ${count} ocorrência${count > 1 ? 's' : ''}\n`;
+        });
+    } else {
+        texto += `Nenhum produto reportado em Baixo Volume.\n`;
+    }
+    texto += `\n`;
+
+    texto += `PRODUTOS MAIS RECORRENTES — RUPTURA\n`;
+    if (rankingRuptura.length > 0) {
+        rankingRuptura.forEach(([produto, count], i) => {
+            texto += `${i + 1}. ${produto} — ${count} ocorrência${count > 1 ? 's' : ''}\n`;
+        });
+    } else {
+        texto += `Nenhum produto reportado em Ruptura.\n`;
+    }
+    texto += `\n`;
+
+    texto += `LOJA COM MAIS OCORRÊNCIAS DE BAIXO VOLUME\n`;
+    texto += rankingLojaBaixo.length > 0
+        ? `${rankingLojaBaixo[0][0]} — ${rankingLojaBaixo[0][1]} item${rankingLojaBaixo[0][1] > 1 ? 's' : ''}\n\n`
+        : `Não identificada.\n\n`;
+
+    texto += `LOJA COM MAIS OCORRÊNCIAS DE RUPTURA\n`;
+    texto += rankingLojaRuptura.length > 0
+        ? `${rankingLojaRuptura[0][0]} — ${rankingLojaRuptura[0][1]} item${rankingLojaRuptura[0][1] > 1 ? 's' : ''}\n\n`
+        : `Não identificada.\n\n`;
+
+    texto += `LOJAS CRÍTICAS (≥ ${limiteCritico} itens no total)\n`;
+    if (lojasCriticas.length > 0) {
+        lojasCriticas.forEach(([loja, total]) => {
+            texto += `- ${loja} — ${total} itens\n`;
+        });
+    } else {
+        texto += `Nenhuma loja atingiu o limite configurado.\n`;
+    }
+    texto += `\n`;
+
+    if (mensagensComLoja < blocos.length) {
+        texto += `Observação: ${blocos.length - mensagensComLoja} mensagem(ns) não continham loja identificada e foram desconsideradas nas estatísticas por loja.\n\n`;
+    }
+
+    texto += `Qualquer dúvida, estou à disposição.\n\n`;
+    texto += `Atenciosamente,\n`;
+    texto += `Relatório gerado automaticamente em ${hoje}`;
+
+    // ----------------------------------------------------------
+    // FORMATO EXECUTIVO (para Diretoria)
+    // ----------------------------------------------------------
+    let textoExecutivo = `Assunto: Relatório Executivo — Semana ${semanaRelatorio}\n\n`;
+    textoExecutivo += `Prezados,\n\n`;
+    textoExecutivo += `Segue um resumo executivo das ocorrências da Semana ${SEMANA_FALLBACK}.\n\n`;
+
+    textoExecutivo += `SÍNTESE\n`;
+    textoExecutivo += `Total de lojas: ${todasLojas.size}\n`;
+    textoExecutivo += `Mensagens processadas: ${blocos.length}\n`;
+    textoExecutivo += `Itens em Baixo Volume: ${totalItensBaixo}\n`;
+    textoExecutivo += `Itens em Ruptura: ${totalItensRuptura}\n\n`;
+
+    textoExecutivo += `PRODUTOS MAIS RECORRENTES\n`;
+    textoExecutivo += `Baixo Volume:\n`;
+    rankingBaixo.forEach(([p, c], i) => {
+        textoExecutivo += `${i + 1}. ${p} — ${c}x\n`;
+    });
+    textoExecutivo += `\nRuptura:\n`;
+    rankingRuptura.forEach(([p, c], i) => {
+        textoExecutivo += `${i + 1}. ${p} — ${c}x\n`;
+    });
+    textoExecutivo += `\n`;
+
+    textoExecutivo += `LOJAS COM MAIOR IMPACTO\n`;
+    textoExecutivo += `Maior Baixo Volume: ${rankingLojaBaixo.length > 0 ? rankingLojaBaixo[0][0] + ' (' + rankingLojaBaixo[0][1] + ' itens)' : 'N/A'}\n`;
+    textoExecutivo += `Maior Ruptura: ${rankingLojaRuptura.length > 0 ? rankingLojaRuptura[0][0] + ' (' + rankingLojaRuptura[0][1] + ' itens)' : 'N/A'}\n\n`;
+
+    textoExecutivo += `LOJAS EM ESTADO CRÍTICO (≥ ${limiteCritico} itens)\n`;
+    textoExecutivo += `Total: ${lojasCriticas.length}\n`;
+    lojasCriticas.forEach(([loja, total]) => {
+        textoExecutivo += `• ${loja}: ${total}\n`;
+    });
+
+    textoExecutivo += `\nAtenciosamente,\nSistema Fini — ${hoje}`;
+
+    // ----------------------------------------------------------
+    // FORMATO PARA EQUIPE (conversacional, informativo)
+    // ----------------------------------------------------------
+    const produtosCriticos = rankingBaixo.slice(0, 3).map(([p]) => p)
+        .concat(rankingRuptura.slice(0, 2).map(([p]) => p))
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .slice(0, 3);
+    const nomesProdutoscrit = produtosCriticos.map(p => p.split(' ')[0]).join(', ');
+
+    let textoEquipe = `Pessoal,\n\n`;
+    textoEquipe += `Já foi sinalizado que temos ${lojasCriticas.length} lojas em estado crítico, e a grande maioria delas está faltando ${nomesProdutoscrit}.\n\n`;
+
+    textoEquipe += `Segue o detalhamento:\n\n`;
+
+    textoEquipe += `NÚMEROS DA SEMANA ${semanaRelatorio}\n`;
+    textoEquipe += `• ${todasLojas.size} lojas reportando ocorrências\n`;
+    textoEquipe += `• ${totalItensBaixo} produtos em falta\n`;
+    textoEquipe += `• ${totalItensRuptura} produtos em ruptura\n\n`;
+
+    textoEquipe += `PRODUTOS MAIS FALTANDO\n`;
+    rankingBaixo.forEach(([p, c], i) => {
+        textoEquipe += `${i + 1}. ${p} (${c}x)\n`;
+    });
+    textoEquipe += `\n`;
+
+    textoEquipe += `PRODUTOS EM RUPTURA\n`;
+    rankingRuptura.forEach(([p, c], i) => {
+        textoEquipe += `${i + 1}. ${p} (${c}x)\n`;
+    });
+    textoEquipe += `\n`;
+
+    textoEquipe += `LOJAS EM ALERTA\n`;
+    lojasCriticas.slice(0, 5).forEach(([loja, total]) => {
+        textoEquipe += `• ${loja} — ${total} itens\n`;
+    });
+    if (lojasCriticas.length > 5) {
+        textoEquipe += `• +${lojasCriticas.length - 5} lojas mais\n`;
+    }
+    textoEquipe += `\n`;
+
+    textoEquipe += `A loja com maior ruptura é a ${rankingLojaRuptura.length > 0 ? rankingLojaRuptura[0][0] : 'N/A'} (${rankingLojaRuptura.length > 0 ? rankingLojaRuptura[0][1] : 0} itens).\n`;
+    textoEquipe += `Recomenda-se reforço na distribuição das principais balas e verificação com a logística.\n\n`;
+    textoEquipe += `Abraço,\nSistema Fini`;
+
+    return {
+        texto,
+        textoExecutivo,
+        textoEquipe,
+        stats: {
+            mensagens: blocos.length,
+            lojas: todasLojas.size,
+            totalItensBaixo,
+            totalItensRuptura
+        }
+    };
+}
+
+/* ================================================================
+   INTERAÇÃO COM A INTERFACE
+   ================================================================ */
+const toast = document.getElementById('toast');
+function mostrarToast(mensagem) {
+    toast.textContent = mensagem;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+const warningBox = document.getElementById('warningBox');
+const statsCard = document.getElementById('statsCard');
+const formatCard = document.getElementById('formatCard');
+const reportBox = document.getElementById('reportBox');
+const reportOutput = document.getElementById('reportOutput');
+const reportTitle = document.getElementById('reportTitle');
+
+let relatorioAtual = null;
+
+const btnFormatExecutivo = document.getElementById('btnFormatExecutivo');
+const btnFormatEquipe = document.getElementById('btnFormatEquipe');
+
+// Trocar formato de exibição
+function setFormat(format) {
+    if (!relatorioAtual) return;
+    
+    btnFormatExecutivo.classList.remove('active');
+    btnFormatEquipe.classList.remove('active');
+    
+    if (format === 'executivo') {
+        btnFormatExecutivo.classList.add('active');
+        reportOutput.value = relatorioAtual.textoExecutivo;
+        reportTitle.textContent = 'RELATÓRIO EXECUTIVO — COPIE E COLE NO E-MAIL';
+    } else {
+        btnFormatEquipe.classList.add('active');
+        reportOutput.value = relatorioAtual.textoEquipe;
+        reportTitle.textContent = 'MENSAGEM PARA EQUIPE — COPIE E COLE';
+    }
+}
+
+btnFormatExecutivo.addEventListener('click', () => setFormat('executivo'));
+btnFormatEquipe.addEventListener('click', () => setFormat('equipe'));
+
+document.getElementById('btnGerar').addEventListener('click', () => {
+    const textoBruto = document.getElementById('rawInput').value;
+    const limiteCritico = parseInt(document.getElementById('cfgCritico').value, 10) || 5;
+    const topN = parseInt(document.getElementById('cfgTopN').value, 10) || 5;
+
+    const blocos = parseMensagens(textoBruto);
+
+    if (blocos.length === 0) {
+        warningBox.style.display = 'block';
+        statsCard.style.display = 'none';
+        formatCard.style.display = 'none';
+        reportBox.style.display = 'none';
+        return;
+    }
+    warningBox.style.display = 'none';
+
+    const resultado = gerarRelatorio(blocos, limiteCritico, topN);
+    relatorioAtual = resultado;
+
+    document.getElementById('statMensagens').textContent = resultado.stats.mensagens;
+    document.getElementById('statLojas').textContent = resultado.stats.lojas;
+    document.getElementById('statBaixo').textContent = resultado.stats.totalItensBaixo;
+    document.getElementById('statRuptura').textContent = resultado.stats.totalItensRuptura;
+    statsCard.style.display = 'block';
+
+    // Mostrar seletor de formato e começar com Executivo
+    formatCard.style.display = 'block';
+    setFormat('executivo');
+    reportBox.style.display = 'block';
+    formatCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* ================================================================
+   BOTÃO COPIAR
+   ================================================================ */
+document.getElementById('btnCopiar').addEventListener('click', () => {
+    const texto = reportOutput.value;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(() => {
+            mostrarToast('Relatório copiado');
+        }).catch(() => copiarFallback());
+    } else {
+        copiarFallback();
+    }
+    function copiarFallback() {
+        reportOutput.removeAttribute('readonly');
+        reportOutput.select();
+        reportOutput.setSelectionRange(0, 99999);
+        try {
+            document.execCommand('copy');
+            mostrarToast('Relatório copiado');
+        } catch (e) {
+            mostrarToast('Não foi possível copiar');
+        }
+        reportOutput.setAttribute('readonly', true);
+    }
+});
+
+/* ================================================================
+   BOTÃO LIMPAR TUDO
+   ================================================================ */
+document.getElementById('btnLimpar').addEventListener('click', () => {
+    document.getElementById('rawInput').value = '';
+    reportOutput.value = '';
+    reportBox.style.display = 'none';
+    statsCard.style.display = 'none';
+    formatCard.style.display = 'none';
+    warningBox.style.display = 'none';
+    relatorioAtual = null;
+    document.getElementById('cfgCritico').value = 5;
+    document.getElementById('cfgTopN').value = 5;
+    btnFormatExecutivo.classList.add('active');
+    btnFormatEquipe.classList.remove('active');
+    mostrarToast('Tudo limpo');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
