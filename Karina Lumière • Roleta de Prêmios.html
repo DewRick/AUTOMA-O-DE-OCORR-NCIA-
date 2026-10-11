@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Karina Lumière • Roleta de Prêmios</title>
+<style>
+/* ===== NOVO VISUAL (v2) ===== */
+:root{--bg1:#fff0f5;--bg2:#ffd6e6;--card:rgba(255,255,255,.88);--card2:#fff;--tx:#3a2430;--pk:#d6336c;--pk2:#f06595;--gold:#c9a24b;--mut:#8a6a77;--bd:#f3c9d8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#1e1218;--bg2:#3a1a2b;--card:rgba(43,26,35,.9);--card2:#38212c;--tx:#fbe9f0;--mut:#c9a3b3;--bd:#5a3446}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));background-attachment:fixed;display:flex;justify-content:center;padding:14px;overflow-x:hidden}
+.fl{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.fl i{position:absolute;bottom:-40px;font-style:normal;opacity:.5;animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-115vh) rotate(40deg);opacity:0}}
+.c{position:relative;z-index:1;width:100%;max-width:440px;background:var(--card);backdrop-filter:blur(10px);border-radius:26px;padding:20px 18px 24px;border:1px solid var(--bd);box-shadow:0 18px 50px rgba(214,51,108,.18);animation:enter .7s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes enter{from{opacity:0;transform:translateY(30px) scale(.96)}}
+.brand{text-align:center;margin-bottom:6px}
+.brand svg{width:150px;animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.eye{transform-origin:100px 58px;animation:blink 5s infinite}@keyframes blink{92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.brand b{display:block;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:1.5rem;color:var(--pk);letter-spacing:.5px}
+.brand small{color:var(--mut);letter-spacing:3px;font-size:.62rem;text-transform:uppercase}
+.dots{display:flex;gap:6px;justify-content:center;margin:10px 0 14px}
+.dots i{width:22px;height:5px;border-radius:5px;background:var(--bd);transition:.4s}.dots i.on{background:var(--pk);width:34px}
+h1{font-size:1.3rem;margin:0 0 4px;text-align:center}
+p{color:var(--mut);text-align:center;margin:0 0 14px;line-height:1.4}
+.step:not(.hide)>*{animation:up .55s both}
+.step:not(.hide)>*:nth-child(2){animation-delay:.07s}.step:not(.hide)>*:nth-child(3){animation-delay:.14s}.step:not(.hide)>*:nth-child(4){animation-delay:.21s}.step:not(.hide)>*:nth-child(5){animation-delay:.28s}.step:not(.hide)>*:nth-child(6){animation-delay:.35s}
+@keyframes up{from{opacity:0;transform:translateY(18px)}}
+.hide{display:none!important}
+input{width:100%;padding:14px;margin-bottom:10px;border:1.5px solid var(--bd);border-radius:14px;font-size:1rem;background:var(--card2);color:var(--tx);transition:.25s}
+input:focus{outline:0;border-color:var(--pk);box-shadow:0 0 0 4px rgba(214,51,108,.15);transform:scale(1.015)}
+button{width:100%;padding:15px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--pk2),var(--pk));color:#fff;font-size:1rem;font-weight:700;cursor:pointer;margin-top:6px;box-shadow:0 8px 20px rgba(214,51,108,.35);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+button::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shine 3.2s infinite}
+@keyframes shine{60%,100%{left:130%}}
+button:active{transform:scale(.96)}button:disabled{opacity:.55}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;background:var(--card2);color:var(--tx);border:1.5px solid var(--bd);margin:0 0 9px;box-shadow:none;font-weight:600}
+.opt::after{display:none}
+.opt.on{background:linear-gradient(135deg,var(--pk2),var(--pk));color:#fff;border-color:var(--pk);animation:pop .4s}
+.opt .e{font-size:1.5rem}.opt .pr{margin-left:auto;font-weight:800;opacity:.85}
+.cat{padding:20px 16px;font-size:1.1rem}.cat small{display:block;font-weight:400;opacity:.7;font-size:.78rem}
+@keyframes pop{50%{transform:scale(1.07)}}
+.err{color:#e03131;text-align:center;font-size:.9rem;min-height:1.1em;margin:2px 0}
+.chips{display:flex;gap:8px;margin:12px 0}
+.chip{flex:1;background:var(--card2);border:1px solid var(--bd);border-radius:14px;padding:10px 4px;text-align:center;font-size:.72rem;color:var(--mut)}
+.chip b{display:block;font-size:1.3rem}
+.tip{background:var(--card2);border:1px dashed var(--pk2);border-radius:16px;padding:12px 14px;font-size:.88rem;line-height:1.45;margin-top:10px}
+.tip b{color:var(--pk)}
+.bar{height:7px;background:var(--bd);border-radius:7px;margin-bottom:14px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pk2),var(--gold));border-radius:7px;transition:width .5s}
+/* NOVO: roleta horizontal estilo caça-níqueis */
+.lamps{display:flex;justify-content:space-between;margin:0 6px 8px}
+.lamps i{width:10px;height:10px;border-radius:50%;background:var(--gold);animation:lamp 1s infinite}
+.lamps i:nth-child(odd){animation-delay:.5s}@keyframes lamp{50%{opacity:.25;box-shadow:none}0%{box-shadow:0 0 10px var(--gold)}}
+#slot{display:flex;gap:8px;padding:12px;background:linear-gradient(135deg,#7a1f45,#c2255c);border-radius:20px;box-shadow:inset 0 4px 14px rgba(0,0,0,.35),0 10px 24px rgba(194,37,92,.35)}
+.sc{flex:1;min-width:0;background:#fff7fa;color:#3a2430;border-radius:14px;padding:14px 4px 12px;text-align:center;transition:transform .12s,opacity .3s,box-shadow .12s;border:3px solid transparent}
+.sc .ic{font-size:2.3rem;display:block}.sc .nm{font-size:.74rem;font-weight:700;line-height:1.15;margin-top:4px;min-height:2.4em;word-break:break-word}.sc .pr{font-size:.72rem;color:#8a6a77}
+.sc.on{transform:scale(1.09);border-color:var(--gold);box-shadow:0 0 22px var(--gold);background:#fff}
+.sc.dim{opacity:.35;transform:scale(.92)}
+.sc.win{animation:pop .7s 2;border-color:var(--gold);box-shadow:0 0 30px var(--gold)}
+.arrow{text-align:center;color:var(--pk);font-size:1.6rem;animation:bounce 1s infinite}@keyframes bounce{50%{transform:translateY(6px)}}
+/* NOVO: ticket do prêmio */
+.ticket{background:var(--card2);border:2px dashed var(--pk2);border-radius:20px;padding:18px 14px;text-align:center;position:relative;margin-bottom:12px}
+.ticket::before,.ticket::after{content:"";position:absolute;top:50%;width:22px;height:22px;border-radius:50%;background:var(--bg1);border:2px dashed var(--pk2);margin-top:-11px}
+.ticket::before{left:-13px}.ticket::after{right:-13px}
+.big{font-size:3rem;font-weight:900;background:linear-gradient(135deg,var(--pk),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.1}
+.big.pop{animation:pop .6s}
+.old{text-decoration:line-through;opacity:.6}
+.badge{display:inline-block;background:var(--pk);color:#fff;border-radius:20px;padding:5px 12px;font-size:.78rem;margin-top:8px}
+.care{text-align:left;font-size:.86rem;line-height:1.5;margin:12px 0 4px;padding-left:18px;color:var(--tx)}
+.care li{margin-bottom:4px}
+.pulse{animation:pulse 1.6s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.6)}100%{box-shadow:0 0 0 18px rgba(37,211,102,0)}}
+.wa{background:linear-gradient(135deg,#25d366,#128c7e)}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:9;display:none}
+</style></head><body>
+<div class="fl" id="fl"></div><canvas id="cf"></canvas>
+<div class="c">
+
+<script>
+/* ===== CONFIGURAÇÃO — EDITE AQUI ===== */
+const WHATSAPP = "5521998882213";   // número da Karina (55 + DDD + número)
+const DIAS_VALIDADE = 14;           // prazo para resgatar
+/* categorias e serviços (nome, preço em R$) */
+const CATEGORIAS=[
+ {nome:"Depilação",emoji:"🌸",sub:"Buço, axila, virilha, pernas e combos",itens:[
+  {nome:"Buço",preco:30},{nome:"Facial",preco:50},{nome:"Axila",preco:30},{nome:"Faixa",preco:35},
+  {nome:"Virilha",preco:55},{nome:"Virilha cavada",preco:60},{nome:"Virilha total",preco:65},
+  {nome:"Nádegas",preco:35},{nome:"½ Perna",preco:50},{nome:"Perna inteira",preco:65},
+  {nome:"Axila + Buço",preco:50},{nome:"Axila + Virilha total",preco:85},
+  {nome:"Axila + Virilha total + ½ Perna",preco:135},{nome:"Virilha + Interno de coxa",preco:95}]},
+ {nome:"Design de Sobrancelha",emoji:"👁️",sub:"Design, henna e brow lamination",itens:[
+  {nome:"Design simples",preco:40},{nome:"Design com henna",preco:45},
+  {nome:"Brow lamination s/ coloração",preco:65},{nome:"Brow lamination com coloração",preco:80}]}
+];
+const PROCEDIMENTOS=CATEGORIAS.flatMap(c=>c.itens.map(i=>({nome:i.nome,preco:i.preco,cat:c.nome})));
+/* desconto sorteado de 11 a 15%; peso (p) em %. O 15% é raro, mas possível */
+const DESCONTOS=[{v:11,p:25},{v:12,p:25},{v:13,p:25},{v:14,p:20},{v:15,p:5}];
+const PERGUNTAS=[
+ {q:"Qual seu estilo?",o:["Natural","Marcante","Clássico"],d:"Sobrancelhas bem desenhadas podem mudar a expressão do rosto inteiro, deixando o olhar mais aberto e harmonioso."},
+ {q:"Quando você se cuida mais?",o:["Manhã","Tarde","Noite"],d:"Hidratar a pele todos os dias ajuda a depilação a ficar mais confortável e reduz a irritação."},
+ {q:"Qual é seu humor hoje?",o:["Animada","Tranquila","Corrida"],d:"Reservar um momento só pra você faz bem: autocuidado também é amor-próprio. 💗"}
+];
+/* NOVO: cuidados pós-procedimento (dicas gerais) */
+const CUIDADOS={
+ "Depilação":["Hidrate a pele todos os dias para manter a maciez.","Evite sol forte, sauna e exercício intenso nas primeiras 24h.","Esfolie suavemente 2 a 3 dias depois para prevenir pelos encravados.","Prefira roupas leves e confortáveis no dia."],
+ "Design de Sobrancelha":["Evite maquiagem e produtos na região por 24h.","Evite vapor, sauna e água muito quente no primeiro dia.","Não coce nem esfregue a área tratada.","Nos tratamentos com henna ou lamination, siga a orientação da Karina para o tempo sem molhar."]
+};
+/* ===================================== */
+</script>
+
+<div class="brand">
+ <svg viewBox="0 0 200 92" aria-hidden="true"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#f783ac"/><stop offset="1" stop-color="#a61e4d"/></linearGradient></defs>
+  <path d="M22 36 Q100 -8 178 32" stroke="url(#g)" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <g class="eye"><path d="M30 62 Q100 22 170 62 Q100 90 30 62Z" fill="#fff" stroke="#a61e4d" stroke-width="3"/>
+  <circle cx="100" cy="58" r="15" fill="#6b3a2a"/><circle cx="100" cy="58" r="6.5" fill="#1a0f0f"/><circle cx="95" cy="53" r="3.2" fill="#fff"/>
+  <g stroke="#a61e4d" stroke-width="3" stroke-linecap="round"><path d="M45 49l-8-11M65 40l-5-13M85 34l-3-14M100 32v-16M115 34l3-14M135 40l5-13M155 49l8-11"/></g></g>
+ </svg>
+ <b>Karina Lumière</b><small>Realce sua essência</small>
+</div>
+<div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+
+<div id="s1" class="step">
+  <h1>🎁 Gire e ganhe um desconto!</h1><p>Cadastre-se, escolha seus serviços e descubra seu prêmio exclusivo.</p>
+  <div class="chips"><div class="chip"><b>🎰</b>Roleta de prêmios</div><div class="chip"><b>🎁</b>Descontos de 11 a 15%</div><div class="chip"><b>⏳</b>Válido por 14 dias</div></div>
+  <input id="nome" placeholder="Seu nome" autocomplete="name">
+  <input id="tel" placeholder="Telefone / WhatsApp (com DDD)" type="tel" inputmode="numeric" autocomplete="tel">
+  <input id="mail" placeholder="E-mail (opcional)" type="email">
+  <div class="err" id="e1"></div><button onclick="step1()">Quero participar ✨</button>
+  <div class="tip"><b>💡 Você sabia?</b> A depilação feita por profissional dura mais que a lâmina, deixa a pele mais lisa e o crescimento dos pelos fica mais fino.</div>
+</div>
+
+<div id="s2" class="step hide">
+  <h1 id="t2">O que você quer fazer?</h1><p id="p2">Escolha uma categoria</p>
+  <div id="cats"></div>
+  <div id="lista" class="hide"></div>
+  <div class="err" id="e2"></div>
+  <button id="b2" class="hide" onclick="step2()">Continuar (até 3 serviços)</button>
+  <button id="bv" class="opt hide" style="justify-content:center" onclick="voltarCat()">← Voltar</button>
+</div>
+
+<div id="s3" class="step hide">
+  <div class="bar"><i id="pb"></i></div>
+  <h1 id="pq"></h1><p>Só pra se divertir 😉</p><div id="po"></div>
+  <div class="tip" id="pd"></div>
+</div>
+
+<div id="s4" class="step hide">
+  <h1>Hora de girar! 🎰</h1><p>Seus serviços estão na roleta. Qual será o sorteado?</p>
+  <div class="lamps"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div id="slot"></div>
+  <div class="arrow">▲</div>
+  <button id="girar" class="pulse" onclick="girar()">GIRAR AGORA</button>
+</div>
+
+<div id="s5" class="step hide">
+  <h1>🎉 Parabéns, <span id="rn"></span>!</h1>
+  <p id="rp"></p>
+  <div class="ticket"><div class="big" id="rd">–</div><div id="rval" style="margin-top:6px"></div><span class="badge" id="rv"></span></div>
+  <ul class="care" id="care"></ul>
+  <button class="wa pulse" onclick="resgatar()">💬 Resgatar prêmio no WhatsApp</button>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let escolhidos=[],premio=null,d1,d2,qi=0,girou=false;
+const fmt=d=>d.toLocaleDateString("pt-BR");
+const brl=v=>"R$ "+v.toFixed(2).replace(".",",");
+const CORES=["#d6336c","#f783ac","#c9a24b","#ff8787","#7048e8","#e64980"];
+/* NOVO: corações/estrelas flutuando ao fundo */
+(function(){const f=$("fl");["💗","✨","🌸","💖","✨","🌷"].forEach((e,i)=>{for(let k=0;k<3;k++){const s=document.createElement("i");s.textContent=e;
+ s.style.left=Math.random()*100+"%";s.style.fontSize=(14+Math.random()*18)+"px";s.style.animationDuration=(9+Math.random()*10)+"s";s.style.animationDelay=(-Math.random()*14)+"s";f.appendChild(s)}})})();
+/* NOVO: indicador de etapas */
+function show(n){["s1","s2","s3","s4","s5"].forEach(x=>$(x).classList.toggle("hide",x!="s"+n));
+ [...$("dots").children].forEach((d,i)=>d.classList.toggle("on",i<=Math.min(n-1,3)));window.scrollTo({top:0,behavior:"smooth"})}
+show(1);
+
+function step1(){
+  const n=$("nome").value.trim(),t=$("tel").value.replace(/\D/g,"");
+  if(n.length<2)return $("e1").textContent="Digite seu nome";
+  if(t.length<10)return $("e1").textContent="Digite um telefone válido com DDD";
+  $("e1").textContent="";show(2);
+}
+/* NOVO: categoria -> serviços */
+const ICON=p=>/Brow/.test(p.nome)?"💫":/henna/i.test(p.nome)?"🌿":/Design/.test(p.nome)?"✏️":/Perna/.test(p.nome)?"🦵":/\+/.test(p.nome)?"🎀":/Axila/.test(p.nome)?"🌷":p.cat=="Depilação"?"🌸":"👁️";
+CATEGORIAS.forEach(c=>{const b=document.createElement("button");b.className="opt cat";b.innerHTML='<span class="e" style="font-size:2rem">'+c.emoji+'</span><span>'+c.nome+'<small>'+c.sub+'</small></span>';
+  b.onclick=()=>abrirCat(c);$("cats").appendChild(b)});
+function abrirCat(c){
+  escolhidos=[];$("e2").textContent="";$("t2").textContent=c.nome;$("p2").textContent="Escolha até 3 serviços que você ama ou quer experimentar";
+  $("cats").classList.add("hide");["lista","b2","bv"].forEach(x=>$(x).classList.remove("hide"));$("lista").innerHTML="";
+  c.itens.forEach(it=>{
+    const i=PROCEDIMENTOS.findIndex(p=>p.nome===it.nome&&p.cat===c.nome);
+    const b=document.createElement("button");b.className="opt";b.dataset.i=i;
+    b.innerHTML='<span class="e">'+ICON(PROCEDIMENTOS[i])+'</span><span>'+it.nome+'</span><span class="pr">'+brl(it.preco)+'</span>';
+    b.onclick=()=>{$("e2").textContent="";
+      if(escolhidos.includes(i))escolhidos=escolhidos.filter(x=>x!=i);
+      else if(escolhidos.length<3)escolhidos.push(i);
+      else $("e2").textContent="Máximo de 3 opções";
+      [...$("lista").children].forEach(el=>el.classList.toggle("on",escolhidos.includes(+el.dataset.i)))};
+    $("lista").appendChild(b)});
+}
+function voltarCat(){escolhidos=[];$("t2").textContent="O que você quer fazer?";$("p2").textContent="Escolha uma categoria";
+  $("cats").classList.remove("hide");["lista","b2","bv"].forEach(x=>$(x).classList.add("hide"))}
+function step2(){
+  if(escolhidos.length==0)return $("e2").textContent="Escolha pelo menos 1 serviço";
+  $("e2").textContent="";qi=0;show(3);pergunta();
+}
+function pergunta(){
+  const p=PERGUNTAS[qi];$("pq").textContent=p.q;$("pb").style.width=((qi+1)/PERGUNTAS.length*100)+"%";
+  $("pd").innerHTML="<b>💡 Dica de beleza:</b> "+p.d;$("po").innerHTML="";
+  p.o.forEach(t=>{const b=document.createElement("button");b.className="opt";b.textContent=t;
+    b.onclick=()=>{b.classList.add("on");setTimeout(()=>{qi++;if(qi<PERGUNTAS.length)pergunta();else{show(4);montarSlot()}},350)};$("po").appendChild(b)});
+}
+
+/* NOVO: roleta horizontal — luz percorre os cartões e para no sorteado */
+const itens=()=>escolhidos.map(i=>PROCEDIMENTOS[i]);
+function montarSlot(){
+  $("slot").innerHTML="";
+  itens().forEach(p=>{const d=document.createElement("div");d.className="sc";
+    d.innerHTML='<span class="ic">'+ICON(p)+'</span><div class="nm">'+p.nome+'</div><div class="pr">'+brl(p.preco)+'</div>';$("slot").appendChild(d)});
+}
+function sortearDesc(){let r=Math.random()*100,a=0;for(const d of DESCONTOS){a+=d.p;if(r<a)return d.v}return 11}
+function girar(){
+  if(girou)return;girou=true;const b=$("girar");b.disabled=true;b.classList.remove("pulse");b.textContent="Girando...";
+  const it=itens(),n=it.length,w=Math.floor(Math.random()*n),total=n*5+w,cards=[...$("slot").children];
+  premio=Object.assign({},it[w],{desc:sortearDesc()});
+  let s=0;(function passo(){
+    cards.forEach((c,i)=>c.classList.toggle("on",i==s%n));
+    if(s>=total){cards.forEach((c,i)=>{c.classList.remove("on");c.classList.add(i==w?"win":"dim")});confete();setTimeout(resultado,1900);return}
+    const delay=70+Math.pow(s/total,3)*480;s++;setTimeout(passo,delay);
+  })();
+}
+/* NOVO: confete */
+function confete(){const c=$("cf"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;c.style.display="block";
+ const P=Array.from({length:130},()=>({x:innerWidth/2,y:innerHeight*.4,vx:(Math.random()-.5)*15,vy:-Math.random()*15-4,r:4+Math.random()*5,c:CORES[Math.floor(Math.random()*CORES.length)]}));
+ let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*1.6)});if(++t<150)requestAnimationFrame(f);else c.style.display="none"})()}
+function resultado(){
+  const hoje=new Date();d1=fmt(hoje);const f=new Date(hoje);f.setDate(f.getDate()+DIAS_VALIDADE);d2=fmt(f);
+  $("rn").textContent=$("nome").value.trim().split(" ")[0];
+  $("rp").textContent="Você ganhou desconto em "+premio.nome;
+  $("rv").textContent="⏳ Resgate de "+d1+" até "+d2;
+  $("rval").innerHTML="";$("care").innerHTML=(CUIDADOS[premio.cat]||[]).map(t=>"<li>"+t+"</li>").join("");
+  show(5);
+  /* NOVO: contagem do desconto antes de revelar o valor final */
+  let i=0;const el=$("rd");el.classList.remove("pop");
+  const iv=setInterval(()=>{el.textContent=(11+Math.floor(Math.random()*5))+"% OFF";
+    if(++i>16){clearInterval(iv);el.textContent=premio.desc+"% OFF";el.classList.add("pop");confete();
+      $("rval").innerHTML='De <span class="old">'+brl(premio.preco)+'</span> por <b>'+brl(premio.preco*(1-premio.desc/100))+'</b>'}},90);
+}
+function resgatar(){
+  const mail=$("mail").value.trim();
+  const msg="Oi Karina, tudo bem? Meu nome é "+$("nome").value.trim()+" e ganhei no seu joguinho um desconto de "+premio.desc+"% em "+premio.nome+
+   " (de "+brl(premio.preco)+" por "+brl(premio.preco*(1-premio.desc/100))+"). Quero resgatar! Válido de "+d1+" até "+d2+"."+(mail?" E-mail: "+mail:"");
+  window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank");
+}
+</script>
+</div></body></html>
