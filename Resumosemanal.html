@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resumo Semanal de Ocorrências — Fini</title>
+<!--
+  NOVO ARQUIVO (não altera nenhum arquivo existente).
+  Resumo semanal: recebe o .zip exportado do WhatsApp, identifica ano e semana
+  pela data de cada ocorrência, e gera dashboard + textos prontos para envio.
+  Tudo roda no navegador: sem backend, sem bibliotecas externas.
+-->
+<style>
+/* ===== NOVO: estilos ===== */
+:root{
+  --bg:#f4f5f9; --card:#ffffff; --ink:#1a2033; --mut:#667089; --line:#dfe3ee;
+  --acc:#b3124f; --acc-soft:#fbe6ee;
+  --rup:#c62828; --rup-soft:#fdeaea;
+  --bv:#a86400; --bv-soft:#fff2d9;
+  --ok:#1b6e4a;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.5rem;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:1.05rem;margin:0 0 10px}
+.sub{color:var(--mut);margin:0 0 18px;max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.drop{display:block;border:2px dashed #b9c0d4;border-radius:10px;padding:26px 16px;text-align:center;cursor:pointer;background:#fafbfe}
+.drop:hover,.drop.over{border-color:var(--acc);background:var(--acc-soft)}
+.drop b{display:block;font-size:1.05rem;margin-bottom:2px}
+.drop span{color:var(--mut);font-size:.9rem}
+.drop input{position:absolute;left:-9999px}
+.status{margin:10px 0 0;font-size:.9rem;color:var(--mut)}
+.status.err{color:var(--rup);font-weight:600}
+details{margin-top:12px}
+summary{cursor:pointer;color:var(--mut);font-size:.9rem}
+textarea{width:100%;font:13px/1.45 Consolas,Menlo,monospace;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff;color:var(--ink)}
+button{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,.drop:focus-within{outline:3px solid #6aa5ff;outline-offset:2px}
+.ctrl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end}
+.ctrl label{display:block;font-size:.82rem;color:var(--mut);margin-bottom:3px}
+.ctrl select,.ctrl input{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .n{font-size:1.9rem;font-weight:700;line-height:1.1}
+.kpi .l{color:var(--mut);font-size:.85rem}
+.kpi.rup .n{color:var(--rup)} .kpi.bv .n{color:var(--bv)} .kpi.crit .n{color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th{text-align:left;font-weight:600;color:var(--mut);font-size:.82rem;border-bottom:1px solid var(--line);padding:6px 6px}
+td{padding:7px 6px;border-bottom:1px solid #eef0f6;vertical-align:middle}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#eef0f6;min-width:70px}
+.bar i{display:block;height:100%}
+.bar .r{background:var(--rup)} .bar .b{background:#e2a13a}
+.pill{display:inline-block;font-size:.75rem;padding:1px 8px;border-radius:99px;background:var(--acc-soft);color:var(--acc);font-weight:600;margin-left:6px}
+tr.crit td:first-child+td{font-weight:600}
+.empty{color:var(--mut);font-style:italic}
+.obs li{margin-bottom:4px}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.actions{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.actions .ok{color:var(--ok);font-weight:600;font-size:.9rem}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--mut);margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){button{transition:border-color .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Resumo semanal de ocorrências</h1>
+  <p class="sub">Envie o arquivo exportado do WhatsApp (.zip ou .txt). A página encontra as ocorrências, separa por semana e departamento e monta o resumo para enviar na segunda.</p>
+
+  <div class="card">
+    <label class="drop" id="drop" tabindex="-1">
+      <b>Escolher o arquivo .zip da conversa</b>
+      <span>ou arraste o arquivo para cá. Exporte o chat sem mídia para o arquivo ficar leve.</span>
+      <input type="file" id="file" accept=".zip,.txt,application/zip,text/plain">
+    </label>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+    <details>
+      <summary>Se o zip não abrir, cole o texto da conversa aqui</summary>
+      <textarea id="paste" rows="5" placeholder="Cole o conteúdo do arquivo .txt exportado"></textarea>
+      <div class="actions"><button id="btnPaste">Processar texto colado</button></div>
+    </details>
+  </div>
+
+  <div id="app" hidden>
+    <div class="card">
+      <div class="ctrl">
+        <div><label for="selWeek">Semana</label><select id="selWeek"></select></div>
+        <div><label for="selDept">Departamento</label><select id="selDept"></select></div>
+        <div><label for="inpCrit">Loja crítica a partir de (itens)</label><input type="number" id="inpCrit" min="1" value="5"></div>
+        <div><label for="selTop">Itens nos rankings</label><select id="selTop"><option>5</option><option>10</option><option>15</option></select></div>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+      <h2>Lojas mais afetadas</h2>
+      <div class="legend"><span><i style="background:var(--rup)"></i>Ruptura</span><span><i style="background:#e2a13a"></i>Baixo volume</span></div>
+      <div class="tw" id="tStores"></div>
+    </div>
+
+    <div class="card">
+      <h2>Piores itens</h2>
+      <div class="tw" id="tItems"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card"><h2>Itens com mais ruptura</h2><div id="lRup"></div></div>
+      <div class="card"><h2>Itens em mais baixo volume</h2><div id="lBv"></div></div>
+    </div>
+
+    <div class="card">
+      <h2>Resumo por departamento</h2>
+      <div class="tw" id="tDepts"></div>
+    </div>
+
+    <div class="card" id="cardObs">
+      <h2>Observações das lojas</h2>
+      <ul class="obs" id="lObs"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Texto para enviar</h2>
+      <div class="tabs" role="group" aria-label="Formato do texto">
+        <button id="tabEmail" aria-pressed="true">E-mail executivo</button>
+        <button id="tabZap" aria-pressed="false">Mensagem de WhatsApp</button>
+      </div>
+      <textarea id="out" rows="22" aria-label="Texto gerado"></textarea>
+      <div class="actions">
+        <button class="pri" id="btnCopy">Copiar texto</button>
+        <button id="btnClear">Escolher outro arquivo</button>
+        <span class="ok" id="copied" hidden>Texto copiado</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== NOVO: LÓGICA (leitura do zip, parser do WhatsApp, agregação) ===== */
+
+// --- Leitor de ZIP sem biblioteca: lê só o diretório central e o .txt da conversa ---
+async function readZipTxt(file){
+  const size=file.size;
+  const tailLen=Math.min(size,65557);
+  const tail=new DataView(await file.slice(size-tailLen,size).arrayBuffer());
+  let eocd=-1;
+  for(let i=tailLen-22;i>=0;i--){ if(tail.getUint32(i,true)===0x06054b50){eocd=i;break;} }
+  if(eocd<0) throw new Error('Este arquivo não parece ser um .zip válido.');
+  const total=tail.getUint16(eocd+10,true);
+  const cdSize=tail.getUint32(eocd+12,true);
+  const cdOff=tail.getUint32(eocd+16,true);
+  if(cdOff===0xFFFFFFFF||cdSize===0xFFFFFFFF) throw new Error('Zip muito grande. Exporte a conversa sem mídia.');
+  const cd=new DataView(await file.slice(cdOff,cdOff+cdSize).arrayBuffer());
+  const entries=[]; let p=0;
+  for(let n=0;n<total&&p+46<=cd.byteLength;n++){
+    if(cd.getUint32(p,true)!==0x02014b50) break;
+    const method=cd.getUint16(p+10,true);
+    const csize=cd.getUint32(p+20,true);
+    const usize=cd.getUint32(p+24,true);
+    const nlen=cd.getUint16(p+28,true), elen=cd.getUint16(p+30,true), clen=cd.getUint16(p+32,true);
+    const lho=cd.getUint32(p+42,true);
+    const name=new TextDecoder('utf-8').decode(new Uint8Array(cd.buffer,cd.byteOffset+p+46,nlen));
+    entries.push({name,method,csize,usize,lho});
+    p+=46+nlen+elen+clen;
+  }
+  const txts=entries.filter(e=>/\.txt$/i.test(e.name)).sort((a,b)=>b.usize-a.usize);
+  if(!txts.length) throw new Error('Não achei o arquivo .txt da conversa dentro do zip.');
+  const e=txts[0];
+  const lh=new DataView(await file.slice(e.lho,e.lho+30).arrayBuffer());
+  if(lh.getUint32(0,true)!==0x04034b50) throw new Error('Zip com estrutura inesperada.');
+  const start=e.lho+30+lh.getUint16(26,true)+lh.getUint16(28,true);
+  const raw=await file.slice(start,start+e.csize).arrayBuffer();
+  let buf;
+  if(e.method===0) buf=raw;
+  else if(e.method===8){
+    if(typeof DecompressionStream==='undefined') throw new Error('Este navegador não abre zip. Use o Chrome atualizado ou cole o texto abaixo.');
+    const stream=new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    buf=await new Response(stream).arrayBuffer();
+  } else throw new Error('Tipo de compressão do zip não suportado.');
+  return new TextDecoder('utf-8').decode(buf).replace(/^\uFEFF/,'');
+}
+
+// --- Utilidades ---
+const norm=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const normYear=y=>y<100?2000+y:y;
+function isoWeek(dt){
+  const d=new Date(Date.UTC(dt.getUTCFullYear(),dt.getUTCMonth(),dt.getUTCDate()));
+  const day=d.getUTCDay()||7;
+  d.setUTCDate(d.getUTCDate()+4-day);
+  const y=d.getUTCFullYear();
+  const w=Math.ceil(((d-Date.UTC(y,0,1))/864e5+1)/7);
+  return {y,w};
+}
+function weekRange(y,w){
+  const jan4=new Date(Date.UTC(y,0,4));
+  const mon=new Date(jan4); mon.setUTCDate(jan4.getUTCDate()-((jan4.getUTCDay()||7)-1)+(w-1)*7);
+  const sun=new Date(mon); sun.setUTCDate(mon.getUTCDate()+6);
+  return {mon,sun};
+}
+const p2=n=>String(n).padStart(2,'0');
+const fmtDM=d=>p2(d.getUTCDate())+'/'+p2(d.getUTCMonth()+1);
+
+// --- Separa o .txt em mensagens (aceita os formatos de export do Android e do iPhone) ---
+const RE_HEAD=/^\[?(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?[,\s]+(\d{1,2}):(\d{2})(?::\d{2})?(?:\s?[APap]\.?[Mm]\.?)?\]?\s*(?:-\s*)?([^:]{1,80}?):\s?(.*)$/;
+function parseChat(text){
+  const msgs=[]; let cur=null;
+  text.split(/\r?\n/).forEach(rawLine=>{
+    const line=rawLine.replace(/[\u200e\u200f\u202a-\u202e]/g,'');
+    const m=RE_HEAD.exec(line);
+    if(m){ cur={d:+m[1],mo:+m[2],y:m[3]?normYear(+m[3]):null,sender:m[6].trim(),lines:[m[7]]}; msgs.push(cur); }
+    else if(cur) cur.lines.push(line);
+  });
+  return msgs;
+}
+
+// --- Lê uma mensagem de ocorrência (retorna null se não for ocorrência) ---
+function parseOccurrence(msg){
+  const body=msg.lines.map(s=>s.trim());
+  const joined=body.join('\n');
+  if(!/COMUNICA[ÇC][ÃA]O DE OCORR/i.test(joined) && !/^LOJA:/im.test(joined)) return null;
+  let dept='SEM DEPARTAMENTO', labelWeek=null, store=null, section=null;
+  let d=msg.d, mo=msg.mo, y=msg.y;
+  const bv=[], rp=[], obs=[];
+  for(const l of body){
+    if(!l) continue;
+    let m;
+    if((m=/^([A-Za-zÀ-ÿ ]+?)\s*(\d+)?\s*\|\s*SEMANA\s*(\d+)/i.exec(l))){ dept=m[1].trim().toUpperCase(); labelWeek=+m[3]; continue; }
+    if(/^COMUNICA/i.test(l)) continue;
+    if((m=/^LOJA:\s*(.+)$/i.exec(l))){ store=m[1].trim(); section=null; continue; }
+    if((m=/^Data:\s*(\d{1,2})\/(\d{1,2})\/(\d{2,4})/i.exec(l))){ d=+m[1]; mo=+m[2]; y=normYear(+m[3]); section='obs'; continue; }
+    if(/^[•*]?\s*(OCORR[ÊE]NCIA DE|Produtos em)/i.test(l)){
+      if(/ruptura/i.test(l)) section='rp'; else if(/baixo\s*volume/i.test(l)) section='bv';
+      continue;
+    }
+    if(section!=='obs' && section && (m=/^[-–]\s*(.+)$/.exec(l))){
+      (section==='rp'?rp:bv).push(m[1].replace(/\s+/g,' ').trim());
+      continue;
+    }
+    obs.push(l); // linhas soltas (ex.: "Estoque zerado") viram observação
+  }
+  if(!store) return null;
+  return {sender:msg.sender,dept,labelWeek,store,d,mo,y,bv,rp,obs};
+}
+
+function parseAll(text){
+  const msgs=parseChat(text); const recs=[]; let ignored=0;
+  msgs.forEach(m=>{ const r=parseOccurrence(m); if(r) recs.push(r); else ignored++; });
+  const yc={}; recs.forEach(r=>{ if(r.y) yc[r.y]=(yc[r.y]||0)+1; });
+  const ys=Object.keys(yc).sort((a,b)=>yc[b]-yc[a]);
+  const defY=ys.length?+ys[0]:new Date().getFullYear();
+  recs.forEach(r=>{
+    if(!r.y) r.y=defY;
+    const dt=new Date(Date.UTC(r.y,r.mo-1,r.d));
+    const iw=isoWeek(dt);
+    r.date=dt; r.isoY=iw.y; r.week=iw.w;
+  });
+  return {recs,ignored,total:msgs.length};
+}
+
+// --- Agrega uma lista de ocorrências (uma semana, um ou todos os departamentos) ---
+function byCountThenName(a,b){ return b.n-a.n || a.name.localeCompare(b.name,'pt'); }
+function aggregate(recs){
+  const units=new Map();
+  recs.forEach(r=>{
+    const k=r.dept+'|'+norm(r.store);
+    let u=units.get(k);
+    if(!u){ u={dept:r.dept,store:r.store,sk:norm(r.store),bv:new Map(),rp:new Map(),obs:new Set(),msgs:0}; units.set(k,u); }
+    u.msgs++;
+    r.bv.forEach(i=>u.bv.set(norm(i),i));
+    r.rp.forEach(i=>u.rp.set(norm(i),i));
+    r.obs.forEach(o=>u.obs.add(o));
+  });
+  // item que aparece em ruptura não conta também como baixo volume na mesma loja
+  units.forEach(u=>u.rp.forEach((v,k)=>u.bv.delete(k)));
+
+  const storeMap=new Map(), bvMap=new Map(), rpMap=new Map(), allMap=new Map(), deptMap=new Map();
+  let totalBV=0,totalRP=0;
+  units.forEach(u=>{
+    const nb=u.bv.size, nr=u.rp.size;
+    totalBV+=nb; totalRP+=nr;
+    let s=storeMap.get(u.sk); if(!s){ s={store:u.store,bv:0,rp:0,depts:new Set()}; storeMap.set(u.sk,s); }
+    s.bv+=nb; s.rp+=nr; s.depts.add(u.dept);
+    let dp=deptMap.get(u.dept);
+    if(!dp){ dp={dept:u.dept,sset:new Set(),msgs:0,bv:0,rp:0,sm:new Map(),rm:new Map()}; deptMap.set(u.dept,dp); }
+    dp.sset.add(u.sk); dp.msgs+=u.msgs; dp.bv+=nb; dp.rp+=nr;
+    dp.sm.set(u.store,(dp.sm.get(u.store)||0)+nb+nr);
+    u.bv.forEach((name,k)=>{
+      const b=bvMap.get(k)||{name,n:0}; b.n++; bvMap.set(k,b);
+      const a=allMap.get(k)||{name,bv:0,rp:0,n:0}; a.bv++; a.n++; allMap.set(k,a);
+    });
+    u.rp.forEach((name,k)=>{
+      const b=rpMap.get(k)||{name,n:0}; b.n++; rpMap.set(k,b);
+      const a=allMap.get(k)||{name,bv:0,rp:0,n:0}; a.rp++; a.n++; allMap.set(k,a);
+      dp.rm.set(name,(dp.rm.get(name)||0)+1);
+    });
+  });
+  const stores=[...storeMap.values()].map(s=>({...s,depts:[...s.depts],total:s.bv+s.rp}))
+    .sort((a,b)=>b.total-a.total||a.store.localeCompare(b.store,'pt'));
+  const depts=[...deptMap.values()].map(d=>{
+    const ts=[...d.sm.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'pt'))[0];
+    const tr=[...d.rm.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'pt'))[0];
+    return {dept:d.dept,stores:d.sset.size,msgs:d.msgs,bv:d.bv,rp:d.rp,topStore:ts?ts[0]:'—',topRp:tr?tr[0]+' ('+tr[1]+'x)':'—'};
+  }).sort((a,b)=>a.dept.localeCompare(b.dept,'pt'));
+  const obs=[];
+  units.forEach(u=>{ if(u.obs.size) obs.push({store:u.store,dept:u.dept,text:[...u.obs].join('; ')}); });
+  return {
+    msgs:recs.length, storeCount:storeMap.size, totalBV, totalRP, stores, depts, obs,
+    bvItems:[...bvMap.values()].sort(byCountThenName),
+    rpItems:[...rpMap.values()].sort(byCountThenName),
+    allItems:[...allMap.values()].sort(byCountThenName)
+  };
+}
+
+// --- Montagem dos textos de envio ---
+function sigDate(){ const t=new Date(); return p2(t.getDate())+'/'+p2(t.getMonth()+1)+'/'+t.getFullYear(); }
+function ranked(list,n,suffix){ return list.length?list.slice(0,n).map((x,i)=>(i+1)+'. '+x.name+' — '+x.n+'x'+(suffix||'')).join('\n'):'—'; }
+function critList(agg,limit){ return agg.stores.filter(s=>s.total>=limit); }
+function topBy(agg,key){
+  const s=[...agg.stores].sort((a,b)=>b[key]-a[key]||a.store.localeCompare(b.store,'pt'))[0];
+  return s&&s[key]>0?s.store+' ('+s[key]+' itens)':'—';
+}
+function buildEmail(agg,ctx){
+  const {week,year,dept,limit,top}=ctx;
+  const crit=critList(agg,limit);
+  const L=[];
+  L.push('Assunto: Relatório Executivo — Semana '+week+(dept?' — '+dept:''));
+  L.push('','Prezados,','','Segue um resumo executivo das ocorrências da Semana '+week+'/'+year+(dept?' ('+dept+')':'')+'.','');
+  L.push('SÍNTESE','Total de lojas: '+agg.storeCount,'Mensagens processadas: '+agg.msgs,'Itens em Baixo Volume: '+agg.totalBV,'Itens em Ruptura: '+agg.totalRP,'');
+  L.push('PRODUTOS MAIS RECORRENTES','Baixo Volume:',ranked(agg.bvItems,top),'','Ruptura:',ranked(agg.rpItems,top),'');
+  L.push('LOJAS COM MAIOR IMPACTO','Maior Baixo Volume: '+topBy(agg,'bv'),'Maior Ruptura: '+topBy(agg,'rp'),'');
+  L.push('LOJAS EM ESTADO CRÍTICO (≥ '+limit+' itens)','Total: '+crit.length);
+  crit.slice(0,15).forEach(s=>L.push('• '+s.store+': '+s.total));
+  if(crit.length>15) L.push('• e mais '+(crit.length-15)+' loja(s)');
+  if(!dept && agg.depts.length>1){
+    L.push('','POR DEPARTAMENTO');
+    agg.depts.forEach(d=>L.push(d.dept+': '+d.stores+' loja(s), '+d.bv+' em baixo volume, '+d.rp+' em ruptura'));
+  }
+  if(agg.obs.length){
+    L.push('','OBSERVAÇÕES DAS LOJAS');
+    agg.obs.forEach(o=>L.push('• '+o.store+' ('+o.dept+'): '+o.text));
+  }
+  L.push('','Atenciosamente,','Sistema Fini — '+sigDate());
+  return L.join('\n');
+}
+function buildZap(agg,ctx){
+  const {week,year,dept,limit,top,range}=ctx;
+  const crit=critList(agg,limit);
+  const L=[];
+  L.push('*Resumo de ocorrências — Semana '+week+'/'+year+(dept?' — '+dept:'')+'*');
+  L.push(range);
+  L.push('','Lojas aferidas: '+agg.storeCount+' | Mensagens: '+agg.msgs);
+  L.push('Itens em ruptura: '+agg.totalRP+' | Itens em baixo volume: '+agg.totalBV);
+  L.push('','*Mais ruptura*',ranked(agg.rpItems,top));
+  L.push('','*Mais baixo volume*',ranked(agg.bvItems,top));
+  L.push('','*Lojas mais afetadas*');
+  L.push(agg.stores.length?agg.stores.slice(0,top).map((s,i)=>(i+1)+'. '+s.store+' — '+s.total+' itens ('+s.rp+' ruptura, '+s.bv+' baixo vol.)').join('\n'):'—');
+  L.push('','Lojas críticas (≥ '+limit+' itens): '+crit.length);
+  if(!dept && agg.depts.length>1){
+    L.push('','*Por departamento*');
+    agg.depts.forEach(d=>L.push(d.dept+': '+d.stores+' loja(s) | ruptura '+d.rp+' | baixo vol. '+d.bv));
+  }
+  if(agg.obs.length){
+    L.push('','*Observações*');
+    agg.obs.forEach(o=>L.push('• '+o.store+': '+o.text));
+  }
+  return L.join('\n');
+}
+
+/* ===== NOVO: INTERFACE ===== */
+if(typeof document!=='undefined'){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const S={recs:[],tab:'email'};
+
+function setStatus(msg,err){ const el=$('status'); el.textContent=msg; el.className='status'+(err?' err':''); }
+
+async function handleFile(file){
+  if(!file) return;
+  setStatus('Lendo '+file.name+'…');
+  try{
+    const text=/\.txt$/i.test(file.name)?(await file.text()).replace(/^\uFEFF/,''):await readZipTxt(file);
+    loadText(text);
+  }catch(e){ setStatus(e.message||String(e),true); }
+}
+
+function loadText(text){
+  const r=parseAll(text);
+  if(!r.recs.length){
+    $('app').hidden=true;
+    setStatus('Não encontrei nenhuma ocorrência neste arquivo. Confira se é a conversa certa e se as mensagens têm "COMUNICAÇÃO DE OCORRÊNCIA".',true);
+    return;
+  }
+  S.recs=r.recs;
+  const wk=new Map();
+  r.recs.forEach(x=>{ const k=x.isoY+'-'+x.week; const o=wk.get(k)||{y:x.isoY,w:x.week,n:0}; o.n++; wk.set(k,o); });
+  const weeks=[...wk.values()].sort((a,b)=>(b.y*100+b.w)-(a.y*100+a.w));
+  $('selWeek').innerHTML=weeks.map(o=>{
+    const g=weekRange(o.y,o.w);
+    return '<option value="'+o.y+'-'+o.w+'">Semana '+o.w+'/'+o.y+' ('+fmtDM(g.mon)+' a '+fmtDM(g.sun)+') — '+o.n+' msg</option>';
+  }).join('');
+  fillDepts();
+  setStatus(r.recs.length+' ocorrência(s) encontrada(s) em '+weeks.length+' semana(s). Mostrando a mais recente.');
+  $('app').hidden=false;
+  render();
+}
+
+function weekRecs(){
+  const [y,w]=$('selWeek').value.split('-').map(Number);
+  return {y,w,recs:S.recs.filter(r=>r.isoY===y&&r.week===w)};
+}
+function fillDepts(){
+  const {recs}=weekRecs();
+  const cur=$('selDept').value;
+  const ds=[...new Set(recs.map(r=>r.dept))].sort((a,b)=>a.localeCompare(b,'pt'));
+  $('selDept').innerHTML='<option value="">Todos</option>'+ds.map(d=>'<option>'+esc(d)+'</option>').join('');
+  if(ds.includes(cur)) $('selDept').value=cur;
+}
+
+function barHtml(rp,bv,max){
+  const t=max||1;
+  return '<div class="bar" title="'+rp+' ruptura, '+bv+' baixo volume"><i class="r" style="width:'+(rp/t*100)+'%"></i><i class="b" style="width:'+(bv/t*100)+'%"></i></div>';
+}
+function listHtml(list,top){
+  if(!list.length) return '<p class="empty">Nenhum item.</p>';
+  return '<table><tbody>'+list.slice(0,top).map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td class="num">'+x.n+'x</td></tr>').join('')+'</tbody></table>';
+}
+
+function render(){
+  const {y,w,recs:wr}=weekRecs();
+  const dept=$('selDept').value;
+  const recs=dept?wr.filter(r=>r.dept===dept):wr;
+  const limit=Math.max(1,+$('inpCrit').value||5);
+  const top=+$('selTop').value;
+  try{ localStorage.setItem('resumoSemanal',JSON.stringify({limit,top})); }catch(e){}
+  const agg=aggregate(recs);
+  const crit=critList(agg,limit);
+
+  $('kpis').innerHTML=
+    '<div class="kpi"><div class="n">'+agg.storeCount+'</div><div class="l">Lojas aferidas</div></div>'+
+    '<div class="kpi"><div class="n">'+agg.msgs+'</div><div class="l">Mensagens da semana</div></div>'+
+    '<div class="kpi rup"><div class="n">'+agg.totalRP+'</div><div class="l">Itens em ruptura</div></div>'+
+    '<div class="kpi bv"><div class="n">'+agg.totalBV+'</div><div class="l">Itens em baixo volume</div></div>'+
+    '<div class="kpi crit"><div class="n">'+crit.length+'</div><div class="l">Lojas críticas (≥ '+limit+')</div></div>';
+
+  const max=agg.stores.length?agg.stores[0].total:1;
+  $('tStores').innerHTML=agg.stores.length?
+    '<table><thead><tr><th>#</th><th>Loja</th><th class="num">Ruptura</th><th class="num">Baixo vol.</th><th class="num">Total</th><th></th></tr></thead><tbody>'+
+    agg.stores.slice(0,top).map((s,i)=>'<tr class="'+(s.total>=limit?'crit':'')+'"><td>'+(i+1)+'</td><td>'+esc(s.store)+(s.total>=limit?'<span class="pill">crítica</span>':'')+'</td><td class="num">'+s.rp+'</td><td class="num">'+s.bv+'</td><td class="num"><b>'+s.total+'</b></td><td style="width:22%">'+barHtml(s.rp,s.bv,max)+'</td></tr>').join('')+
+    '</tbody></table>':'<p class="empty">Nenhuma loja.</p>';
+
+  $('tItems').innerHTML=agg.allItems.length?
+    '<table><thead><tr><th>#</th><th>Item</th><th class="num">Lojas em ruptura</th><th class="num">Lojas em baixo vol.</th><th class="num">Total</th></tr></thead><tbody>'+
+    agg.allItems.slice(0,top).map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td class="num">'+x.rp+'</td><td class="num">'+x.bv+'</td><td class="num"><b>'+x.n+'</b></td></tr>').join('')+
+    '</tbody></table>':'<p class="empty">Nenhum item.</p>';
+
+  $('lRup').innerHTML=listHtml(agg.rpItems,top);
+  $('lBv').innerHTML=listHtml(agg.bvItems,top);
+
+  $('tDepts').innerHTML=agg.depts.length?
+    '<table><thead><tr><th>Departamento</th><th class="num">Lojas</th><th class="num">Msgs</th><th class="num">Ruptura</th><th class="num">Baixo vol.</th><th>Loja mais afetada</th><th>Item líder em ruptura</th></tr></thead><tbody>'+
+    agg.depts.map(d=>'<tr><td><b>'+esc(d.dept)+'</b></td><td class="num">'+d.stores+'</td><td class="num">'+d.msgs+'</td><td class="num">'+d.rp+'</td><td class="num">'+d.bv+'</td><td>'+esc(d.topStore)+'</td><td>'+esc(d.topRp)+'</td></tr>').join('')+
+    '</tbody></table>':'<p class="empty">Sem dados.</p>';
+
+  $('cardObs').hidden=!agg.obs.length;
+  $('lObs').innerHTML=agg.obs.map(o=>'<li><b>'+esc(o.store)+'</b> ('+esc(o.dept)+'): '+esc(o.text)+'</li>').join('');
+
+  const g=weekRange(y,w);
+  const ctx={week:w,year:y,dept,limit,top,range:'Período: '+fmtDM(g.mon)+' a '+fmtDM(g.sun)};
+  $('out').value=S.tab==='email'?buildEmail(agg,ctx):buildZap(agg,ctx);
+}
+
+function setTab(t){
+  S.tab=t;
+  $('tabEmail').setAttribute('aria-pressed',t==='email');
+  $('tabZap').setAttribute('aria-pressed',t==='zap');
+  render();
+}
+
+async function copyOut(){
+  const txt=$('out').value;
+  try{ await navigator.clipboard.writeText(txt); }
+  catch(e){ $('out').select(); document.execCommand('copy'); }
+  $('copied').hidden=false; setTimeout(()=>{ $('copied').hidden=true; },2000);
+}
+
+// eventos
+$('file').addEventListener('change',e=>handleFile(e.target.files[0]));
+const drop=$('drop');
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{ e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{ e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));
+$('btnPaste').addEventListener('click',()=>{ const t=$('paste').value.trim(); if(t) loadText(t); else setStatus('Cole o texto da conversa primeiro.',true); });
+$('selWeek').addEventListener('change',()=>{ fillDepts(); render(); });
+['selDept','inpCrit','selTop'].forEach(id=>$(id).addEventListener('change',render));
+$('inpCrit').addEventListener('input',render);
+$('tabEmail').addEventListener('click',()=>setTab('email'));
+$('tabZap').addEventListener('click',()=>setTab('zap'));
+$('btnCopy').addEventListener('click',copyOut);
+$('btnClear').addEventListener('click',()=>{ $('app').hidden=true; $('file').value=''; $('paste').value=''; setStatus(''); window.scrollTo(0,0); });
+
+try{
+  const sv=JSON.parse(localStorage.getItem('resumoSemanal')||'null');
+  if(sv){ if(sv.limit) $('inpCrit').value=sv.limit; if(sv.top) $('selTop').value=String(sv.top); }
+}catch(e){}
+}
+</script>
+</body>
+</html>
